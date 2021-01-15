@@ -1270,6 +1270,140 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
 
   _readTboxValue(value) {
     print(value.toString());
+    if (value.length < 1) {
+      print("Recieved empty, thus not valid");
+      return;
+    }
+    if (value[0] != 84) {
+      print("Recieved index 0 not valid");
+      return;
+    }
+    if (value[1] == 1) {
+      // T-Box Request Reply
+      if (value[2] == 32) {
+      } else if (value[2] == 128) {
+      } else if (value[2] == 129) {
+      } else if (value[2] == 130) {
+      } else if (value[2] == 144) {
+      } else {
+        print("Recieved index 2 not valid");
+        return;
+      }
+    } else if (value[1] == 2) {
+      // T-Box Status & Battery Status
+      if (value[2] == 129) {
+        // value[3] is the amount of batter left
+        FlutterToast.showToast(msg: "Battery Left: " + value[3]);
+      } else if (value[2] == 160) {
+        if (value[3] == 0) {
+          //Front right
+          if (myState == "inSet" &&
+              (reactionSec == 0 || (DateTime.now().millisecondsSinceEpoch > latestTouchTime + (reactionSec * 1000))) &&
+              (lightModeBR != offColorInt)) {
+            currentTouchCount++;
+            _addTouchToLog("전면 오른쪽");
+          }
+        } else if (value[3] == 1) {
+          //Front left
+          if (myState == "inSet" &&
+              (reactionSec == 0 || (DateTime.now().millisecondsSinceEpoch > latestTouchTime + (reactionSec * 1000))) &&
+              (lightModeBL != offColorInt)) {
+            currentTouchCount++;
+            _addTouchToLog("전면 왼쪽");
+          }
+        } else if (value[3] == 2) {
+          //Back right
+          if (myState == "inSet" &&
+              (reactionSec == 0 || (DateTime.now().millisecondsSinceEpoch > latestTouchTime + (reactionSec * 1000))) &&
+              (lightModeTR != offColorInt)) {
+            currentTouchCount++;
+            _addTouchToLog("후면 오른쪽");
+          }
+        } else if (value[3] == 3) {
+          //Back left
+          if (myState == "inSet" &&
+              (reactionSec == 0 || (DateTime.now().millisecondsSinceEpoch > latestTouchTime + (reactionSec * 1000))) &&
+              (lightModeTL != offColorInt)) {
+            currentTouchCount++;
+            _addTouchToLog("후면 왼쪽");
+          }
+        } else if (value[3] == 4) {
+          // right
+          if (myState == "inSet" &&
+              (reactionSec == 0 || (DateTime.now().millisecondsSinceEpoch > latestTouchTime + (reactionSec * 1000))) &&
+              (lightModeBR != offColorInt || lightModeTR != offColorInt)) {
+            currentTouchCount++;
+            _addTouchToLog("압력센서 오른쪽");
+          }
+        } else if (value[3] == 5) {
+          // left
+          if (myState == "inSet" &&
+              (reactionSec == 0 || (DateTime.now().millisecondsSinceEpoch > latestTouchTime + (reactionSec * 1000))) &&
+              (lightModeBL != offColorInt || lightModeTL != offColorInt)) {
+            currentTouchCount++;
+            _addTouchToLog("압력센서 왼쪽");
+          }
+        }
+        _checkTouchCompletion();
+      } else {
+        print("Recieved index 2 not valid");
+      }
+    } else {
+      print("Recieved index 1 not valid");
+    }
+  }
+
+  _addTouchToLog(touchedSensor) {
+    // Touch count, total touch count,
+    // Time since set started
+    // the touched sensor location
+
+    String tempMin = '';
+    String tempSec = '';
+    String tempMilliSec = '';
+
+    int diff = cdtEndTime - DateTime.now().millisecondsSinceEpoch;
+    if (diff >= 60000) {
+      tempMin = (diff / 60000).floor().toString().padLeft(2, '0');
+      diff -= (diff / 60000).floor() * 60000;
+    } else {
+      tempMin = '00';
+    }
+    if (diff >= 1000) {
+      tempSec = (diff / 1000).floor().toString().padLeft(2, '0');
+      diff -= (diff / 1000).floor() * 1000;
+    } else {
+      tempSec = '00';
+    }
+    if (diff >= 10) {
+      tempMilliSec = (diff / 10).floor().toString().padLeft(2, '0').substring(0, 2);
+    } else {
+      tempMilliSec = '00';
+    }
+
+    latestTouchTime = DateTime.now().millisecondsSinceEpoch;
+
+    myLog[myLogCounter.toString()] = tempMin +
+        ':' +
+        tempSec +
+        ':' +
+        tempMilliSec +
+        ' ' +
+        touchedSensor +
+        '\n터치 ' +
+        currentTouchCount.toString() +
+        '/' +
+        totalTouchCount.toString();
+    myLogCounter++;
+  }
+
+  _checkTouchCompletion() {
+    if (currentTouchCount >= totalTouchCount) {
+      myState = "stopped";
+      myStopwatch.stop();
+      // TODO ask use if they want ot view the log
+      _showViewLogDialog(context);
+    }
   }
 
   @override
