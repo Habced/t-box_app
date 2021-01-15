@@ -1,0 +1,8 @@
+{
+  "diffEditor.wordWrap": "on",
+  "editor.wordWrap": "bounded",
+  "editor.wordWrapColumn": 150,
+  "prettier.printWidth": 150,
+  "html.format.wrapLineLength": 50,
+  "dart.lineLength": 120
+}
