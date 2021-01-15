@@ -160,6 +160,19 @@ Future<dynamic> updateUserAddress(userId, addr, coor, detailJuso) async {
   return json.decode(utf8.decode(response.bodyBytes));
 }
 
+Future<dynamic> getAllBanner() async {
+  final response = await http.get(
+    url + 'get_all_banner/',
+    headers: myHeader,
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to get all newsfeed');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
 Future<dynamic> getAllNewsFeed() async {
   final response = await http.get(
     url + 'get_all_newsfeed/',

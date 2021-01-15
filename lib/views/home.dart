@@ -7,6 +7,7 @@ import 'package:tboxapp/models/vod.model.dart';
 import 'package:tboxapp/shared/global_vars.dart';
 import 'package:tboxapp/components/top_app_bar.dart';
 import 'package:tboxapp/views/ble_devices.dart';
+import 'package:tboxapp/services/app_service.dart' as appService;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -20,26 +21,20 @@ class HomeScreenState extends State<HomeScreen> {
   List<Vod> latestVods;
   bool isRecentVodsLoading = true;
 
-  final List<String> imgList = [
-    'assets/images/test1.jpg',
-    'assets/images/test2.jpg',
-    'assets/images/test3.jpg',
-    'assets/images/test4.jpg',
-    'assets/images/test5.jpg',
-    'assets/images/test6.jpg',
-    'assets/images/test7.jpg',
-    'assets/images/test8.jpg',
-    'assets/images/test9.jpg',
-  ];
+  Future<dynamic> futureBannerList;
+  bool isBannersLoading = true;
+
+  final List<String> imgList = [];
 
   @override
   void initState() {
     super.initState();
-    getTotalUnread();
-    getLatestVods();
+    _getTotalUnread();
+    _getBanners();
+    _getLatestVods();
   }
 
-  getTotalUnread() async {
+  _getTotalUnread() async {
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // var result = await tbService.getTotalUnreadNewsfeed(prefs.getInt('id'));
     // unreadNewsfeeds = result['total_unread'].toString();
@@ -47,7 +42,19 @@ class HomeScreenState extends State<HomeScreen> {
     // setState(() {});
   }
 
-  getLatestVods() async {
+  _getBanners() async {
+    var response = await appService.getAllBanner();
+    if (response['res_code'] == 0) {
+      return;
+    }
+    for (var img in response['results']) {
+      setState(() {
+        imgList.add('https://i1.tbox.media/' + img['img']);
+      });
+    }
+  }
+
+  _getLatestVods() async {
     // TODO Uncomment when API is complete
     // var response = await tbService.getAllVod(6);
     // var results = response['results'];
@@ -249,7 +256,8 @@ class HomeScreenState extends State<HomeScreen> {
                 margin: EdgeInsets.all(5.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                  child: Image.asset(i, fit: BoxFit.fitHeight, width: 1000.0),
+                  // child: Image.asset(i, fit: BoxFit.fitHeight, width: 1000.0),
+                  child: Image.network(i, fit: BoxFit.fitHeight, width: 1000.0),
                 ),
               ),
             ),
