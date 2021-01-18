@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:tboxapp/models/faq.model.dart';
+import 'package:tboxapp/models/inquiry.model.dart';
 import 'package:tboxapp/models/newsfeed.model.dart';
 import 'package:tboxapp/models/store.model.dart';
 
@@ -9,7 +10,8 @@ import 'package:tboxapp/models/store.model.dart';
 
 // For multipart form data
 // https://pub.dev/documentation/http/latest/http/MultipartRequest-class.html
-var uriAuthority = 'http://req.tbox.media';
+// var uriAuthority = 'http://req.tbox.media';
+var uriAuthority = 'req.tbox.media';
 var uriTbfAppUnencodedPath = '/kr/tbfapp/';
 // TODO switch URL and API is done
 // var url = uriAuthority + uriTbfAppUnencodedPath;
@@ -374,17 +376,43 @@ Future<dynamic> addInquiry(userId, title, inquiry) async {
   return json.decode(utf8.decode(response.bodyBytes));
 }
 
-Future<dynamic> getInquiryByUser(userId, withReplies) async {
-  var queryParam = {'with_replies': withReplies};
-  var uri = Uri.https(uriAuthority, uriTbfAppUnencodedPath + 'get_inquiry_by_user/' + userId.toString(), queryParam);
+Future<List<Inquiry>> getInquiryByUser(userId, withReplies) async {
+  var queryParam = {'with_replies': withReplies.toString()};
+  print(uriTbfAppUnencodedPath.toString() + 'get_inquiry_by_user/' + userId.toString() + '/');
+  var uri = new Uri.http(uriAuthority.toString(),
+      uriTbfAppUnencodedPath.toString() + 'get_inquiry_by_user/' + userId.toString() + '/', queryParam);
 
-  final response = await http.get(uri, headers: myHeader);
+  // final response = await http.get(uri, headers: myHeader);
+  final response = await http.get(uri);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to delete getInquiryByUser');
   }
 
-  return json.decode(utf8.decode(response.bodyBytes));
+  final extractedData = json.decode(utf8.decode(response.bodyBytes));
+  // print(extractedData);
+  List loadedInquiries = extractedData['results'];
+  List<Inquiry> _inquiry = [];
+
+  for (var i in loadedInquiries) {
+    var tempInquiry = Inquiry(
+      id: i['inquiry_id'],
+      title: i['title'],
+      inquiry: i['inquiry'],
+      isExpanded: false,
+      replies: [],
+    );
+    for (var j in i['replies']) {
+      tempInquiry.replies.add(InquiryReply(
+        userFullname: j['user_fullname'],
+        replyId: j['reply_id'],
+        reply: j['reply'],
+        createDate: j['create_date'],
+      ));
+    }
+    _inquiry.add(tempInquiry);
+  }
+  return _inquiry;
 }
 
 Future<List<StoreItem>> getAllStoreItem() async {
