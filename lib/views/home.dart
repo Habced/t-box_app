@@ -203,7 +203,36 @@ class HomeScreenState extends State<HomeScreen> {
           }
         },
       ),
-      // bottomNavigationBar: buildBottomNavigationBar(context, 2),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.sports),
+            label: 'Coach',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.business),
+            label: 'Favorites',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.school),
+            label: 'Data',
+          ),
+        ],
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.pushNamed(context, '/coach');
+          } else if (index == 1) {
+            // TODO
+            // Navigator.pushNamed(context, '/coach');
+          } else if (index == 2) {
+            // TODO
+            // Navigator.pushNamed(context, '/coach');
+          }
+        },
+      ),
     );
   }
 
