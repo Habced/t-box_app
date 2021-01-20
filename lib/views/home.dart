@@ -218,6 +218,7 @@ class HomeScreenState extends State<HomeScreen> {
             label: 'Data',
           ),
         ],
+        backgroundColor: MyPrimaryBlueColor,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white,
         type: BottomNavigationBarType.fixed,
