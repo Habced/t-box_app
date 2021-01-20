@@ -202,12 +202,7 @@ class QnaScreenState extends State<QnaScreen> with SingleTickerProviderStateMixi
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
-                inquiryTab,
-                SingleChildScrollView(
-                  child: replyTab,
-                )
-              ],
+              children: [inquiryTab, SingleChildScrollView(child: replyTab)],
             ),
           ),
         ],

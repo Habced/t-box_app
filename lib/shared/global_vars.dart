@@ -120,6 +120,28 @@ int myLastCrankRevolutions = -1;
 int myLastCrankEventTime = -1;
 int myCurrentCrankCadence = 0;
 
+List<dynamic> roleList = [
+  {'num': 1, 'label': 'Superuser'},
+  {'num': 2, 'label': 'None Member '},
+  {'num': 3, 'label': 'Member'},
+  {'num': 4, 'label': 'Business'},
+  {'num': 5, 'label': 'Instructor'},
+  {'num': 6, 'label': 'O2O'},
+  {'num': 7, 'label': 'Admin'}
+];
+
+List<dynamic> levels = [
+  {'lid': 1, 'info': 'Easy'},
+  {'lid': 2, 'info': 'Normal'},
+  {'lid': 3, 'info': 'Hard'}
+];
+
+List<dynamic> vidType = [
+  {'id': 0, 'type': 'All'},
+  {'id': 1, 'type': 'T-Cycling'},
+  {'id': 2, 'type': 'T-Box'}
+];
+
 // https://github.com/NordicSemiconductor/Android-BLE-Library/blob/master/ble-common/src/main/java/no/nordicsemi/android/ble/common/callback/csc/CyclingSpeedAndCadenceMeasurementDataCallback.java
 void calculateCrankMesaurement(BluetoothDevice device, int crankRevolutions, int lastCrankEventTime) {
   // print('crankRevollutions: ' +
