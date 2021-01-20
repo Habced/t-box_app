@@ -447,3 +447,139 @@ Future<List<StoreItem>> getAllStoreItem() async {
   }
   return _storeItems;
 }
+
+Future<dynamic> getAllVod(limit) async {
+  var response;
+  if (limit == null) {
+    response = await http.get(url + 'get_all_vod/', headers: myHeader);
+  } else {
+    var queryParam = {'limit': limit.toString()};
+    var uri = new Uri.http(uriAuthority.toString(), uriTbfAppUnencodedPath.toString() + 'get_all_vod/', queryParam);
+    response = await http.get(uri);
+  }
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to get all vod');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<dynamic> getVodList(pcId, scId, limit) async {
+  final Map<String, String> queryParam = {};
+  if (pcId != null) {
+    queryParam['primary_cate_id'] = pcId;
+  } else if (scId != null) {
+    queryParam['secondary_cate_id'] = scId;
+  }
+  if (limit != null) {
+    queryParam['limit'] = limit;
+  }
+
+  var response;
+  if (pcId == null && scId == null && limit == null) {
+    response = await http.get(url + 'get_vod_list/', headers: myHeader);
+  } else {
+    var uri = new Uri.http(uriAuthority.toString(), uriTbfAppUnencodedPath.toString() + 'get_vod_list/', queryParam);
+    response = await http.get(uri);
+  }
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to get vod list');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<dynamic> getVod(vodId) async {
+  final response = await http.get(url + 'get_vod/' + vodId.toString() + '/', headers: myHeader);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to get vod');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<dynamic> getVodForUser(vodId, userId) async {
+  final response =
+      await http.get(url + 'get_vod_for_user/' + vodId.toString() + '/' + userId.toString() + '/', headers: myHeader);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to get vod for user.');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<dynamic> addVodClick(vodId) async {
+  final response = await http.post(url + 'add_vod_click/' + vodId + '/', headers: myHeader);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to add vod click');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<dynamic> addVodPlay(vodId, userId) async {
+  var body = jsonEncode({
+    'vod_id': vodId,
+    'user_id': userId,
+  });
+  final response = await http.post(url + 'add_vod_play/', headers: myHeader, body: body);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to add vod play.');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<dynamic> getPlayedVods(userId) async {
+  final response = await http.get(url + 'get_played_vods/' + userId.toString() + '/', headers: myHeader);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to get played vods');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<dynamic> addVodToFavorites(vodId, userId) async {
+  var body = jsonEncode({
+    'vod_id': vodId,
+    'user_id': userId,
+  });
+  final response = await http.post(url + 'add_vod_to_favorites/', headers: myHeader, body: body);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to add vod to favorites.');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<dynamic> removeVodFromFavorites(vodId, userId) async {
+  var body = jsonEncode({
+    'vod_id': vodId,
+    'user_id': userId,
+  });
+  final response = await http.post(url + 'remove_vod_from_favorites/', headers: myHeader, body: body);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to remove vod from favorites.');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<dynamic> getVodInFavorites(userId) async {
+  final response = await http.get(url + 'get_vod_in_favorites/' + userId.toString() + '/', headers: myHeader);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to get vod in favorites');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
