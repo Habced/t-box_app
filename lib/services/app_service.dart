@@ -5,6 +5,7 @@ import 'package:tboxapp/models/faq.model.dart';
 import 'package:tboxapp/models/inquiry.model.dart';
 import 'package:tboxapp/models/newsfeed.model.dart';
 import 'package:tboxapp/models/store.model.dart';
+import 'package:tboxapp/models/vod.model.dart';
 
 // https://flutter.dev/docs/cookbook/networking/fetch-data
 
@@ -536,14 +537,30 @@ Future<dynamic> addVodPlay(vodId, userId) async {
   return json.decode(utf8.decode(response.bodyBytes));
 }
 
-Future<dynamic> getPlayedVods(userId) async {
+Future<List<VodShort>> getPlayedVods(userId) async {
   final response = await http.get(url + 'get_played_vods/' + userId.toString() + '/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to get played vods');
   }
 
-  return json.decode(utf8.decode(response.bodyBytes));
+  final extractedData = json.decode(utf8.decode(response.bodyBytes));
+
+  List loadedVodShort = extractedData['results'];
+  List<VodShort> _vods = [];
+
+  for (var i in loadedVodShort) {
+    _vods.add(VodShort(
+      id: i['id'],
+      title: i['title'],
+      contents: i['contents'],
+      thumbnail: 'https://i1.tbox.media/' + i['thumbnail'],
+      pcTitle: i['primary_cate_id'],
+      scTitle: i['secondary_cate_id'],
+      timestamp: i['timestamp'],
+    ));
+  }
+  return _vods;
 }
 
 Future<dynamic> addVodToFavorites(vodId, userId) async {
@@ -574,12 +591,28 @@ Future<dynamic> removeVodFromFavorites(vodId, userId) async {
   return json.decode(utf8.decode(response.bodyBytes));
 }
 
-Future<dynamic> getVodInFavorites(userId) async {
+Future<List<VodShort>> getVodInFavorites(userId) async {
   final response = await http.get(url + 'get_vod_in_favorites/' + userId.toString() + '/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to get vod in favorites');
   }
 
-  return json.decode(utf8.decode(response.bodyBytes));
+  final extractedData = json.decode(utf8.decode(response.bodyBytes));
+
+  List loadedVodShort = extractedData['results'];
+  List<VodShort> _vods = [];
+
+  for (var i in loadedVodShort) {
+    _vods.add(VodShort(
+      id: i['id'],
+      title: i['title'],
+      contents: i['contents'],
+      thumbnail: 'https://i1.tbox.media/' + i['thumbnail'],
+      pcTitle: i['primary_cate_id'],
+      scTitle: i['secondary_cate_id'],
+      timestamp: i['timestamp'],
+    ));
+  }
+  return _vods;
 }
