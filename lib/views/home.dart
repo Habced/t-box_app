@@ -226,8 +226,7 @@ class HomeScreenState extends State<HomeScreen> {
           if (index == 0) {
             Navigator.pushNamed(context, '/coach');
           } else if (index == 1) {
-            // TODO
-            // Navigator.pushNamed(context, '/coach');
+            Navigator.pushNamed(context, '/vod_fav');
           } else if (index == 2) {
             // TODO
             // Navigator.pushNamed(context, '/coach');
