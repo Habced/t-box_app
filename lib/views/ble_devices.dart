@@ -40,56 +40,31 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
         children: [
           Text("T-CYCLING 센서"),
           Container(
-            child: StreamBuilder<BluetoothDeviceState>(
-              stream: cscDevice?.state,
-              initialData: BluetoothDeviceState.disconnected,
-              builder: (context, snapshot) {
-                VoidCallback onPressed;
-                String text;
-                switch (snapshot.data) {
-                  case BluetoothDeviceState.connected:
-                    onPressed = () async {
-                      await cscDevice.disconnect();
-                      setState(() {
-                        isC1Connected = false;
-                      });
-                    };
-                    text = "연결 완료";
-                    break;
-                  case BluetoothDeviceState.disconnected:
-                    onPressed = () async {
-                      if (cscDevice == null) {
-                        // await scanForDevice(cscName);
-                      }
-                      await cscDevice?.connect();
-                      setState(() {
-                        isC1Connected = true;
-                      });
-                      await addCrankListener();
-                    };
-                    text = "연결";
-                    break;
-                  case BluetoothDeviceState.connecting:
-                    onPressed = null;
-                    text = "연결중...";
-                    break;
-                  case BluetoothDeviceState.disconnecting:
-                    onPressed = null;
-                    text = "Disconnecting...";
-                    break;
-                  default:
-                    onPressed = null;
-                    text = snapshot.data.toString().substring(21).toUpperCase();
-                    break;
+            child: FlatButton(
+              onPressed: () async {
+                if (isC1Connected) {
+                  await cscDevice?.disconnect();
+                  setState(() {
+                    isC1Connected = false;
+                  });
+                } else {
+                  bool isFound = false;
+                  if (cscDevice == null) {
+                    isFound = await scanForDevice(cscName);
+                  }
+                  if (isFound || cscDevice != null) {
+                    await cscDevice?.connect();
+                    await findTboxCharacteristics();
+                    setState(() {
+                      isC1Connected = true;
+                    });
+                  }
                 }
-                return FlatButton(
-                  onPressed: onPressed,
-                  child: Text(
-                    text,
-                    style: TextStyle(color: MyPrimaryYellowColor),
-                  ),
-                );
               },
+              child: Text(
+                isC1Connected ? '연결됨' : '연결',
+                style: TextStyle(color: MyPrimaryYellowColor),
+              ),
             ),
           ),
         ],
@@ -122,22 +97,6 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
                     setState(() {
                       isTboxConnected = true;
                     });
-
-                    // var myState = await tboxDevice.state?.last;
-                    // print("myState" + myState.toString());
-                    // if (myState == BluetoothDeviceState.connected) {
-                    //   print("is connected");
-                    //   setState(() {
-                    //     isTboxConnected = true;
-                    //   });
-                    // } else if (myState == BluetoothDeviceState.disconnected) {
-                    //   print("is not connected");
-                    //   await tboxDevice?.connect();
-                    //   await findTboxCharacteristics();
-                    //   setState(() {
-                    //     isTboxConnected = true;
-                    //   });
-                    // }
                   }
                 }
               },
@@ -250,6 +209,11 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
         if (scanResult.device.name.contains(scanItem)) {
           if (scanItem.contains(tboxName)) {
             tboxDevice = scanResult.device;
+            isFound = true;
+            FlutterToast.showToast(msg: 'T-Box has been connected');
+            flutterBlue.stopScan();
+          } else if (scanItem.contains(cscName)) {
+            cscDevice = scanResult.device;
             isFound = true;
             FlutterToast.showToast(msg: 'T-Box has been connected');
             flutterBlue.stopScan();
