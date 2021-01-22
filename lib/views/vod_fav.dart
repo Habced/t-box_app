@@ -106,7 +106,53 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
         ],
       ),
     );
-    var watchedTab = Padding(padding: EdgeInsets.all(20), child: Text('watchedTab'));
+    var watchedTab = Padding(
+      padding: EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('최근 시청 한 동영상'),
+          Divider(color: Colors.white, thickness: 2),
+          FutureBuilder<List<VodShort>>(
+            future: futureVodFavList,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Column(
+                  children: snapshot.data.map((VodShort vod) {
+                    var vodRow = Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.network(vod.thumbnail),
+                        Column(
+                          children: [
+                            Text(vod.title),
+                            Text(vod.timestamp),
+                          ],
+                        ),
+                        Text("icon?"),
+                      ],
+                    );
+                    return Padding(
+                      padding: EdgeInsets.all(10),
+                      child: InkWell(child: vodRow),
+                    );
+                  }).toList(),
+                );
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [CircularProgressIndicator(), SizedBox(height: 10), Text("Loading...")],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
 
     return Container(
       color: Colors.black,
