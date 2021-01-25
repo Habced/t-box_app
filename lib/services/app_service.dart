@@ -510,7 +510,29 @@ Future<dynamic> getVodForUser(vodId, userId) async {
     throw Exception('Failed to get vod for user.');
   }
 
-  return json.decode(utf8.decode(response.bodyBytes));
+  final extractedData = json.decode(utf8.decode(response.bodyBytes));
+  return Vod(
+    id: extractedData['results'][0]['id'],
+    title: extractedData['results'][0]['title'],
+    contents: extractedData['results'][0]['contents'],
+    vod: extractedData['results'][0]['vod'],
+    mrbg: extractedData['results'][0]['mrbg'],
+    thumbnail: extractedData['results'][0]['thumbnail'],
+    pcTitle: extractedData['results'][0]['primary_cate_title'],
+    scTitle: extractedData['results'][0]['secondary_cate_title'],
+    levelId: extractedData['results'][0]['level_id'],
+    viewableTo: extractedData['results'][0]['viewableTo'],
+    usingPoints: extractedData['results'][0]['using_points'],
+    earnablePoints: extractedData['results'][0]['earnable_points'],
+    earnableTimes: extractedData['results'][0]['earnable_times'],
+    sensingType: extractedData['results'][0]['sensing_type'],
+    sensingStartMin: extractedData['results'][0]['sensing_start_min'],
+    sensingStartSec: extractedData['results'][0]['sensing_start_sec'],
+    sensingEndMin: extractedData['results'][0]['sensing_end_min'],
+    sensingEndSec: extractedData['results'][0]['sensing_end_sec'],
+    pointGoal: extractedData['results'][0]['point_goal'],
+    pointSuccess: extractedData['results'][0]['point_success'],
+  );
 }
 
 Future<dynamic> addVodClick(vodId) async {
