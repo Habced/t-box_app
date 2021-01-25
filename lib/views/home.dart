@@ -8,6 +8,7 @@ import 'package:tboxapp/shared/global_vars.dart';
 import 'package:tboxapp/components/top_app_bar.dart';
 import 'package:tboxapp/views/ble_devices.dart';
 import 'package:tboxapp/services/app_service.dart' as appService;
+import 'package:tboxapp/views/vod_selected.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -76,6 +77,7 @@ class HomeScreenState extends State<HomeScreen> {
     // }
     // TODO Remove when API is complete
     latestVods = [
+      /*
       Vod(
           id: 1,
           title: 'a',
@@ -86,62 +88,7 @@ class HomeScreenState extends State<HomeScreen> {
           primaryCate: 1,
           secondaryCate: 1,
           gangsaName: 'asdf',
-          viewableTo: [1, 2, 3]),
-      Vod(
-          id: 2,
-          title: 'b',
-          contents: 'asdf',
-          vod: 'a link',
-          mrbg: 'a link',
-          thumbnail: 'https://i1.tbox.media/vodthumbnail/2020/06/19/e5abd59e90144e5bbc2c20e8a3a71427.jpg',
-          primaryCate: 1,
-          secondaryCate: 1,
-          gangsaName: 'asdf',
-          viewableTo: [1, 2, 3]),
-      Vod(
-          id: 4,
-          title: 'c',
-          contents: 'asdf',
-          vod: 'a link',
-          mrbg: 'a link',
-          thumbnail: 'https://i1.tbox.media/vodthumbnail/2020/06/19/e5abd59e90144e5bbc2c20e8a3a71427.jpg',
-          primaryCate: 1,
-          secondaryCate: 1,
-          gangsaName: 'asdf',
-          viewableTo: [1, 2, 3]),
-      Vod(
-          id: 5,
-          title: 'd',
-          contents: 'asdf',
-          vod: 'a link',
-          mrbg: 'a link',
-          thumbnail: 'https://i1.tbox.media/vodthumbnail/2020/06/19/e5abd59e90144e5bbc2c20e8a3a71427.jpg',
-          primaryCate: 1,
-          secondaryCate: 1,
-          gangsaName: 'asdf',
-          viewableTo: [1, 2, 3]),
-      Vod(
-          id: 6,
-          title: 'aa',
-          contents: 'asdf',
-          vod: 'a link',
-          mrbg: 'a link',
-          thumbnail: 'https://i1.tbox.media/vodthumbnail/2020/06/19/e5abd59e90144e5bbc2c20e8a3a71427.jpg',
-          primaryCate: 1,
-          secondaryCate: 1,
-          gangsaName: 'asdf',
-          viewableTo: [1, 2, 3]),
-      Vod(
-          id: 7,
-          title: 'bv',
-          contents: 'asdf',
-          vod: 'a link',
-          mrbg: 'a link',
-          thumbnail: 'https://i1.tbox.media/vodthumbnail/2020/06/19/e5abd59e90144e5bbc2c20e8a3a71427.jpg',
-          primaryCate: 1,
-          secondaryCate: 1,
-          gangsaName: 'asdf',
-          viewableTo: [1, 2, 3]),
+          viewableTo: [1, 2, 3]),*/
     ];
     // print(latestVods.toString());
     isRecentVodsLoading = false;
@@ -332,7 +279,19 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.pushNamed(context, '/coach');
               },
               child: Text('Go to Coach', style: TextStyle(color: Colors.white)),
-            )
+            ),
+            RaisedButton(
+              onPressed: () {
+                // Navigator.pushNamed(context, '/vod_selected');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VodSelectedScreen(vodId: 1),
+                  ),
+                );
+              },
+              child: Text('vodselected'),
+            ),
           ],
         ),
       ),
