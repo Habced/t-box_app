@@ -30,6 +30,7 @@ dependencies:
   system_setting: ^0.1.2
   video_player: ^0.10.5
   url_launcher: ^5.7.6
+  share: ^0.6.5+4
 
 dev_dependencies:
   flutter_test:
