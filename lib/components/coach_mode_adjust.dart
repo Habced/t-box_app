@@ -201,9 +201,9 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
 
   _setRead() async {
     if (gvars.isTboxConnected) {
-      await gvars.tboxReadChar.setNotifyValue(true);
+      // await gvars.tboxReadChar.setNotifyValue(true);
       if (readSubscription == null) {
-        readSubscription = gvars.tboxReadChar.value.listen((value) {
+        readSubscription = gvars.tboxReadChar.monitor().listen((value) {
           _readTboxValue(value);
         });
       }
@@ -1401,7 +1401,6 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
     if (currentTouchCount >= totalTouchCount) {
       myState = "stopped";
       myStopwatch.stop();
-      // TODO ask use if they want ot view the log
       _showViewLogDialog(context);
     }
   }
@@ -1426,7 +1425,7 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
     lightMotionController.dispose();
 
     await readSubscription?.cancel();
-    await gvars.tboxReadChar?.setNotifyValue(false);
+    // await gvars.tboxReadChar?.setNotifyValue(false);
 
     return;
   }
@@ -1444,7 +1443,7 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
     writing = true;
     while (writeCommands.length != 0) {
       try {
-        await gvars.tboxWriteChar.write(writeCommands[0]);
+        await gvars.tboxWriteChar.write(writeCommands[0], false);
         // tboxWriteChar.write(writeCommands[0]);
       } catch (error) {
         FlutterToast.showToast(msg: "Error with BLE write");

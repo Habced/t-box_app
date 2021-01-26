@@ -18,6 +18,7 @@ import 'package:tboxapp/views/update_address.dart';
 import 'package:tboxapp/views/update_password.dart';
 import 'package:tboxapp/views/coach.dart';
 import 'package:tboxapp/views/vod_fav.dart';
+import 'package:tboxapp/views/vod_selected.dart';
 
 void main() {
   runApp(MyAppNavigator());
@@ -45,5 +46,6 @@ class MyAppNavigator extends StatelessWidget {
         // '/update_cellphone': (context) => UpdateCellphoneScreen(),
         '/coach': (context) => CoachScreen(),
         '/vod_fav': (context) => VodFavScreen(),
+        // '/vod_selected': (context) => VodSelectedScreen(),
       });
 }

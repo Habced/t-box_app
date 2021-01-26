@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:system_setting/system_setting.dart';
 import 'package:tboxapp/shared/global_vars.dart';
@@ -13,9 +13,16 @@ class BleDevicesScreen extends StatefulWidget {
 class BleDevicesScreenState extends State<BleDevicesScreen> {
   var scanSubscription;
 
+  BleManager bleManager = BleManager();
+
   @override
   void initState() {
     super.initState();
+    _createBleClient();
+  }
+
+  _createBleClient() async {
+    await bleManager.createClient();
   }
 
   @override
@@ -42,24 +49,42 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
           Container(
             child: FlatButton(
               onPressed: () async {
-                if (isC1Connected) {
-                  await cscDevice?.disconnect();
-                  setState(() {
-                    isC1Connected = false;
-                  });
-                } else {
-                  bool isFound = false;
-                  if (cscDevice == null) {
-                    isFound = await scanForDevice(cscName);
-                  }
-                  if (isFound || cscDevice != null) {
-                    await cscDevice?.connect();
-                    await findTboxCharacteristics();
+                bool isFound = false;
+                if (cscDevice == null) {
+                  isFound = await scanForDevice(cscName);
+                }
+                if (isFound || cscDevice != null) {
+                  if (await cscDevice.isConnected()) {
                     setState(() {
                       isC1Connected = true;
                     });
+                  } else {
+                    await cscDevice?.connect();
+                    await addCrankListener();
+                    setState(() {
+                      isC1Connected = true;
+                    });
+                    FlutterToast.showToast(msg: 'C1 Sensor has been connected');
                   }
                 }
+                // if (isC1Connected) {
+                //   await cscDevice?.disconnect();
+                //   setState(() {
+                //     isC1Connected = false;
+                //   });
+                // } else {
+                //   bool isFound = false;
+                //   if (cscDevice == null) {
+                //     isFound = await scanForDevice(cscName);
+                //   }
+                //   if (isFound || cscDevice != null) {
+                //     await cscDevice?.connect();
+                //     await findTboxCharacteristics();
+                //     setState(() {
+                //       isC1Connected = true;
+                //     });
+                //   }
+                // }
               },
               child: Text(
                 isC1Connected ? '연결됨' : '연결',
@@ -81,24 +106,42 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
           Container(
             child: FlatButton(
               onPressed: () async {
-                if (isTboxConnected) {
-                  await tboxDevice?.disconnect();
-                  setState(() {
-                    isTboxConnected = false;
-                  });
-                } else {
-                  bool isFound = false;
-                  if (tboxDevice == null) {
-                    isFound = await scanForDevice(tboxName);
-                  }
-                  if (isFound || tboxDevice != null) {
+                bool isFound = false;
+                if (tboxDevice == null) {
+                  isFound = await scanForDevice(tboxName);
+                }
+                if (isFound || tboxDevice != null) {
+                  if (await tboxDevice.isConnected()) {
+                    setState(() {
+                      isTboxConnected = true;
+                    });
+                  } else {
                     await tboxDevice?.connect();
                     await findTboxCharacteristics();
                     setState(() {
                       isTboxConnected = true;
                     });
+                    FlutterToast.showToast(msg: 'T-Box has been connected');
                   }
                 }
+                // if (isTboxConnected) {
+                //   await tboxDevice?.disconnect();
+                //   setState(() {
+                //     isTboxConnected = false;
+                //   });
+                // } else {
+                //   bool isFound = false;
+                //   if (tboxDevice == null) {
+                //     isFound = await scanForDevice(tboxName);
+                //   }
+                //   if (isFound || tboxDevice != null) {
+                //     await tboxDevice?.connect();
+                //     await findTboxCharacteristics();
+                //     setState(() {
+                //       isTboxConnected = true;
+                //     });
+                //   }
+                // }
               },
               child: Text(
                 isTboxConnected ? '연결됨' : '연결',
@@ -150,11 +193,12 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
   @override
   void dispose() {
     super.dispose();
-    flutterBlue.stopScan();
+    // flutterBlue.stopScan();
+    bleManager.destroyClient();
   }
 
   Future<bool> scanForDevice(String scanItem) async {
-    await flutterBlue.stopScan();
+    await bleManager.stopPeripheralScan();
 
     // Check if Location is on
     if (!(await isLocationServiceEnabled())) return false;
@@ -163,7 +207,8 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
     if (!(await isLocationPermissionGranted())) return false;
 
     // Check if Bluetooth is on
-    if (!(await flutterBlue.isOn)) {
+    BluetoothState currentState = await bleManager.bluetoothState();
+    if (currentState != BluetoothState.POWERED_ON) {
       showDialog<void>(
         context: context,
         barrierDismissible: false,
@@ -204,19 +249,28 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
 
     bool isFound = false;
     FlutterToast.showToast(msg: "Scanning for $scanItem");
-    scanSubscription = await flutterBlue.scan(timeout: Duration(seconds: 2)).listen(
+    scanSubscription = await bleManager
+        .startPeripheralScan(
+      uuids: scanItem == tboxName
+          ? ["6e400001-b5a3-f393-e0a9-e50e24dcca9e"]
+          : scanItem == cscName
+              ? ["00001816-0000-1000-8000-00805f9b34fb"]
+              : [],
+    )
+        .listen(
       (scanResult) async {
-        if (scanResult.device.name.contains(scanItem)) {
-          if (scanItem.contains(tboxName)) {
-            tboxDevice = scanResult.device;
+        // print(
+        //     "Scanned Peripheral ${scanResult.peripheral.name}, RSSI ${scanResult.rssi}");
+
+        if (scanResult.peripheral.name.contains(scanItem)) {
+          if (scanItem == tboxName) {
+            tboxDevice = scanResult.peripheral;
             isFound = true;
-            FlutterToast.showToast(msg: 'T-Box has been connected');
-            flutterBlue.stopScan();
-          } else if (scanItem.contains(cscName)) {
-            cscDevice = scanResult.device;
+            await bleManager.stopPeripheralScan();
+          } else if (scanItem == cscName) {
+            cscDevice = scanResult.peripheral;
             isFound = true;
-            FlutterToast.showToast(msg: 'T-Box has been connected');
-            flutterBlue.stopScan();
+            await bleManager.stopPeripheralScan();
           }
         }
       },
@@ -226,28 +280,18 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
   }
 
   Future<void> findTboxCharacteristics() async {
-    List<BluetoothService> services = await tboxDevice?.discoverServices();
-    services?.forEach((service) {
-      // print('found a service: ' + service.toString());
-      service.characteristics.forEach((characteristic) {
+    if (tboxReadChar == null || tboxWriteChar == null) {
+      await tboxDevice.discoverAllServicesAndCharacteristics();
+      List<Characteristic> characteristics = await tboxDevice?.characteristics(BLE_NRF_SERVICE);
+      characteristics.forEach((characteristic) {
         if (characteristic.uuid.toString() == BLE_NRF_CHAR_RX) {
           tboxWriteChar = characteristic;
-          // characteristic.setNotifyValue(true);
-          // characteristic.value.listen((value) {
-          //   print("Received: " + value.toString());
-          // });
-          print('found write');
         }
         if (characteristic.uuid.toString() == BLE_NRF_CHAR_TX) {
           tboxReadChar = characteristic;
-          // characteristic.setNotifyValue(true);
-          // characteristic.value.listen((value) {
-          //   print("Received lol: " + value.toString());
-          // });
-          print('found read');
         }
       });
-    });
+    }
     return;
   }
 }

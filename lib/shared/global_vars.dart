@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 import 'package:location/location.dart';
 
 const MyPrimaryBlueColor = const MaterialColor(0xFF212935, const <int, Color>{
@@ -66,7 +66,7 @@ var myThemeData = ThemeData(
   // ),
 );
 
-final FlutterBlue flutterBlue = FlutterBlue.instance;
+// final FlutterBlue flutterBlue = FlutterBlue.instance;
 final Location location = new Location();
 
 final TextStyle titleFont = const TextStyle(
@@ -87,9 +87,9 @@ final TextStyle overlayTextFontSmall =
 
 // T-Box
 const String tboxName = "Raytac AT-UART";
-BluetoothDevice tboxDevice;
-BluetoothCharacteristic tboxWriteChar;
-BluetoothCharacteristic tboxReadChar;
+Peripheral tboxDevice;
+Characteristic tboxWriteChar;
+Characteristic tboxReadChar;
 bool isTboxConnected = false;
 const BLUETOOTH_LE_CCCD = "00002902-0000-1000-8000-00805f9b34fb";
 const BLE_NRF_SERVICE = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
@@ -107,14 +107,12 @@ double distance = 0;
 String distanceString = "0.00";
 String caloriesBurned = "0.0";
 
-BluetoothDevice cscDevice;
-BluetoothDeviceState cscDeviceState;
+Peripheral cscDevice;
+Characteristic crankCharacteristic;
 bool isC1Connected = false;
 
 const CADENCE_SERVICE_UUID = "00001816-0000-1000-8000-00805f9b34fb";
 const CAD_CRANK_UUID = "00002a5b-0000-1000-8000-00805f9b34fb";
-
-BluetoothCharacteristic crankCharacteristic;
 
 int myLastCrankRevolutions = -1;
 int myLastCrankEventTime = -1;
@@ -143,62 +141,59 @@ List<dynamic> vidType = [
 ];
 
 // https://github.com/NordicSemiconductor/Android-BLE-Library/blob/master/ble-common/src/main/java/no/nordicsemi/android/ble/common/callback/csc/CyclingSpeedAndCadenceMeasurementDataCallback.java
-void calculateCrankMesaurement(BluetoothDevice device, int crankRevolutions, int lastCrankEventTime) {
-  // print('crankRevollutions: ' +
-  //     crankRevolutions.toString() +
-  //     ', lastCrankEventTime: ' +
-  //     lastCrankEventTime.toString());
-
-  if (myLastCrankEventTime == lastCrankEventTime) return;
+/*
+  cr = Crank Revolutions
+  lcet = Last Crank Event Time
+ */
+void calculateCrankMesaurement(Peripheral device, int cr, int lcet) {
+  if (myLastCrankEventTime == lcet) return;
 
   if (myLastCrankRevolutions >= 0) {
     double timeDifference;
-    if (lastCrankEventTime < myLastCrankEventTime)
-      timeDifference = (65535 + lastCrankEventTime - myLastCrankEventTime) / 1024; // [s]
-    else
-      timeDifference = (lastCrankEventTime - myLastCrankEventTime) / 1024; // [s]
+    if (lcet < myLastCrankEventTime) {
+      timeDifference = (65535 + lcet - myLastCrankEventTime) / 1024; // [s]
+    } else {
+      timeDifference = (lcet - myLastCrankEventTime) / 1024; // [s]
+    }
 
     // double crankCadence = (crankRevolutions - gvars.myLastCrankRevolutions) * 60 / timeDifference; // [revolutions/minute]
-    myCurrentCrankCadence = (crankRevolutions - myLastCrankRevolutions) * 60 ~/ timeDifference;
+    myCurrentCrankCadence = (cr - myLastCrankRevolutions) * 60 ~/ timeDifference;
     crankData = myCurrentCrankCadence.toString();
-    distance = (crankRevolutions * 3).toDouble() / 1000;
-    distanceString = ((crankRevolutions * 3).toDouble() / 1000).toString().substring(0, 3);
+    distance = (cr * 3).toDouble() / 1000;
+    distanceString = ((cr * 3).toDouble() / 1000).toString().substring(0, 3);
     // print("distance: " + distance);
     // print("xx: " + ((crankRevolutions * 2).toDouble() / 1000).toString());
     // print("myCurrentCrankCadence: " + myCurrentCrankCadence.toString() );
   }
-  myLastCrankRevolutions = crankRevolutions;
-  myLastCrankEventTime = lastCrankEventTime;
+  myLastCrankRevolutions = cr;
+  myLastCrankEventTime = lcet;
 }
 
+// https://pub.dev/packages/flutter_ble_lib
 Future<void> addCrankListener() async {
   if (crankCharacteristic == null) {
-    List<BluetoothService> services = await cscDevice?.discoverServices();
-    services?.forEach((service) {
-      service.characteristics.forEach((characteristic) {
-        if (characteristic.uuid.toString() == CAD_CRANK_UUID) {
-          crankCharacteristic = characteristic;
-        }
-      });
+    await cscDevice.discoverAllServicesAndCharacteristics();
+    List<Characteristic> characteristics = await cscDevice?.characteristics(CADENCE_SERVICE_UUID);
+
+    characteristics.forEach((characteristic) {
+      if (characteristic.uuid.toString() == CAD_CRANK_UUID) {
+        crankCharacteristic = characteristic;
+      }
     });
   }
-  await crankCharacteristic?.setNotifyValue(true);
-  crankCharacteristic?.value?.listen((value) {
-    // debugPrint( ((value[2] * 255)+value[1]).toString() );
-    if (value.length > 4) {
-      calculateCrankMesaurement(cscDevice, ((value[2] * 256) + value[1]), ((value[4] * 256) + value[3]));
+  crankCharacteristic?.monitor()?.listen((event) {
+    print(event.toString());
+    if (event.length > 4) {
+      calculateCrankMesaurement(cscDevice, ((event[2] * 256) + event[1]), ((event[4] * 256) + event[3]));
     }
-    // crankData = ((value[2] * 255)+value[1]).toString();
-
-    // updateCrank();
   });
   return;
 }
 
-Future<void> removeCrankListener() async {
-  await crankCharacteristic.setNotifyValue(false);
-}
+// Future<void> removeCrankListener() async {
+//   await crankCharacteristic.setNotifyValue(false);
+// }
 
-Future<void> disconnectCscDevice() async {
-  await cscDevice.disconnect();
-}
+// Future<void> disconnectCscDevice() async {
+//   await cscDevice.disconnect();
+// }

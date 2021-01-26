@@ -87,9 +87,9 @@ class CoachModeSelectState extends State<CoachModeSelect> {
 
   _setRead() async {
     if (gvars.isTboxConnected) {
-      await gvars.tboxReadChar.setNotifyValue(true);
+      // await gvars.tboxReadChar.setNotifyValue(true);
       if (readSubscription == null) {
-        readSubscription = gvars.tboxReadChar.value.listen((value) {
+        readSubscription = gvars.tboxReadChar.monitor().listen((value) {
           _readTboxValue(value);
         });
       }
@@ -465,7 +465,7 @@ class CoachModeSelectState extends State<CoachModeSelect> {
     myStopwatch.stop();
     stopwatchPeriodical.cancel();
     await readSubscription?.cancel();
-    await gvars.tboxReadChar?.setNotifyValue(false);
+    // await gvars.tboxReadChar?.setNotifyValue(false);
     return;
   }
 
@@ -637,7 +637,7 @@ class CoachModeSelectState extends State<CoachModeSelect> {
     writing = true;
     while (writeCommands.length != 0) {
       try {
-        await gvars.tboxWriteChar.write(writeCommands[0]);
+        await gvars.tboxWriteChar.write(writeCommands[0], false);
         // tboxWriteChar.write(writeCommands[0]);
       } catch (error) {
         FlutterToast.showToast(msg: "Error with BLE write");
