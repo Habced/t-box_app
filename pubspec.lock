@@ -141,25 +141,18 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.2.1"
-  fixnum:
-    dependency: transitive
-    description:
-      name: fixnum
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.10.11"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_blue:
+  flutter_ble_lib:
     dependency: "direct main"
     description:
-      name: flutter_blue
+      name: flutter_ble_lib
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.3"
+    version: "2.3.1"
   flutter_html:
     dependency: "direct main"
     description:
@@ -387,13 +380,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
-  protobuf:
-    dependency: transitive
-    description:
-      name: protobuf
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0"
   rxdart:
     dependency: transitive
     description:
