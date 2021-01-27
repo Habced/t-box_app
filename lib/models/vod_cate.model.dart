@@ -14,7 +14,7 @@ class PrimaryCate {
     this.isTboxCategory,
     this.isTcyclingCategory,
     this.isVisible,
-    this.ordering
+    this.ordering,
   });
 }
 
@@ -23,6 +23,7 @@ class SecondaryCate {
   final int primaryCateId;
   final String title;
   final String img;
+  final String color;
   final bool isVisible;
   final int ordering;
 
@@ -31,6 +32,7 @@ class SecondaryCate {
     this.primaryCateId,
     this.title,
     this.img,
+    this.color,
     this.isVisible,
     this.ordering,
   });
