@@ -67,6 +67,8 @@ var myThemeData = ThemeData(
 );
 
 // final FlutterBlue flutterBlue = FlutterBlue.instance;
+
+BleManager bleManager = BleManager();
 final Location location = new Location();
 
 final TextStyle titleFont = const TextStyle(

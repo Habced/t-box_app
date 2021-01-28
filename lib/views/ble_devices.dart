@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -12,8 +14,6 @@ class BleDevicesScreen extends StatefulWidget {
 
 class BleDevicesScreenState extends State<BleDevicesScreen> {
   var scanSubscription;
-
-  BleManager bleManager = BleManager();
 
   @override
   void initState() {
@@ -153,6 +153,30 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
       ),
     );
 
+    var tboxTouchSignal = Container(
+      height: 45,
+      decoration: BoxDecoration(color: Color(0x33ECEBEA), borderRadius: BorderRadius.circular(5)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("T-Box 터치 연결"),
+          Container(
+            child: isTboxConnected
+                ? FlatButton(
+                    onPressed: () async {
+                      // tboxDevice.readCharacteristic(serviceUuid, characteristicUuid)
+                      await tboxWriteChar.write(Uint8List.fromList([packetHeader, 0x02, 0x02, 0x01, 0x01]), true);
+                      FlutterToast.showToast(msg: "Signal Sent");
+                      /*
+                        await tboxReadChar.setNotifyValue(true);
+                        */
+                    },
+                    child: Text("Send Signal", style: TextStyle(color: MyPrimaryYellowColor)))
+                : Text('Connect T-Box First'),
+          ),
+        ],
+      ),
+    );
     var myTs = TextStyle(
       color: Colors.white,
     );
@@ -174,6 +198,8 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
               Divider(color: Colors.white, thickness: 2),
               SizedBox(height: 10),
               connectTboxButton,
+              SizedBox(height: 5),
+              tboxTouchSignal,
               SizedBox(height: 10),
               SizedBox(height: 20),
               Align(
@@ -194,7 +220,7 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
   void dispose() {
     super.dispose();
     // flutterBlue.stopScan();
-    bleManager.destroyClient();
+    // bleManager.destroyClient();
   }
 
   Future<bool> scanForDevice(String scanItem) async {

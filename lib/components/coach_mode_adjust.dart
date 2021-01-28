@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -203,11 +204,12 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
     if (gvars.isTboxConnected) {
       // await gvars.tboxReadChar.setNotifyValue(true);
       if (readSubscription == null) {
-        readSubscription = gvars.tboxReadChar.monitor().listen((value) {
+        gvars.tboxReadChar.monitor();
+        readSubscription = gvars.tboxReadChar.monitor()?.listen((value) {
           _readTboxValue(value);
         });
       }
-      sendMessage([gvars.packetHeader, 0x02, 0x02, 0x01, 0x01]);
+      // sendMessage([gvars.packetHeader, 0x02, 0x02, 0x01, 0x01]);
     } else {
       FlutterToast.showToast(msg: "Please connect T-Box");
     }
@@ -1398,7 +1400,7 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
   }
 
   _checkTouchCompletion() {
-    if (currentTouchCount >= totalTouchCount) {
+    if (currentTouchCount >= totalTouchCount && myState == "inSet") {
       myState = "stopped";
       myStopwatch.stop();
       _showViewLogDialog(context);
@@ -1443,7 +1445,7 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
     writing = true;
     while (writeCommands.length != 0) {
       try {
-        await gvars.tboxWriteChar.write(writeCommands[0], false);
+        await gvars.tboxWriteChar.write(Uint8List.fromList(writeCommands[0]), true);
         // tboxWriteChar.write(writeCommands[0]);
       } catch (error) {
         FlutterToast.showToast(msg: "Error with BLE write");
