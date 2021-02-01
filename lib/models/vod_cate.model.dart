@@ -1,7 +1,9 @@
+import 'package:tboxapp/models/vod.model.dart';
+
 class PrimaryCate {
   final int id;
   final String title;
-  final String img;
+  // final String img;
   final bool isTboxCategory;
   final bool isTcyclingCategory;
   final bool isVisible;
@@ -10,7 +12,7 @@ class PrimaryCate {
   PrimaryCate({
     this.id,
     this.title,
-    this.img,
+    // this.img,
     this.isTboxCategory,
     this.isTcyclingCategory,
     this.isVisible,
@@ -35,5 +37,23 @@ class SecondaryCate {
     this.color,
     this.isVisible,
     this.ordering,
+  });
+}
+
+class SecondaryCateVods {
+  final SecondaryCate sc;
+  List<Vod> vodList;
+
+  SecondaryCateVods({
+    this.sc,
+  });
+}
+
+class PcScV {
+  final PrimaryCate pc;
+  List<SecondaryCateVods> sc;
+
+  PcScV({
+    this.pc,
   });
 }

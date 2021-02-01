@@ -6,6 +6,7 @@ import 'package:tboxapp/models/inquiry.model.dart';
 import 'package:tboxapp/models/newsfeed.model.dart';
 import 'package:tboxapp/models/store.model.dart';
 import 'package:tboxapp/models/vod.model.dart';
+import 'package:tboxapp/models/vod_cate.model.dart';
 
 // https://flutter.dev/docs/cookbook/networking/fetch-data
 
@@ -449,7 +450,7 @@ Future<List<StoreItem>> getAllStoreItem() async {
   return _storeItems;
 }
 
-Future<dynamic> getAllVod(limit) async {
+Future<List<PcScV>> getAllVod(limit) async {
   var response;
   if (limit == null) {
     response = await http.get(url + 'get_all_vod/', headers: myHeader);
@@ -463,7 +464,93 @@ Future<dynamic> getAllVod(limit) async {
     throw Exception('Failed to get all vod');
   }
 
-  return json.decode(utf8.decode(response.bodyBytes));
+  final extractedData = json.decode(utf8.decode(response.bodyBytes));
+  List loadedPcSc = extractedData['cates'];
+  List loadedV = extractedData['results'];
+  List<PcScV> _pcScV = [];
+
+  int skipAmount = 0;
+  // Add the Primary Cates
+  for (int i = 0; i < loadedPcSc.length; i++) {
+    if (loadedPcSc[i]['primary_cate']['is_active'] == false) {
+      skipAmount++;
+      continue;
+    }
+    _pcScV.add(
+      PcScV(
+        pc: PrimaryCate(
+          id: loadedPcSc[i]['primary_cate']['id'],
+          title: loadedPcSc[i]['primary_cate']['title'],
+          // img: 'https://i1.tbox.media/' + loadedPcSc[i]['primary_cate']['img'],
+          isTboxCategory: loadedPcSc[i]['primary_cate']['tbfapp_pc_type'] == 2 ? true : false,
+          isTcyclingCategory: loadedPcSc[i]['primary_cate']['tbfapp_pc_type'] == 1 ? true : false,
+          isVisible: loadedPcSc[i]['primary_cate']['is_visible'],
+          ordering: loadedPcSc[i]['primary_cate']['ordering'],
+        ),
+      ),
+    );
+
+    // Add the Secondary Cates into Primary Cates
+    _pcScV[i - skipAmount].sc = [];
+    for (var j = 0; j < loadedPcSc[i]['secondary_cates'].length; j++) {
+      var myJ = loadedPcSc[i]['secondary_cates'][j];
+      _pcScV[i - skipAmount].sc.add(
+            SecondaryCateVods(
+              sc: SecondaryCate(
+                id: myJ['id'],
+                primaryCateId: loadedPcSc[i]['primary_cate']['id'],
+                title: myJ['title'],
+                img: 'https://i1.tbox.media/' + myJ['img'],
+                color: myJ['color'],
+                isVisible: myJ['is_visible'],
+                ordering: myJ['ordering'],
+              ),
+            ),
+          );
+      _pcScV[i - skipAmount].sc[j].vodList = [];
+    }
+  }
+
+  // Add the Vods into secondary Cates
+  for (var i in loadedV) {
+    bool isFound = false;
+    for (var pc in _pcScV) {
+      for (var sc in pc.sc) {
+        if (sc.sc.id == i['secondary_cate_id']) {
+          isFound = true;
+          sc.vodList.add(Vod(
+            id: i['id'],
+            title: i['title'],
+            contents: i['contents'],
+            vod: i['vod'],
+            mrbg: i['mrbg'],
+            thumbnail: i['thumbnail'],
+            pcTitle: i['primary_cate_title'],
+            scTitle: i['secondary_cate_title'],
+            levelId: i['level_id'],
+            viewableTo: i['viewable_to'],
+            usingPoints: i['using_points'],
+            earnablePoints: i['earnable_points'],
+            earnableTimes: i['earnable_times'],
+            sensingType: i['sensing_type'],
+            sensingStartMin: i['sensing_start_min'],
+            sensingStartSec: i['sensing_start_sec'],
+            sensingEndMin: i['sensing_end_min'],
+            sensingEndSec: i['sensing_end_sec'],
+            pointGoal: i['point_goal'],
+            pointSuccess: i['point_success'],
+            // isFavorite: i['is_favorite'],
+          ));
+          break;
+        }
+      }
+      if (isFound == true) {
+        break;
+      }
+    }
+  }
+
+  return _pcScV;
 }
 
 Future<dynamic> getVodList(pcId, scId, limit) async {
