@@ -20,14 +20,15 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
 
   int _uid;
 
-  // Future<Vod> futureVod;
-  Vod futureVod;
+  Future<Vod> futureVod;
+  // Vod futureVod;
   var favIconColor;
 
   @override
   void initState() {
     super.initState();
-    // futureVod = getFutureVod();
+    futureVod = getFutureVod();
+    /*
     futureVod = Vod(
       id: 1,
       title: "wawawawawawawawawawawa",
@@ -51,12 +52,13 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
       pointSuccess: 1,
       isFavorite: false,
     );
-
-    if (futureVod.isFavorite) {
-      favIconColor = Colors.yellow;
-    } else {
-      favIconColor = Colors.grey;
-    }
+*/
+    favIconColor = Colors.grey;
+    // if (futureVod.isFavorite) {
+    //   favIconColor = Colors.yellow;
+    // } else {
+    //   favIconColor = Colors.grey;
+    // }
   }
 
   Future<Vod> getFutureVod() async {
@@ -65,6 +67,7 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
     if (_uid != -1) {
       return appService.getVodForUser(widget.vodId, _uid);
     } else {
+      // TODO get vod for non user
       return null;
     }
   }
@@ -82,92 +85,112 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
   }
 
   Widget _buildBody() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height * .35,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(futureVod.thumbnail),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * .12,
-              decoration: BoxDecoration(
-                // color: Colors.black26,
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.black38, Colors.black87], // red to yellow
-                  tileMode: TileMode.repeated, // repeats the gradient over the canvas
+    return FutureBuilder<Vod>(
+      future: futureVod,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * .35,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(snapshot.data.thumbnail),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * .12,
+                    decoration: BoxDecoration(
+                      // color: Colors.black26,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.black38, Colors.black87], // red to yellow
+                        tileMode: TileMode.repeated, // repeats the gradient over the canvas
+                      ),
+                    ),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(snapshot.data.title, style: TextStyle(fontSize: FontSize.xLarge.size)),
+                          SizedBox(height: 5),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              FlatButton(
+                                child: Column(
+                                  children: <Widget>[Icon(Icons.play_circle_outline), Text("재생")],
+                                ),
+                                onPressed: () {
+                                  print('재생 clicked');
+                                },
+                              ),
+                              SizedBox(width: 10),
+                              FlatButton(
+                                child: Column(
+                                  children: <Widget>[Icon(Icons.share), Text("공유")],
+                                ),
+                                onPressed: () {
+                                  print('공유 clicked');
+                                  Share.share('ughh', subject: 'ugh');
+                                },
+                              ),
+                              SizedBox(width: 10),
+                              FlatButton(
+                                child: Column(
+                                  children: <Widget>[Icon(Icons.stars, color: favIconColor), Text("즐겨찾기")],
+                                ),
+                                onPressed: () async {
+                                  print('즐겨찾기 clicked');
+                                  if (snapshot.data.isFavorite) {
+                                    await appService.removeVodFromFavorites(widget.vodId, _uid);
+                                    setState(() {
+                                      favIconColor = Colors.yellow;
+                                    });
+                                  } else {
+                                    await appService.addVodToFavorites(widget.vodId, _uid);
+                                    setState(() {
+                                      favIconColor = Colors.grey;
+                                    });
+                                  }
+                                },
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(futureVod.title, style: TextStyle(fontSize: FontSize.xLarge.size)),
-                    SizedBox(height: 5),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        FlatButton(
-                          child: Column(
-                            children: <Widget>[Icon(Icons.play_circle_outline), Text("재생")],
-                          ),
-                          onPressed: () {
-                            print('재생 clicked');
-                          },
-                        ),
-                        SizedBox(width: 10),
-                        FlatButton(
-                          child: Column(
-                            children: <Widget>[Icon(Icons.share), Text("공유")],
-                          ),
-                          onPressed: () {
-                            print('공유 clicked');
-                            Share.share('ughh', subject: 'ugh');
-                          },
-                        ),
-                        SizedBox(width: 10),
-                        FlatButton(
-                          child: Column(
-                            children: <Widget>[Icon(Icons.stars, color: favIconColor), Text("즐겨찾기")],
-                          ),
-                          onPressed: () async {
-                            print('즐겨찾기 clicked');
-                            if (futureVod.isFavorite) {
-                              await appService.removeVodFromFavorites(widget.vodId, _uid);
-                              setState(() {
-                                favIconColor = Colors.yellow;
-                              });
-                            } else {
-                              await appService.addVodToFavorites(widget.vodId, _uid);
-                              setState(() {
-                                favIconColor = Colors.grey;
-                              });
-                            }
-                          },
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
+              Text(snapshot.data.title),
+              Text(snapshot.data.contents),
+              Text('something then vid list'),
+            ],
+          );
+        } else if (snapshot.hasError) {
+          print("wubbalubbadubdub");
+          return SizedBox.expand(child: Center(child: Text("${snapshot.error}")));
+        }
+
+        return SizedBox.expand(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [CircularProgressIndicator(), SizedBox(height: 10), Text("Loading...")],
             ),
           ),
-        ),
-        Text(futureVod.title),
-        Text(futureVod.contents),
-        Text('something then vid list'),
-      ],
+        );
+      },
     );
   }
 }

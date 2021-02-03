@@ -589,15 +589,19 @@ Future<dynamic> getVod(vodId) async {
   return json.decode(utf8.decode(response.bodyBytes));
 }
 
-Future<dynamic> getVodForUser(vodId, userId) async {
+Future<Vod> getVodForUser(vodId, userId) async {
+  print(vodId.toString() + userId.toString());
   final response =
       await http.get(url + 'get_vod_for_user/' + vodId.toString() + '/' + userId.toString() + '/', headers: myHeader);
-
+  print(utf8.decode(response.bodyBytes).toString());
   if (response.statusCode != 200) {
     throw Exception('Failed to get vod for user.');
   }
+  print('weewooweewoo');
 
   final extractedData = json.decode(utf8.decode(response.bodyBytes));
+
+  print(extractedData.toString());
   return Vod(
     id: extractedData['results'][0]['id'],
     title: extractedData['results'][0]['title'],
@@ -619,6 +623,7 @@ Future<dynamic> getVodForUser(vodId, userId) async {
     sensingEndSec: extractedData['results'][0]['sensing_end_sec'],
     pointGoal: extractedData['results'][0]['point_goal'],
     pointSuccess: extractedData['results'][0]['point_success'],
+    isFavorite: extractedData['results'][0]['is_favorite'],
   );
 }
 
