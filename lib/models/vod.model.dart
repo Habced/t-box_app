@@ -8,7 +8,7 @@ class Vod {
   final String pcTitle;
   final String scTitle;
   final int levelId;
-  final List<int> viewableTo;
+  final List<dynamic> viewableTo;
   final bool usingPoints;
   final int earnablePoints;
   final int earnableTimes;

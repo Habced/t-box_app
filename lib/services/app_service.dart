@@ -516,7 +516,7 @@ Future<List<PcScV>> getAllVod(limit) async {
     bool isFound = false;
     for (var pc in _pcScV) {
       for (var sc in pc.sc) {
-        if (sc.sc.id == i['secondary_cate_id']) {
+        if (pc.pc.title == i['primary_cate_title'] && sc.sc.title == i['secondary_cate_title']) {
           isFound = true;
           sc.vodList.add(Vod(
             id: i['id'],
@@ -524,11 +524,11 @@ Future<List<PcScV>> getAllVod(limit) async {
             contents: i['contents'],
             vod: i['vod'],
             mrbg: i['mrbg'],
-            thumbnail: i['thumbnail'],
+            thumbnail: 'https://i1.tbox.media/' + i['thumbnail'],
             pcTitle: i['primary_cate_title'],
             scTitle: i['secondary_cate_title'],
             levelId: i['level_id'],
-            viewableTo: i['viewable_to'],
+            viewableTo: json.decode(i['viewable_to']),
             usingPoints: i['using_points'],
             earnablePoints: i['earnable_points'],
             earnableTimes: i['earnable_times'],
@@ -604,7 +604,7 @@ Future<dynamic> getVodForUser(vodId, userId) async {
     contents: extractedData['results'][0]['contents'],
     vod: extractedData['results'][0]['vod'],
     mrbg: extractedData['results'][0]['mrbg'],
-    thumbnail: extractedData['results'][0]['thumbnail'],
+    thumbnail: 'https://i1.tbox.media/' + extractedData['results'][0]['thumbnail'],
     pcTitle: extractedData['results'][0]['primary_cate_title'],
     scTitle: extractedData['results'][0]['secondary_cate_title'],
     levelId: extractedData['results'][0]['level_id'],
