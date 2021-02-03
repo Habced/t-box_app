@@ -189,7 +189,6 @@ class VodCateListScreenState extends State<VodCateListScreen> with SingleTickerP
   filterVods() {
     filteredVods = [];
     if (currentPcId == -1) {
-      print('in the first one!!');
       allPcScV.forEach((PcScV psv) {
         psv.sc.forEach((SecondaryCateVods scv) {
           scv.vodList.forEach((Vod v) {
@@ -198,7 +197,6 @@ class VodCateListScreenState extends State<VodCateListScreen> with SingleTickerP
         });
       });
     } else if (currentPcId != -1 && currentScId == -1) {
-      print('in the second one!!');
       allPcScV.forEach((PcScV psv) {
         if (currentPcId == psv.pc.id) {
           for (var i = 0; i < psv.sc.length; i++) {
@@ -209,7 +207,6 @@ class VodCateListScreenState extends State<VodCateListScreen> with SingleTickerP
         }
       });
     } else if (currentPcId != -1 && currentScId != -1) {
-      print('in the third one!!');
       allPcScV.forEach((PcScV psv) {
         if (currentPcId == psv.pc.id) {
           for (var i = 0; i < psv.sc.length; i++) {
@@ -227,7 +224,6 @@ class VodCateListScreenState extends State<VodCateListScreen> with SingleTickerP
   _buildVods(context, myVods) {
     return Column(
       children: _getRows(context, myVods),
-      // children: filteredVods.map((v) => Text(v.title)).toList(),
     );
   }
 
