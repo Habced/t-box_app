@@ -24,27 +24,42 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: 2);
-    futureVodFavList = getFutureVodFavList();
-    futureVodWatchedList = getFutureVodWatchedList();
+    getVodLists();
   }
 
-  Future<List<VodShort>> getFutureVodFavList() async {
+  getVodLists() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _uid = prefs.getInt('id') ?? -1;
     if (_uid != -1) {
-      return appService.getVodInFavorites(_uid);
+      futureVodFavList = appService.getVodInFavorites(_uid).whenComplete(() {
+        futureVodWatchedList = appService.getPlayedVods(_uid);
+      });
     } else {
-      return [];
-    }
-  }
-
-  Future<List<VodShort>> getFutureVodWatchedList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _uid = prefs.getInt('id') ?? -1;
-    if (_uid != -1) {
-      return appService.getPlayedVods(_uid);
-    } else {
-      return [];
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Inquiry Successfuly Sent'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Your must be logged in to have access to this page'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Close'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      ).whenComplete(() {
+        Navigator.pop(context);
+      });
     }
   }
 
