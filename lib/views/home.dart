@@ -8,6 +8,7 @@ import 'package:tboxapp/shared/global_vars.dart';
 import 'package:tboxapp/components/top_app_bar.dart';
 import 'package:tboxapp/views/ble_devices.dart';
 import 'package:tboxapp/services/app_service.dart' as appService;
+import 'package:tboxapp/views/vod_cate_list.dart';
 import 'package:tboxapp/views/vod_selected.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -291,6 +292,20 @@ class HomeScreenState extends State<HomeScreen> {
                 );
               },
               child: Text('vodselected'),
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VodCateListScreen(
+                      selPcId: -1,
+                      selScId: -1,
+                    ),
+                  ),
+                );
+              },
+              child: Text('VodCateListScreen'),
             ),
           ],
         ),
