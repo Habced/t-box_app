@@ -88,6 +88,11 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
       future: futureVod,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          if (snapshot.data.isFavorite) {
+            favIconColor = Colors.yellow;
+          } else {
+            favIconColor = Colors.grey;
+          }
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -151,16 +156,27 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
                                 ),
                                 onPressed: () async {
                                   print('즐겨찾기 clicked');
-                                  if (snapshot.data.isFavorite) {
-                                    await appService.removeVodFromFavorites(widget.vodId, _uid);
-                                    setState(() {
-                                      favIconColor = Colors.yellow;
-                                    });
+                                  if (_uid == -1) {
+                                    FlutterToast.showToast(msg: 'You must be logged in to use this function');
                                   } else {
-                                    await appService.addVodToFavorites(widget.vodId, _uid);
-                                    setState(() {
-                                      favIconColor = Colors.grey;
-                                    });
+                                    print(snapshot.data.isFavorite);
+                                    if (snapshot.data.isFavorite) {
+                                      var results = await appService.removeVodFromFavorites(widget.vodId, _uid);
+                                      print(results.toString());
+                                      FlutterToast.showToast(msg: 'Removed from favorites');
+                                      setState(() {
+                                        favIconColor = Colors.grey;
+                                      });
+                                      snapshot.data.isFavorite = false;
+                                    } else {
+                                      var results = await appService.addVodToFavorites(widget.vodId, _uid);
+                                      print(results.toString());
+                                      FlutterToast.showToast(msg: 'Added to favorites');
+                                      setState(() {
+                                        favIconColor = Colors.yellow;
+                                      });
+                                      snapshot.data.isFavorite = true;
+                                    }
                                   }
                                 },
                               ),
