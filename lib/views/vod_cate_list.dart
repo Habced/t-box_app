@@ -235,8 +235,10 @@ class VodCateListScreenState extends State<VodCateListScreen> with SingleTickerP
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildVod(context, vods[i]),
-          SizedBox(width: 10),
-          i + 1 < vods.length ? _buildVod(context, vods[i + 1]) : Expanded(flex: 1, child: Container())
+          i + 1 < vods.length ? SizedBox(width: 10) : Container(),
+          i + 1 < vods.length ? _buildVod(context, vods[i + 1]) : Expanded(flex: 1, child: Container()),
+          i + 2 < vods.length ? SizedBox(width: 10) : Container(),
+          i + 2 < vods.length ? _buildVod(context, vods[i + 2]) : Expanded(flex: 1, child: Container()),
         ],
       ));
       list.add(
