@@ -690,11 +690,12 @@ Future<List<VodShort>> getPlayedVods(userId) async {
       title: i['title'],
       contents: i['contents'],
       thumbnail: i['thumbnail'],
-      pcTitle: i['primary_cate_id'],
-      scTitle: i['secondary_cate_id'],
+      pcTitle: i['primary_cate_title'],
+      scTitle: i['secondary_cate_title'],
       timestamp: i['timestamp'],
     ));
   }
+  print(_vods);
   return _vods;
 }
 
@@ -744,8 +745,8 @@ Future<List<VodShort>> getVodInFavorites(userId) async {
       title: i['title'],
       contents: i['contents'],
       thumbnail: i['thumbnail'],
-      pcTitle: i['primary_cate_id'],
-      scTitle: i['secondary_cate_id'],
+      pcTitle: i['primary_cate_title'],
+      scTitle: i['secondary_cate_title'],
       timestamp: i['timestamp'],
     ));
   }
