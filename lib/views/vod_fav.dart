@@ -129,7 +129,7 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
           Text('최근 시청 한 동영상'),
           Divider(color: Colors.white, thickness: 2),
           FutureBuilder<List<VodShort>>(
-            future: futureVodFavList,
+            future: futureVodWatchedList,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Column(
