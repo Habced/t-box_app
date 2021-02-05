@@ -51,8 +51,8 @@ class VodShort {
   final String title;
   final String contents;
   final String thumbnail;
-  final int pcTitle;
-  final int scTitle;
+  final String pcTitle;
+  final String scTitle;
   final String timestamp;
 
   VodShort({

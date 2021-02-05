@@ -67,8 +67,7 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
     if (_uid != -1) {
       return appService.getVodForUser(widget.vodId, _uid);
     } else {
-      // TODO get vod for non user
-      return null;
+      return appService.getVod(widget.vodId);
     }
   }
 
@@ -131,6 +130,7 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
                                 ),
                                 onPressed: () {
                                   print('재생 clicked');
+                                  // TODO implement play button
                                 },
                               ),
                               SizedBox(width: 10),
@@ -140,6 +140,7 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
                                 ),
                                 onPressed: () {
                                   print('공유 clicked');
+                                  // TODO properly implement share
                                   Share.share('ughh', subject: 'ugh');
                                 },
                               ),
@@ -177,17 +178,14 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
             ],
           );
         } else if (snapshot.hasError) {
-          print("wubbalubbadubdub");
           return SizedBox.expand(child: Center(child: Text("${snapshot.error}")));
         }
 
-        return SizedBox.expand(
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [CircularProgressIndicator(), SizedBox(height: 10), Text("Loading...")],
-            ),
+        return Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [CircularProgressIndicator(), SizedBox(height: 10), Text("Loading...")],
           ),
         );
       },

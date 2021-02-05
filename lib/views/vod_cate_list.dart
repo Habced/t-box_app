@@ -135,6 +135,7 @@ class VodCateListScreenState extends State<VodCateListScreen> with SingleTickerP
         return Center(
           child: Column(
             mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [CircularProgressIndicator(), SizedBox(height: 10), Text("Loading...")],
           ),
         );

@@ -31,15 +31,15 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _uid = prefs.getInt('id') ?? -1;
     if (_uid != -1) {
-      futureVodFavList = appService.getVodInFavorites(_uid).whenComplete(() {
-        futureVodWatchedList = appService.getPlayedVods(_uid);
-      });
+      futureVodFavList = appService.getVodInFavorites(_uid);
+      futureVodWatchedList = appService.getPlayedVods(_uid);
+      setState(() {});
     } else {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Inquiry Successfuly Sent'),
+            title: Text('Not Logged In'),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -90,7 +90,7 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                     var vodRow = Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Image.network(vod.thumbnail),
+                        Image.network(vod.thumbnail, fit: BoxFit.fitHeight, height: 160),
                         Column(
                           children: [
                             Text(vod.title),
@@ -137,7 +137,7 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                     var vodRow = Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Image.network(vod.thumbnail),
+                        Image.network(vod.thumbnail, fit: BoxFit.fitHeight, height: 160),
                         Column(
                           children: [
                             Text(vod.title),

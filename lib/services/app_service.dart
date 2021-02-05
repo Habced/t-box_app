@@ -380,7 +380,7 @@ Future<dynamic> addInquiry(userId, title, inquiry) async {
 
 Future<List<Inquiry>> getInquiryByUser(userId, withReplies) async {
   var queryParam = {'with_replies': withReplies.toString()};
-  print(uriTbfAppUnencodedPath.toString() + 'get_inquiry_by_user/' + userId.toString() + '/');
+
   var uri = new Uri.http(uriAuthority.toString(),
       uriTbfAppUnencodedPath.toString() + 'get_inquiry_by_user/' + userId.toString() + '/', queryParam);
 
@@ -579,51 +579,72 @@ Future<dynamic> getVodList(pcId, scId, limit) async {
   return json.decode(utf8.decode(response.bodyBytes));
 }
 
-Future<dynamic> getVod(vodId) async {
+Future<Vod> getVod(vodId) async {
   final response = await http.get(url + 'get_vod/' + vodId.toString() + '/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to get vod');
   }
 
-  return json.decode(utf8.decode(response.bodyBytes));
+  final extractedData = json.decode(utf8.decode(response.bodyBytes));
+
+  return Vod(
+    id: extractedData['results']['id'],
+    title: extractedData['results']['title'],
+    contents: extractedData['results']['contents'],
+    vod: extractedData['results']['vod'],
+    mrbg: extractedData['results']['mrbg'],
+    thumbnail: extractedData['results']['thumbnail'],
+    pcTitle: extractedData['results']['primary_cate_title'],
+    scTitle: extractedData['results']['secondary_cate_title'],
+    levelId: extractedData['results']['level_id'],
+    viewableTo: extractedData['results']['viewableTo'],
+    usingPoints: extractedData['results']['using_points'],
+    earnablePoints: extractedData['results']['earnable_points'],
+    earnableTimes: extractedData['results']['earnable_times'],
+    sensingType: extractedData['results']['sensing_type'],
+    sensingStartMin: extractedData['results']['sensing_start_min'],
+    sensingStartSec: extractedData['results']['sensing_start_sec'],
+    sensingEndMin: extractedData['results']['sensing_end_min'],
+    sensingEndSec: extractedData['results']['sensing_end_sec'],
+    pointGoal: extractedData['results']['point_goal'],
+    pointSuccess: extractedData['results']['point_success'],
+    isFavorite: false,
+  );
 }
 
 Future<Vod> getVodForUser(vodId, userId) async {
-  print(vodId.toString() + userId.toString());
   final response =
       await http.get(url + 'get_vod_for_user/' + vodId.toString() + '/' + userId.toString() + '/', headers: myHeader);
-  print(utf8.decode(response.bodyBytes).toString());
+
   if (response.statusCode != 200) {
     throw Exception('Failed to get vod for user.');
   }
-  print('weewooweewoo');
 
   final extractedData = json.decode(utf8.decode(response.bodyBytes));
 
-  print(extractedData.toString());
   return Vod(
-    id: extractedData['results'][0]['id'],
-    title: extractedData['results'][0]['title'],
-    contents: extractedData['results'][0]['contents'],
-    vod: extractedData['results'][0]['vod'],
-    mrbg: extractedData['results'][0]['mrbg'],
-    thumbnail: 'https://i1.tbox.media/' + extractedData['results'][0]['thumbnail'],
-    pcTitle: extractedData['results'][0]['primary_cate_title'],
-    scTitle: extractedData['results'][0]['secondary_cate_title'],
-    levelId: extractedData['results'][0]['level_id'],
-    viewableTo: extractedData['results'][0]['viewableTo'],
-    usingPoints: extractedData['results'][0]['using_points'],
-    earnablePoints: extractedData['results'][0]['earnable_points'],
-    earnableTimes: extractedData['results'][0]['earnable_times'],
-    sensingType: extractedData['results'][0]['sensing_type'],
-    sensingStartMin: extractedData['results'][0]['sensing_start_min'],
-    sensingStartSec: extractedData['results'][0]['sensing_start_sec'],
-    sensingEndMin: extractedData['results'][0]['sensing_end_min'],
-    sensingEndSec: extractedData['results'][0]['sensing_end_sec'],
-    pointGoal: extractedData['results'][0]['point_goal'],
-    pointSuccess: extractedData['results'][0]['point_success'],
-    isFavorite: extractedData['results'][0]['is_favorite'],
+    id: extractedData['results']['id'],
+    title: extractedData['results']['title'],
+    contents: extractedData['results']['contents'],
+    vod: extractedData['results']['vod'],
+    mrbg: extractedData['results']['mrbg'],
+    thumbnail: extractedData['results']['thumbnail'],
+    pcTitle: extractedData['results']['primary_cate_title'],
+    scTitle: extractedData['results']['secondary_cate_title'],
+    levelId: extractedData['results']['level_id'],
+    viewableTo: extractedData['results']['viewableTo'],
+    usingPoints: extractedData['results']['using_points'],
+    earnablePoints: extractedData['results']['earnable_points'],
+    earnableTimes: extractedData['results']['earnable_times'],
+    sensingType: extractedData['results']['sensing_type'],
+    sensingStartMin: extractedData['results']['sensing_start_min'],
+    sensingStartSec: extractedData['results']['sensing_start_sec'],
+    sensingEndMin: extractedData['results']['sensing_end_min'],
+    sensingEndSec: extractedData['results']['sensing_end_sec'],
+    pointGoal: extractedData['results']['point_goal'],
+    pointSuccess: extractedData['results']['point_success'],
+    isFavorite: extractedData['results']['is_favorite'],
   );
 }
 
@@ -668,7 +689,7 @@ Future<List<VodShort>> getPlayedVods(userId) async {
       id: i['id'],
       title: i['title'],
       contents: i['contents'],
-      thumbnail: 'https://i1.tbox.media/' + i['thumbnail'],
+      thumbnail: i['thumbnail'],
       pcTitle: i['primary_cate_id'],
       scTitle: i['secondary_cate_id'],
       timestamp: i['timestamp'],
@@ -722,7 +743,7 @@ Future<List<VodShort>> getVodInFavorites(userId) async {
       id: i['id'],
       title: i['title'],
       contents: i['contents'],
-      thumbnail: 'https://i1.tbox.media/' + i['thumbnail'],
+      thumbnail: i['thumbnail'],
       pcTitle: i['primary_cate_id'],
       scTitle: i['secondary_cate_id'],
       timestamp: i['timestamp'],
