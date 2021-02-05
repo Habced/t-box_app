@@ -90,7 +90,7 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                     var vodRow = Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Image.network(vod.thumbnail, fit: BoxFit.fitHeight, height: 160),
+                        Image.network(vod.thumbnail, fit: BoxFit.fitHeight, height: 160, width: 110),
                         Column(
                           children: [
                             Text(vod.title),
@@ -137,7 +137,7 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                     var vodRow = Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Image.network(vod.thumbnail, fit: BoxFit.fitHeight, height: 160),
+                        Image.network(vod.thumbnail, fit: BoxFit.fitHeight, height: 160, width: 110),
                         Column(
                           children: [
                             Text(vod.title),
