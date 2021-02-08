@@ -176,8 +176,7 @@ class HomeScreenState extends State<HomeScreen> {
           } else if (index == 1) {
             Navigator.pushNamed(context, '/vod_fav');
           } else if (index == 2) {
-            // TODO
-            // Navigator.pushNamed(context, '/coach');
+            Navigator.pushNamed(context, '/data_main');
           }
         },
       ),

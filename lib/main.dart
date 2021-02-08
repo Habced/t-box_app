@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tboxapp/views/data_main.dart';
 import 'package:tboxapp/views/faq.dart';
 import 'package:tboxapp/views/faq_answer.dart';
 import 'package:tboxapp/views/newsfeed.dart';
@@ -47,5 +48,6 @@ class MyAppNavigator extends StatelessWidget {
         '/coach': (context) => CoachScreen(),
         '/vod_fav': (context) => VodFavScreen(),
         // '/vod_selected': (context) => VodSelectedScreen(),
+        '/data_main': (context) => DataMainScreen(),
       });
 }
