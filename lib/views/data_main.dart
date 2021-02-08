@@ -169,7 +169,7 @@ class DataMainScreenState extends State<DataMainScreen> {
                     padding: EdgeInsets.all(5),
                     decoration: bd700,
                     child: Image.asset(
-                      'assets/images/data_touch.png',
+                      'assets/images/data_time.png',
                       height: 25,
                     ),
                   ),
