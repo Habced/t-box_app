@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tboxapp/services/app_service.dart' as appService;
 
@@ -80,11 +81,12 @@ class DataMainScreenState extends State<DataMainScreen> {
     );
 
     var bd800 = BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.grey[800]);
-
     var bd700 = BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.grey[700]);
+    var dataTs = TextStyle(fontSize: FontSize.xxLarge.size);
 
     var weightData = InkWell(
       onTap: () {
+        // TODO implment clicked
         print("Weight clicked");
       },
       child: Container(
@@ -92,6 +94,7 @@ class DataMainScreenState extends State<DataMainScreen> {
         width: 150,
         decoration: bd800,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -110,7 +113,14 @@ class DataMainScreenState extends State<DataMainScreen> {
                 ],
               ),
             ),
-            Text('asdf'),
+            // TODO properly get DATA
+            Column(
+              children: [
+                Text('DATA', style: dataTs),
+                Text('kg'),
+                SizedBox(height: 10),
+              ],
+            ),
           ],
         ),
       ),
@@ -118,6 +128,7 @@ class DataMainScreenState extends State<DataMainScreen> {
 
     var calorieData = InkWell(
       onTap: () {
+        // TODO implment clicked
         print("Calorie clicked");
       },
       child: Container(
@@ -125,6 +136,7 @@ class DataMainScreenState extends State<DataMainScreen> {
         width: 150,
         decoration: bd800,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -143,7 +155,14 @@ class DataMainScreenState extends State<DataMainScreen> {
                 ],
               ),
             ),
-            Text('asdf'),
+            // TODO properly get DATA
+            Column(
+              children: [
+                Text('DATA', style: dataTs),
+                Text('kcal'),
+                SizedBox(height: 10),
+              ],
+            ),
           ],
         ),
       ),
@@ -151,6 +170,7 @@ class DataMainScreenState extends State<DataMainScreen> {
 
     var timeData = InkWell(
       onTap: () {
+        // TODO implment clicked
         print("Time clicked");
       },
       child: Container(
@@ -158,6 +178,7 @@ class DataMainScreenState extends State<DataMainScreen> {
         width: 150,
         decoration: bd800,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -176,7 +197,14 @@ class DataMainScreenState extends State<DataMainScreen> {
                 ],
               ),
             ),
-            Text('asdf'),
+            // TODO properly get DATA
+            Column(
+              children: [
+                Text('DATA', style: dataTs),
+                Text('hrs'),
+                SizedBox(height: 10),
+              ],
+            ),
           ],
         ),
       ),
@@ -184,6 +212,7 @@ class DataMainScreenState extends State<DataMainScreen> {
 
     var touchData = InkWell(
       onTap: () {
+        // TODO implment clicked
         print("Touch clicked");
       },
       child: Container(
@@ -191,6 +220,7 @@ class DataMainScreenState extends State<DataMainScreen> {
         width: 150,
         decoration: bd800,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -209,7 +239,14 @@ class DataMainScreenState extends State<DataMainScreen> {
                 ],
               ),
             ),
-            Text('asdf'),
+            // TODO properly get DATA
+            Column(
+              children: [
+                Text('DATA', style: dataTs),
+                Text('taps'),
+                SizedBox(height: 10),
+              ],
+            ),
           ],
         ),
       ),
@@ -217,6 +254,7 @@ class DataMainScreenState extends State<DataMainScreen> {
 
     var distanceData = InkWell(
       onTap: () {
+        // TODO implment clicked
         print("Distance clicked");
       },
       child: Container(
@@ -224,13 +262,14 @@ class DataMainScreenState extends State<DataMainScreen> {
         width: 150,
         decoration: bd800,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Touch'),
+                  Text('Distance'),
                   Container(
                     padding: EdgeInsets.all(5),
                     decoration: bd700,
@@ -242,7 +281,14 @@ class DataMainScreenState extends State<DataMainScreen> {
                 ],
               ),
             ),
-            Text('asdf'),
+            // TODO properly get DATA
+            Column(
+              children: [
+                Text('DATA', style: dataTs),
+                Text('kms'),
+                SizedBox(height: 10),
+              ],
+            ),
           ],
         ),
       ),
