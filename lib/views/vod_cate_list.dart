@@ -230,7 +230,7 @@ class VodCateListScreenState extends State<VodCateListScreen> with SingleTickerP
 
   List<Widget> _getRows(context, vods) {
     List<Widget> list = new List<Widget>();
-    for (int i = 0; i < vods.length; i += 2) {
+    for (int i = 0; i < vods.length; i += 3) {
       list.add(Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
