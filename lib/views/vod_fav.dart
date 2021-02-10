@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tboxapp/components/top_app_bar.dart';
 import 'package:tboxapp/models/vod.model.dart';
@@ -99,7 +100,7 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                             Column(
                               children: [
                                 Text(vod.title),
-                                Text(vod.timestamp),
+                                Text(DateFormat('yy.MM.dd').format(DateTime.parse(vod.timestamp))),
                               ],
                             ),
                             FlatButton(
@@ -175,7 +176,7 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                             Column(
                               children: [
                                 Text(vod.title),
-                                Text(vod.timestamp),
+                                Text(DateFormat('yy.MM.dd').format(DateTime.parse(vod.timestamp))),
                               ],
                             ),
                             Text("icon?"),
