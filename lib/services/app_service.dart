@@ -13,18 +13,15 @@ import 'package:tboxapp/models/vod_cate.model.dart';
 // For multipart form data
 // https://pub.dev/documentation/http/latest/http/MultipartRequest-class.html
 // var uriAuthority = 'http://req.tbox.media';
-var uriAuthority = 'req.tbox.media';
-var uriTbfAppUnencodedPath = '/kr/tbfapp/';
+String uriAuthority = 'req.tbox.media';
+String uriTbfAppUnencodedPath = '/kr/tbfapp/';
 // TODO switch URL and API is done
 // var url = uriAuthority + uriTbfAppUnencodedPath;
-var url = "https://req.tbox.media/kr/tbfapp/";
+String url = "https://req.tbox.media/kr/tbfapp";
 var myHeader = {'Content-Type': 'application/json'};
 
 Future<dynamic> dupUsernameCheck(username) async {
-  final response = await http.post(
-    url + 'dup_username_check/$username/',
-    headers: myHeader,
-  );
+  final response = await http.post('$url/dup_username_check/$username/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to load duplicate username data');
@@ -41,7 +38,7 @@ Future<dynamic> signup(fullname, email, username, password, cellphone) async {
     'password': password,
     'cellphone': cellphone,
   });
-  final response = await http.post(url + 'register/', headers: myHeader, body: body);
+  final response = await http.post('$url/register/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to load login data');
@@ -53,7 +50,7 @@ Future<dynamic> signup(fullname, email, username, password, cellphone) async {
 Future<dynamic> login(email, pw) async {
   var body = jsonEncode({'user': email, 'password': pw});
 
-  final response = await http.post(url + 'login/', headers: myHeader, body: body);
+  final response = await http.post('$url/login/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to load login data');
@@ -67,7 +64,7 @@ Future<dynamic> logout(email) async {
   var body = jsonEncode({
     'email': email,
   });
-  final response = await http.post(url + 'logout/', headers: myHeader, body: body);
+  final response = await http.post('$url/logout/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to logout');
@@ -78,7 +75,7 @@ Future<dynamic> logout(email) async {
 
 Future<dynamic> sendUsernameEmail(fullname, email) async {
   var body = jsonEncode({'fullname': fullname, 'email': email});
-  final response = await http.post(url + 'send_username_email/', headers: myHeader, body: body);
+  final response = await http.post('$url/send_username_email/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to send username data');
@@ -89,7 +86,7 @@ Future<dynamic> sendUsernameEmail(fullname, email) async {
 
 Future<dynamic> sendResetPasswordEmail(username, fullname, email) async {
   var body = jsonEncode({'username': username, 'fullname': fullname, 'email': email});
-  final response = await http.post(url + 'send_reset_pw_email/', headers: myHeader, body: body);
+  final response = await http.post('$url/send_reset_pw_email/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to send password data');
@@ -100,7 +97,7 @@ Future<dynamic> sendResetPasswordEmail(username, fullname, email) async {
 
 Future<dynamic> updatePassword(userId, oldPw, newPw) async {
   var body = jsonEncode({'old_pw': oldPw, 'new_pw': newPw});
-  final response = await http.post(url + 'update_password/' + userId.toString() + '/', headers: myHeader, body: body);
+  final response = await http.post('$url/update_password/$userId/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to update password data');
@@ -111,8 +108,7 @@ Future<dynamic> updatePassword(userId, oldPw, newPw) async {
 
 Future<dynamic> updateUserCellphone(userId, cellphone) async {
   var body = jsonEncode({'cellphone': cellphone});
-  final response =
-      await http.put(url + 'update_user_cellphone/' + userId.toString() + '/', headers: myHeader, body: body);
+  final response = await http.put('$url/update_user_cellphone/$userId/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to update cellphone data');
@@ -154,8 +150,7 @@ Future<dynamic> updateUserAddress(userId, addr, coor, detailJuso) async {
     'latitude': coor.latitude,
     'detail_juso': detailJuso,
   });
-  final response =
-      await http.put(url + 'update_user_address/' + userId.toString() + '/', headers: myHeader, body: body);
+  final response = await http.put('$url/update_user_address/$userId/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to update address data');
@@ -165,10 +160,7 @@ Future<dynamic> updateUserAddress(userId, addr, coor, detailJuso) async {
 }
 
 Future<dynamic> getAllBanner() async {
-  final response = await http.get(
-    url + 'get_all_banner/',
-    headers: myHeader,
-  );
+  final response = await http.get('$url/get_all_banner/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to get all newsfeed');
@@ -178,10 +170,7 @@ Future<dynamic> getAllBanner() async {
 }
 
 Future<dynamic> getAllNewsFeed() async {
-  final response = await http.get(
-    url + 'get_all_newsfeed/',
-    headers: myHeader,
-  );
+  final response = await http.get('$url/get_all_newsfeed/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to get all newsfeed');
@@ -212,10 +201,7 @@ Future<dynamic> getAllNewsFeed() async {
 }
 
 Future<NewsfeedList> getAllNewsFeedWoBody() async {
-  final response = await http.get(
-    url + 'get_all_newsfeed_wo_body/',
-    headers: myHeader,
-  );
+  final response = await http.get('$url/get_all_newsfeed_wo_body/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to get all newsfeed wo body');
@@ -246,7 +232,7 @@ Future<NewsfeedList> getAllNewsFeedWoBody() async {
 }
 
 Future<dynamic> getNewsfeedBody(nfId) async {
-  final response = await http.get(url + 'get_newsfeed_body/' + nfId.toString() + '/', headers: myHeader);
+  final response = await http.get('$url/get_newsfeed_body/$nfId/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to get newsfeed body');
@@ -259,7 +245,7 @@ Future<dynamic> addNewsfeedClick(userId, nfId) async {
   var body = jsonEncode({
     'user_id': userId,
   });
-  final response = await http.put(url + 'add_newsfeed_click/' + nfId.toString() + '/', headers: myHeader, body: body);
+  final response = await http.put('$url/add_newsfeed_click/$nfId/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to add newsfeed click');
@@ -269,10 +255,7 @@ Future<dynamic> addNewsfeedClick(userId, nfId) async {
 }
 
 Future<dynamic> getTotalUnreadNewsfeed(userId) async {
-  final response = await http.put(
-    url + 'get_total_unread_newsfeed/' + userId.toString() + '/',
-    headers: myHeader,
-  );
+  final response = await http.put('$url/get_total_unread_newsfeed/$userId/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to add newsfeed pin');
@@ -282,7 +265,7 @@ Future<dynamic> getTotalUnreadNewsfeed(userId) async {
 }
 
 Future<FaqList> getAllFaq() async {
-  final response = await http.get(url + 'get_all_faq/', headers: myHeader);
+  final response = await http.get('$url/get_all_faq/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to get all faq');
@@ -310,10 +293,7 @@ Future<FaqList> getAllFaq() async {
 }
 
 Future<FaqList> getAllFaqWoAnswer() async {
-  final response = await http.get(
-    url + 'get_all_faq_wo_answer/',
-    headers: myHeader,
-  );
+  final response = await http.get('$url/get_all_faq_wo_answer/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to get all faq wo answer');
@@ -341,7 +321,7 @@ Future<FaqList> getAllFaqWoAnswer() async {
 }
 
 Future<dynamic> getFaqAnswer(faqId) async {
-  final response = await http.get(url + 'get_faq_answer/' + faqId.toString() + '/', headers: myHeader);
+  final response = await http.get('$url/get_faq_answer/$faqId/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to get faq body');
@@ -354,7 +334,7 @@ Future<dynamic> addFaqClick(userId, faqId) async {
   var body = jsonEncode({
     'user_id': userId,
   });
-  final response = await http.post(url + 'add_faq_click/' + faqId.toString() + '/', headers: myHeader, body: body);
+  final response = await http.post('$url/add_faq_click/$faqId/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to add faq click');
@@ -369,7 +349,7 @@ Future<dynamic> addInquiry(userId, title, inquiry) async {
     'title': title,
     'inquiry': inquiry,
   });
-  final response = await http.post(url + 'add_inquiry/', headers: myHeader, body: body);
+  final response = await http.post('$url/add_inquiry/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to add inquiry');
@@ -381,8 +361,7 @@ Future<dynamic> addInquiry(userId, title, inquiry) async {
 Future<List<Inquiry>> getInquiryByUser(userId, withReplies) async {
   var queryParam = {'with_replies': withReplies.toString()};
 
-  var uri = new Uri.http(uriAuthority.toString(),
-      uriTbfAppUnencodedPath.toString() + 'get_inquiry_by_user/' + userId.toString() + '/', queryParam);
+  var uri = new Uri.http(uriAuthority, uriTbfAppUnencodedPath + 'get_inquiry_by_user/$userId/', queryParam);
 
   // final response = await http.get(uri, headers: myHeader);
   final response = await http.get(uri);
@@ -418,9 +397,7 @@ Future<List<Inquiry>> getInquiryByUser(userId, withReplies) async {
 }
 
 Future<List<StoreItem>> getAllStoreItem() async {
-  final response =
-      // await http.get(url + 'get_all_store_item/', headers: myHeader);
-      await http.get('https://req.tbox.media/kr/' + 'get_all_store_item/', headers: myHeader);
+  final response = await http.get('$url/get_all_store_item/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to load StoreItem');
@@ -453,10 +430,10 @@ Future<List<StoreItem>> getAllStoreItem() async {
 Future<List<PcScV>> getAllVod(limit) async {
   var response;
   if (limit == null) {
-    response = await http.get(url + 'get_all_vod/', headers: myHeader);
+    response = await http.get('$url/get_all_vod/', headers: myHeader);
   } else {
     var queryParam = {'limit': limit.toString()};
-    var uri = new Uri.http(uriAuthority.toString(), uriTbfAppUnencodedPath.toString() + 'get_all_vod/', queryParam);
+    var uri = new Uri.http(uriAuthority, uriTbfAppUnencodedPath + 'get_all_vod/', queryParam);
     response = await http.get(uri);
   }
 
@@ -568,7 +545,7 @@ Future<dynamic> getVodList(pcId, scId, limit) async {
   if (pcId == null && scId == null && limit == null) {
     response = await http.get(url + 'get_vod_list/', headers: myHeader);
   } else {
-    var uri = new Uri.http(uriAuthority.toString(), uriTbfAppUnencodedPath.toString() + 'get_vod_list/', queryParam);
+    var uri = new Uri.http(uriAuthority, uriTbfAppUnencodedPath + 'get_vod_list/', queryParam);
     response = await http.get(uri);
   }
 
@@ -580,7 +557,7 @@ Future<dynamic> getVodList(pcId, scId, limit) async {
 }
 
 Future<Vod> getVod(vodId) async {
-  final response = await http.get(url + 'get_vod/' + vodId.toString() + '/', headers: myHeader);
+  final response = await http.get('$url/get_vod/$vodId/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to get vod');
@@ -614,8 +591,7 @@ Future<Vod> getVod(vodId) async {
 }
 
 Future<Vod> getVodForUser(vodId, userId) async {
-  final response =
-      await http.get(url + 'get_vod_for_user/' + vodId.toString() + '/' + userId.toString() + '/', headers: myHeader);
+  final response = await http.get('$url/get_vod_for_user/$vodId/$userId/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to get vod for user.');
@@ -649,7 +625,7 @@ Future<Vod> getVodForUser(vodId, userId) async {
 }
 
 Future<dynamic> addVodClick(vodId) async {
-  final response = await http.post(url + 'add_vod_click/' + vodId + '/', headers: myHeader);
+  final response = await http.post('$url/add_vod_click/$vodId/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to add vod click');
@@ -663,7 +639,7 @@ Future<dynamic> addVodPlay(vodId, userId) async {
     'vod_id': vodId,
     'user_id': userId,
   });
-  final response = await http.post(url + 'add_vod_play/', headers: myHeader, body: body);
+  final response = await http.post('$url/add_vod_play/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to add vod play.');
@@ -673,7 +649,7 @@ Future<dynamic> addVodPlay(vodId, userId) async {
 }
 
 Future<List<VodShort>> getPlayedVods(userId) async {
-  final response = await http.get(url + 'get_played_vods/' + userId.toString() + '/', headers: myHeader);
+  final response = await http.get('$url/get_played_vods/$userId/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to get played vods');
@@ -704,7 +680,7 @@ Future<dynamic> addVodToFavorites(vodId, userId) async {
     'vod_id': vodId,
     'user_id': userId,
   });
-  final response = await http.post(url + 'add_vod_to_favorites/', headers: myHeader, body: body);
+  final response = await http.post('$url/add_vod_to_favorites/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to add vod to favorites.');
@@ -718,7 +694,7 @@ Future<dynamic> removeVodFromFavorites(vodId, userId) async {
     'vod_id': vodId,
     'user_id': userId,
   });
-  final response = await http.post(url + 'remove_vod_from_favorites/', headers: myHeader, body: body);
+  final response = await http.post('$url/remove_vod_from_favorites/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to remove vod from favorites.');
@@ -728,7 +704,7 @@ Future<dynamic> removeVodFromFavorites(vodId, userId) async {
 }
 
 Future<List<VodShort>> getVodInFavorites(userId) async {
-  final response = await http.get(url + 'get_vod_in_favorites/' + userId.toString() + '/', headers: myHeader);
+  final response = await http.get('$url/get_vod_in_favorites/$userId/', headers: myHeader);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to get vod in favorites');
