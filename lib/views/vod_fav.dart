@@ -86,25 +86,57 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Column(
-                  children: snapshot.data.map((VodShort vod) {
-                    var vodRow = Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Image.network(vod.thumbnail, fit: BoxFit.fitHeight, height: 160, width: 110),
-                        Column(
+                  children: snapshot.data
+                      .asMap()
+                      .map((i, VodShort vod) {
+                        if (vod.isFavorite == null) {
+                          vod.isFavorite = true;
+                        }
+                        var vodRow = Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(vod.title),
-                            Text(vod.timestamp),
+                            Image.network(vod.thumbnail, fit: BoxFit.fitHeight, height: 160, width: 110),
+                            Column(
+                              children: [
+                                Text(vod.title),
+                                Text(vod.timestamp),
+                              ],
+                            ),
+                            FlatButton(
+                              child: Icon(Icons.stars, color: vod.isFavorite ? Colors.yellow : Colors.grey),
+                              onPressed: () async {
+                                if (vod.isFavorite) {
+                                  var results = await appService.removeVodFromFavorites(vod.id, _uid);
+                                  FlutterToast.showToast(msg: 'Removed from favorites');
+                                  setState(() {
+                                    snapshot.data[i].isFavorite = false;
+                                  });
+                                } else {
+                                  var results = await appService.addVodToFavorites(vod.id, _uid);
+                                  FlutterToast.showToast(msg: 'Added to favorites');
+                                  setState(() {
+                                    snapshot.data[i].isFavorite = true;
+                                  });
+                                }
+                              },
+                            ),
                           ],
-                        ),
-                        Text("icon?"),
-                      ],
-                    );
-                    return Padding(
-                      padding: EdgeInsets.all(10),
-                      child: InkWell(child: vodRow),
-                    );
-                  }).toList(),
+                        );
+                        return MapEntry(
+                          i,
+                          Padding(
+                            padding: EdgeInsets.all(10),
+                            child: InkWell(
+                              child: vodRow,
+                              onTap: () {
+                                print('clicked on vod: ' + vod.title);
+                              },
+                            ),
+                          ),
+                        );
+                      })
+                      .values
+                      .toList(),
                 );
               } else if (snapshot.hasError) {
                 return Text("${snapshot.error}");
@@ -133,25 +165,26 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Column(
-                  children: snapshot.data.map((VodShort vod) {
-                    var vodRow = Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Image.network(vod.thumbnail, fit: BoxFit.fitHeight, height: 160, width: 110),
-                        Column(
+                  children: snapshot.data
+                      .asMap()
+                      .map((i, VodShort vod) {
+                        var vodRow = Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(vod.title),
-                            Text(vod.timestamp),
+                            Image.network(vod.thumbnail, fit: BoxFit.fitHeight, height: 160, width: 110),
+                            Column(
+                              children: [
+                                Text(vod.title),
+                                Text(vod.timestamp),
+                              ],
+                            ),
+                            Text("icon?"),
                           ],
-                        ),
-                        Text("icon?"),
-                      ],
-                    );
-                    return Padding(
-                      padding: EdgeInsets.all(10),
-                      child: InkWell(child: vodRow),
-                    );
-                  }).toList(),
+                        );
+                        return MapEntry(i, Padding(padding: EdgeInsets.all(10), child: InkWell(child: vodRow)));
+                      })
+                      .values
+                      .toList(),
                 );
               } else if (snapshot.hasError) {
                 return Text("${snapshot.error}");
