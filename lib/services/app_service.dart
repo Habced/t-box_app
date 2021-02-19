@@ -5,6 +5,7 @@ import 'package:tboxapp/models/faq.model.dart';
 import 'package:tboxapp/models/inquiry.model.dart';
 import 'package:tboxapp/models/newsfeed.model.dart';
 import 'package:tboxapp/models/store.model.dart';
+import 'package:tboxapp/models/user_points.model.dart';
 import 'package:tboxapp/models/vod.model.dart';
 import 'package:tboxapp/models/vod_cate.model.dart';
 
@@ -396,37 +397,6 @@ Future<List<Inquiry>> getInquiryByUser(userId, withReplies) async {
   return _inquiry;
 }
 
-Future<List<StoreItem>> getAllStoreItem() async {
-  final response = await http.get('$url/get_all_store_item/', headers: myHeader);
-
-  if (response.statusCode != 200) {
-    throw Exception('Failed to load StoreItem');
-  }
-
-  final extractedData = json.decode(utf8.decode(response.bodyBytes));
-  // print(extractedData);
-  List loadedStore = extractedData['results'];
-  List<StoreItem> _storeItems = [];
-
-  for (var i in loadedStore) {
-    for (var j in i['results']) {
-      _storeItems.add(StoreItem(
-        cateId: i['store_cate_id'],
-        cate: i['store_cate'],
-        id: j['id'],
-        name: j['name'],
-        price: j['price'],
-        onSale: j['onsale'],
-        salePrice: j['sale_price'],
-        mainImg: j['main_img'],
-        naverStoreLink: j['naver_store'],
-        interparkStoreLink: j['interpark_store'],
-      ));
-    }
-  }
-  return _storeItems;
-}
-
 Future<List<PcScV>> getAllVod(limit) async {
   var response;
   if (limit == null) {
@@ -727,4 +697,129 @@ Future<List<VodShort>> getVodInFavorites(userId) async {
     ));
   }
   return _vods;
+}
+
+Future<dynamic> getPurchasedMembershipVoucher(userId) async {
+  final response = await http.get('$url/get_purchased_membership_voucher/$userId/', headers: myHeader);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load StoreItem');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<List<StoreItem>> getAllStoreItem() async {
+  final response = await http.get('$url/get_all_store_item/', headers: myHeader);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load StoreItem');
+  }
+
+  final extractedData = json.decode(utf8.decode(response.bodyBytes));
+  // print(extractedData);
+  List loadedStore = extractedData['results'];
+  List<StoreItem> _storeItems = [];
+
+  for (var i in loadedStore) {
+    for (var j in i['results']) {
+      _storeItems.add(StoreItem(
+        cateId: i['store_cate_id'],
+        cate: i['store_cate'],
+        id: j['id'],
+        name: j['name'],
+        price: j['price'],
+        onSale: j['onsale'],
+        salePrice: j['sale_price'],
+        mainImg: j['main_img'],
+        naverStoreLink: j['naver_store'],
+        interparkStoreLink: j['interpark_store'],
+      ));
+    }
+  }
+  return _storeItems;
+}
+
+Future<dynamic> addPointsGained(userId, label, amount) async {
+  var body = jsonEncode({
+    'user_id': userId,
+    'label': label,
+    'amount': amount,
+  });
+  final response = await http.post('$url/add_points_gained/', headers: myHeader, body: body);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load StoreItem');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<dynamic> addPointsUsage(userId, label, amount) async {
+  var body = jsonEncode({
+    'user_id': userId,
+    'label': label,
+    'amount': amount,
+  });
+  final response = await http.post('$url/add_points_usage/', headers: myHeader, body: body);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load StoreItem');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<dynamic> addPointsGainedThroughVod(userId, vodId) async {
+  var body = jsonEncode({
+    'user_id': userId,
+    'vod_id': vodId,
+  });
+  final response = await http.post('$url/add_points_gained_through_vod/', headers: myHeader, body: body);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load StoreItem');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<dynamic> addPointsUsageThroughStore(userId, storeItemId) async {
+  var body = jsonEncode({
+    'user_id': userId,
+    'store_item_id': storeItemId,
+  });
+  final response = await http.post('$url/add_points_usage_through_store/', headers: myHeader, body: body);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load StoreItem');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<UserPointsList> getPointsUsageByUser(userId) async {
+  final response = await http.get('$url/get_point_usage_by_user/$userId/', headers: myHeader);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to get point usage by user');
+  }
+
+  final extractedData = json.decode(utf8.decode(response.bodyBytes));
+
+  List loadedUserPoint = extractedData['results'];
+  List<UserPoints> _ups = [];
+
+  for (var i in loadedUserPoint) {
+    _ups.add(UserPoints(
+      id: i['id'],
+      amount: i['amount'],
+      label: i['label'],
+      createDate: i['create_date'],
+      lastUpdate: i['last_update'],
+    ));
+  }
+
+  UserPointsList _upl = UserPointsList(userPoints: _ups, totalPoints: extractedData['total_points']);
+  return _upl;
 }
