@@ -62,7 +62,7 @@ class CoachScreenState extends State<CoachScreen> with TickerProviderStateMixin 
           TabBar(
               indicatorColor: gvars.MyPrimaryYellowColor,
               labelColor: gvars.MyPrimaryYellowColor,
-              unselectedLabelColor: Colors.white,
+              unselectedLabelColor: Colors.grey,
               controller: tabController,
               tabs: [
                 Tab(text: "Adjust"),

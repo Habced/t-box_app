@@ -208,6 +208,9 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
       child: Column(
         children: [
           TabBar(
+            indicatorColor: MyPrimaryYellowColor,
+            labelColor: MyPrimaryYellowColor,
+            unselectedLabelColor: Colors.grey,
             controller: _tabController,
             tabs: [
               Tab(text: "즐겨찾기"),
