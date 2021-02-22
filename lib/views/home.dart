@@ -35,6 +35,7 @@ class HomeScreenState extends State<HomeScreen> {
     _getTotalUnread();
     _getBanners();
     _getLatestVods();
+    // TODO check if user is logged in and if userrole was updated
   }
 
   _getTotalUnread() async {
