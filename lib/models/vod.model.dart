@@ -5,6 +5,7 @@ class Vod {
   final String vod;
   final String mrbg;
   final String thumbnail;
+  final int pcType;
   final String pcTitle;
   final String scTitle;
   final int levelId;
@@ -28,6 +29,7 @@ class Vod {
     this.vod,
     this.mrbg,
     this.thumbnail,
+    this.pcType,
     this.pcTitle,
     this.scTitle,
     this.levelId,
