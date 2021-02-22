@@ -4,8 +4,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tboxapp/models/vod.model.dart';
-import 'package:tboxapp/shared/global_vars.dart';
+// import 'package:tboxapp/shared/global_vars.dart';
 import 'package:tboxapp/services/app_service.dart' as appService;
+import 'package:tboxapp/views/vod_play.dart';
 
 class VodSelectedScreen extends StatefulWidget {
   final int vodId;
@@ -133,52 +134,24 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
                                 child: Column(
                                   children: <Widget>[Icon(Icons.play_circle_outline), Text("재생")],
                                 ),
-                                onPressed: () {
-                                  print('재생 clicked');
-                                  // TODO implement play button
-                                },
+                                onPressed: () => _handleVodPlay(snapshot.data),
                               ),
                               SizedBox(width: 10),
                               FlatButton(
                                 child: Column(
                                   children: <Widget>[Icon(Icons.share), Text("공유")],
                                 ),
-                                onPressed: () {
-                                  print('공유 clicked');
-                                  // TODO properly implement share
-                                  Share.share('ughh', subject: 'ugh');
-                                },
+                                onPressed: () => _handleVodShare(snapshot.data),
                               ),
                               SizedBox(width: 10),
                               FlatButton(
                                 child: Column(
-                                  children: <Widget>[Icon(Icons.stars, color: favIconColor), Text("즐겨찾기")],
+                                  children: <Widget>[
+                                    Icon(Icons.stars, color: favIconColor),
+                                    Text("즐겨찾기"),
+                                  ],
                                 ),
-                                onPressed: () async {
-                                  print('즐겨찾기 clicked');
-                                  if (_uid == -1) {
-                                    FlutterToast.showToast(msg: 'You must be logged in to use this function');
-                                  } else {
-                                    print(snapshot.data.isFavorite);
-                                    if (snapshot.data.isFavorite) {
-                                      var results = await appService.removeVodFromFavorites(widget.vodId, _uid);
-                                      print(results.toString());
-                                      FlutterToast.showToast(msg: 'Removed from favorites');
-                                      setState(() {
-                                        favIconColor = Colors.grey;
-                                      });
-                                      snapshot.data.isFavorite = false;
-                                    } else {
-                                      var results = await appService.addVodToFavorites(widget.vodId, _uid);
-                                      print(results.toString());
-                                      FlutterToast.showToast(msg: 'Added to favorites');
-                                      setState(() {
-                                        favIconColor = Colors.yellow;
-                                      });
-                                      snapshot.data.isFavorite = true;
-                                    }
-                                  }
-                                },
+                                onPressed: () => _handleVodFav(snapshot.data),
                               ),
                             ],
                           )
@@ -206,5 +179,49 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
         );
       },
     );
+  }
+
+  _handleVodPlay(Vod snapshotData) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => VodPlayScreen(
+          uid: _uid,
+          myVod: snapshotData,
+        ),
+      ),
+    );
+  }
+
+  _handleVodShare(Vod snapshotData) {
+    print('공유 clicked');
+    // TODO properly implement share
+    Share.share('ughh', subject: 'ugh');
+  }
+
+  _handleVodFav(Vod snapshotData) async {
+    print('즐겨찾기 clicked');
+    if (_uid == -1) {
+      FlutterToast.showToast(msg: 'You must be logged in to use this function');
+    } else {
+      print(snapshotData.isFavorite);
+      if (snapshotData.isFavorite) {
+        var results = await appService.removeVodFromFavorites(widget.vodId, _uid);
+        print(results.toString());
+        FlutterToast.showToast(msg: 'Removed from favorites');
+        setState(() {
+          favIconColor = Colors.grey;
+        });
+        snapshotData.isFavorite = false;
+      } else {
+        var results = await appService.addVodToFavorites(widget.vodId, _uid);
+        print(results.toString());
+        FlutterToast.showToast(msg: 'Added to favorites');
+        setState(() {
+          favIconColor = Colors.yellow;
+        });
+        snapshotData.isFavorite = true;
+      }
+    }
   }
 }
