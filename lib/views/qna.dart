@@ -140,13 +140,25 @@ class QnaScreenState extends State<QnaScreen> with SingleTickerProviderStateMixi
       ),
     );
 
-    var replyTab = Padding(
-      padding: EdgeInsets.all(20),
-      child: FutureBuilder<List<Inquiry>>(
-        future: futureInquiries,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ExpansionPanelList(
+    var replyTab = FutureBuilder<List<Inquiry>>(
+      future: futureInquiries,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Theme(
+            data: ThemeData(
+              cardColor: Colors.grey[800],
+              brightness: Brightness.dark,
+              primarySwatch: MyPrimaryYellowColor,
+              primaryColor: MyPrimaryYellowColor,
+              accentColor: MyPrimaryYellowColor,
+              // textTheme: TextTheme(
+              //   headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+              //   headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+              //   bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+              // ),
+            ),
+            child: ExpansionPanelList(
+              dividerColor: Colors.black,
               expansionCallback: (int index, bool isExpanded) {
                 setState(() {
                   snapshot.data[index].isExpanded = !isExpanded;
@@ -159,12 +171,20 @@ class QnaScreenState extends State<QnaScreen> with SingleTickerProviderStateMixi
                     return ListTile(
                       title: Text(inquiry.inquiry),
                       subtitle: Text(inquiry.replies.length == 0 ? "미답변" : "답변완료"),
+                      // ),
+                      // Container(
+                      // decoration: BoxDecoration(border: Border.all(color: MyPrimaryYellowColor)),
+                      // child:
                     );
                   },
                   body: inquiry.replies.length == 0
                       ? Container()
                       : ListTile(
                           title: Text(inquiry.replies[0].reply),
+                          //  Container(
+                          //   decoration: BoxDecoration(border: Border.all(color: MyPrimaryYellowColor)),
+                          //   child:
+                          // ),
                           // subtitle: ,
                           // trailing: Icon(Icons.??)
                           // onTap: () { setState((){})},
@@ -173,19 +193,19 @@ class QnaScreenState extends State<QnaScreen> with SingleTickerProviderStateMixi
                   canTapOnHeader: true,
                 );
               }).toList(),
-            );
-          } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
-          }
-
-          return Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [CircularProgressIndicator(), SizedBox(height: 10), Text("Loading...")],
             ),
           );
-        },
-      ),
+        } else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        }
+
+        return Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [CircularProgressIndicator(), SizedBox(height: 10), Text("Loading...")],
+          ),
+        );
+      },
     );
 
     return Container(
