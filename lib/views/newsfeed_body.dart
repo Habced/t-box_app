@@ -38,39 +38,36 @@ class NewsfeedBodyScreenState extends State<NewsfeedBodyScreen> {
       appBar: buildFullAppBar(context),
       // endDrawer: EndDrawerWidget(),
       body: _buildBody(),
+      backgroundColor: Colors.black,
     );
   }
 
   Widget _buildBody() {
-    double bodyWidth = 700;
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Container(
-        constraints: BoxConstraints(maxWidth: bodyWidth),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("공지사항", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                Divider(color: Colors.white, thickness: 2),
-                SizedBox(height: 25),
-                Text(myNewsfeed.title),
-                Divider(color: Color(0xFF636363), thickness: 1),
-                newsfeedBody == null
-                    ? Center(child: CircularProgressIndicator())
-                    : Html(
-                        data: newsfeedBody,
-                        onLinkTap: (url) {},
-                        style: {},
-                        onImageTap: (src) {},
-                        onImageError: (exception, stackTrace) {
-                          debugPrint(exception.toString());
-                        },
-                      ),
-              ],
-            ),
+    return Container(
+      constraints: BoxConstraints.expand(),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("공지사항", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Divider(color: Colors.white, thickness: 2),
+              SizedBox(height: 25),
+              Text(myNewsfeed.title),
+              Divider(color: Color(0xFF636363), thickness: 1),
+              newsfeedBody == null
+                  ? Center(child: CircularProgressIndicator())
+                  : Html(
+                      data: newsfeedBody,
+                      onLinkTap: (url) {},
+                      style: {},
+                      onImageTap: (src) {},
+                      onImageError: (exception, stackTrace) {
+                        debugPrint(exception.toString());
+                      },
+                    ),
+            ],
           ),
         ),
       ),

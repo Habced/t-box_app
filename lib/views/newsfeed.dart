@@ -28,48 +28,45 @@ class NewsfeedScreenState extends State<NewsfeedScreen> {
       appBar: buildFullAppBar(context),
       // endDrawer: EndDrawerWidget(),
       body: _buildBody(),
+      backgroundColor: Colors.black,
     );
   }
 
   Widget _buildBody() {
-    double bodyWidth = 700;
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Container(
-        constraints: BoxConstraints(maxWidth: bodyWidth),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("공지사항", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                Divider(color: Colors.white, thickness: 2),
-                SizedBox(height: 25),
-                Row(
-                  children: [
-                    Expanded(flex: 4, child: Text("제목")),
-                    Expanded(flex: 1, child: Center(child: Text("조회수"))),
-                    Expanded(flex: 1, child: Center(child: Text("등록일"))),
-                  ],
-                ),
-                Divider(color: Colors.white),
-                FutureBuilder(
-                  future: futureNewsfeedList,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Column(children: [for (var newsfeed in snapshot.data.newsfeed) _buildNewsfeed(newsfeed)]);
-                    } else if (snapshot.hasError) {
-                      FlutterToast.showToast(
-                        msg: "Could not retrieve data.",
-                        toastLength: Toast.LENGTH_LONG,
-                      );
-                    }
-                    return Center(child: CircularProgressIndicator());
-                  },
-                )
-              ],
-            ),
+    return Container(
+      constraints: BoxConstraints.expand(),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("공지사항", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Divider(color: Colors.white, thickness: 2),
+              SizedBox(height: 25),
+              Row(
+                children: [
+                  Expanded(flex: 4, child: Text("제목")),
+                  Expanded(flex: 1, child: Center(child: Text("조회수"))),
+                  Expanded(flex: 1, child: Center(child: Text("등록일"))),
+                ],
+              ),
+              Divider(color: Colors.white),
+              FutureBuilder(
+                future: futureNewsfeedList,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(children: [for (var newsfeed in snapshot.data.newsfeed) _buildNewsfeed(newsfeed)]);
+                  } else if (snapshot.hasError) {
+                    FlutterToast.showToast(
+                      msg: "Could not retrieve data.",
+                      toastLength: Toast.LENGTH_LONG,
+                    );
+                  }
+                  return Center(child: CircularProgressIndicator());
+                },
+              )
+            ],
           ),
         ),
       ),
