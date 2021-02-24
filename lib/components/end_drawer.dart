@@ -17,12 +17,12 @@ class EndDrawerWidgetState extends State<EndDrawerWidget> {
 
   Future<Null> getSharedPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() => {
-          _uid = prefs.getInt('id') ?? -1,
-          _uemail = prefs.getString('email') ?? "",
-          _uphotoUrl = prefs.getString('photoUrl') ?? "",
-          _ufullname = prefs.getString('fullname') ?? ""
-        });
+    setState(() {
+      _uid = prefs.getInt('id') ?? -1;
+      _uemail = prefs.getString('email') ?? "";
+      _uphotoUrl = prefs.getString('photoUrl') ?? "";
+      _ufullname = prefs.getString('fullname') ?? "";
+    });
     debugPrint(prefs.getInt('id').toString());
   }
 
@@ -34,8 +34,65 @@ class EndDrawerWidgetState extends State<EndDrawerWidget> {
   }
 
   @override
-  Widget build(BuildContext context) => Drawer(
-          child: Stack(
+  Widget build(BuildContext context) {
+    var membershipBtn = GestureDetector(
+      onTap: () {
+        Navigator.popAndPushNamed(context, '/TODO');
+      },
+      child: Column(
+        children: [
+          Container(
+            height: 30,
+            child: Image.asset(
+              'assets/images/membership_icon.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+          Text("멤버십", style: myListTextStyle)
+        ],
+      ),
+    );
+
+    var loginBtn = GestureDetector(
+      onTap: () {
+        Navigator.popAndPushNamed(context, '/login');
+      },
+      child: Column(
+        children: [
+          Container(
+            height: 30,
+            width: 40,
+            child: Image.asset(
+              'assets/images/login_icon.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+          Text("로그인", style: myListTextStyle)
+        ],
+      ),
+    );
+
+    var logoutBtn = GestureDetector(
+      onTap: () {
+        handleLogout();
+      },
+      child: Column(
+        children: [
+          Container(
+            height: 30,
+            width: 40,
+            child: Image.asset(
+              'assets/images/logout_icon.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+          Text("로그아웃", style: myListTextStyle)
+        ],
+      ),
+    );
+
+    return Drawer(
+      child: Stack(
         children: [
           Container(
             color: Color(0xFFF0F0F0),
@@ -48,105 +105,25 @@ class EndDrawerWidgetState extends State<EndDrawerWidget> {
                     child: DrawerHeader(
                       child: _uid == -1 ? _buildDrawerHeaderLogo() : _buildDrawerHeaderProfile(),
                       decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/bg_logo_yellow.jpg'),
-                            fit: BoxFit.cover,
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/bg_logo_yellow.jpg'),
+                          fit: BoxFit.cover,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xFFE5E5E5),
+                            blurRadius: 7,
+                            spreadRadius: 5,
+                            offset: Offset(0, 0),
                           ),
-                          boxShadow: [
-                            BoxShadow(color: Color(0xFFE5E5E5), blurRadius: 7, spreadRadius: 5, offset: Offset(0, 0)),
-                          ]),
-                    ),
-                  ),
-                ),
-                // _uid == -1
-                //     ? Column(
-                //         children: [
-                //           _buildListTile(context, "로그인", "/login"),
-                //           _buildDivider(),
-                //           _buildListTile(context, "회원가입", "/signup"),
-                //           _buildDivider(),
-                //         ],
-                //       )
-                //     : Column(
-                //         children: [
-                //           _buildListTile(context, "프로필", "/profile_my"),
-                //           _buildDivider(),
-                //         ],
-                //       ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.popAndPushNamed(context, '/TODO');
-                      },
-                      child: Column(
-                        children: [
-                          Container(
-                            height: 30,
-                            child: Image.asset(
-                              'assets/images/membership_icon.png',
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                          Text("멤버십", style: myListTextStyle)
                         ],
                       ),
                     ),
-                    // GestureDetector(
-                    //   onTap: () {
-                    //     Navigator.popAndPushNamed(context, '/setting');
-                    //   },
-                    //   child: Column(
-                    //     children: [
-                    //       Container(
-                    //         height: 30,
-                    //         width: 40,
-                    //         child: Image.asset(
-                    //           'assets/images/setting_icon.png',
-                    //           fit: BoxFit.contain,
-                    //         ),
-                    //       ),
-                    //       Text("설정", style: myListTextStyle)
-                    //     ],
-                    //   ),
-                    // ),
-                    _uid == -1
-                        ? GestureDetector(
-                            onTap: () {
-                              Navigator.popAndPushNamed(context, '/login');
-                            },
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 30,
-                                  width: 40,
-                                  child: Image.asset(
-                                    'assets/images/login_icon.png',
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                                Text("로그인", style: myListTextStyle)
-                              ],
-                            ))
-                        : GestureDetector(
-                            onTap: () {
-                              handleLogout();
-                            },
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 30,
-                                  width: 40,
-                                  child: Image.asset(
-                                    'assets/images/logout_icon.png',
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                                Text("로그아웃", style: myListTextStyle)
-                              ],
-                            ))
-                  ],
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [membershipBtn, _uid == -1 ? loginBtn : logoutBtn],
                 ),
                 // _buildListTile(context, "설정", "/setting"),
                 // _buildDivider(),
@@ -165,16 +142,20 @@ class EndDrawerWidgetState extends State<EndDrawerWidget> {
           ),
           // _uid != -1 ? _buildLogout() : Container(),
         ],
-      ));
+      ),
+    );
+  }
 
-  Widget _buildDrawerHeaderLogo() => Container(
-        margin: EdgeInsets.symmetric(horizontal: 10),
-        child: Image(
-          image: AssetImage('assets/images/logo.png'),
-          fit: BoxFit.fitWidth,
-          width: 10,
-        ),
-      );
+  Widget _buildDrawerHeaderLogo() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10),
+      child: Image(
+        image: AssetImage('assets/images/logo.png'),
+        fit: BoxFit.fitWidth,
+        width: 10,
+      ),
+    );
+  }
 
   Widget _buildDrawerHeaderProfile() {
     String myDefaultImage = "assets/images/default_profile_pic.png";
@@ -197,10 +178,8 @@ class EndDrawerWidgetState extends State<EndDrawerWidget> {
                   // backgroundImage: NetworkImage(_uphotoUrl),
                   backgroundColor: Colors.white,
                   radius: 50.0,
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(_uphotoUrl),
-                    radius: 47.0,
-                  ))
+                  child: CircleAvatar(backgroundImage: NetworkImage(_uphotoUrl), radius: 47.0),
+                )
               : Container(),
           imgType == "svg" ? Image(image: AssetImage(myDefaultImage)) : Container(),
           imgType == "unknown" ? Image(image: AssetImage(myDefaultImage)) : Container(),
@@ -211,65 +190,55 @@ class EndDrawerWidgetState extends State<EndDrawerWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text.rich(
-                  TextSpan(text: "$_ufullname ", style: TextStyle(fontSize: 22), children: <TextSpan>[
-                    TextSpan(
-                      text: "님",
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ]),
+                  TextSpan(
+                    text: "$_ufullname ",
+                    style: TextStyle(fontSize: 22),
+                    children: <TextSpan>[
+                      TextSpan(text: "님", style: TextStyle(fontSize: 14)),
+                    ],
+                  ),
                 ), //님"),
                 Text(
                   _uemail,
                   overflow: TextOverflow.fade,
                   maxLines: 1,
                   softWrap: false,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Color(0xFFB4B4B4),
-                  ),
+                  style: TextStyle(fontSize: 13, color: Color(0xFFB4B4B4)),
                 ),
-                SizedBox(
-                  height: 8,
-                ),
+                SizedBox(height: 8),
                 Row(
                   children: [
                     CircleAvatar(
                       backgroundColor: Color(0xFFFFFFFF),
                       radius: 8,
                       child: CircleAvatar(
-                          backgroundColor: Color(0xFF927721),
-                          radius: 7,
-                          child: Text("G", style: TextStyle(color: Colors.white, fontSize: 11))),
+                        backgroundColor: Color(0xFF927721),
+                        radius: 7,
+                        child: Text("G", style: TextStyle(color: Colors.white, fontSize: 11)),
+                      ),
                     ),
                     SizedBox(width: 10),
                     // TODO implment getting role name
                     // TODO remove temp place holder
-                    Text("XXXXXX",
-                        style: TextStyle(
-                          color: Color(0xFFB4B4B4),
-                        ))
+                    Text("XXXXXX", style: TextStyle(color: Color(0xFFB4B4B4)))
                   ],
                 ),
-                SizedBox(
-                  height: 5,
-                ),
+                SizedBox(height: 5),
                 Row(
                   children: [
                     CircleAvatar(
                       backgroundColor: Color(0xFFFFFFFF),
                       radius: 8,
                       child: CircleAvatar(
-                          backgroundColor: Color(0xFFAD2F2F),
-                          radius: 7,
-                          child: Text("P", style: TextStyle(color: Colors.white, fontSize: 11))),
+                        backgroundColor: Color(0xFFAD2F2F),
+                        radius: 7,
+                        child: Text("P", style: TextStyle(color: Colors.white, fontSize: 11)),
+                      ),
                     ),
                     SizedBox(width: 10),
                     // TODO implment getting role name
                     // TODO remove temp place holder
-                    Text("XX,XXX pt",
-                        style: TextStyle(
-                          color: Color(0xFFB4B4B4),
-                        ))
+                    Text("XX,XXX pt", style: TextStyle(color: Color(0xFFB4B4B4)))
                   ],
                 )
               ],
@@ -305,23 +274,28 @@ class EndDrawerWidgetState extends State<EndDrawerWidget> {
   //       ),
   //     ));
 
-  Widget _buildDivider() => Divider(
-        color: Color(0xFFD0D0D0),
-        indent: 10,
-        endIndent: 20,
-      );
+  Widget _buildDivider() {
+    return Divider(
+      color: Color(0xFFD0D0D0),
+      indent: 10,
+      endIndent: 20,
+    );
+  }
 
-  Widget _buildListTile(cntx, name, route) => Material(
-        type: MaterialType.transparency,
-        child: InkWell(
-            splashColor: Color(0xFF757575),
-            onTap: () {
-              Navigator.popAndPushNamed(cntx, route);
-            },
-            child: ListTile(
-              title: Text(name, style: myListTextStyle),
-            )),
-      );
+  Widget _buildListTile(cntx, name, route) {
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        splashColor: Color(0xFF757575),
+        onTap: () {
+          Navigator.popAndPushNamed(cntx, route);
+        },
+        child: ListTile(
+          title: Text(name, style: myListTextStyle),
+        ),
+      ),
+    );
+  }
 
   void handleLogout() async {
     // TODO implement logout
