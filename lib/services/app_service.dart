@@ -246,7 +246,8 @@ Future<dynamic> addNewsfeedClick(userId, nfId) async {
   var body = jsonEncode({
     'user_id': userId,
   });
-  final response = await http.put('$url/add_newsfeed_click/$nfId/', headers: myHeader, body: body);
+
+  final response = await http.post('$url/add_newsfeed_click/$nfId/', headers: myHeader, body: body);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to add newsfeed click');
