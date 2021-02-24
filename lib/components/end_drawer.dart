@@ -158,7 +158,7 @@ class EndDrawerWidgetState extends State<EndDrawerWidget> {
                 _buildDivider(),
                 _buildListTile(context, "1:1 문의", "/qna"),
                 _buildDivider(),
-                _buildListTile(context, "마켓", "/store"),
+                _buildListTile(context, "스토어", "/store"),
                 _buildDivider(),
               ],
             ),
