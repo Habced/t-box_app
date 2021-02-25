@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:tboxapp/services/tbox_service.dart' as tbService;
+import 'package:tboxapp/services/app_service.dart' as appService;
 
 class EndDrawerWidget extends StatefulWidget {
   @override
@@ -299,25 +299,38 @@ class EndDrawerWidgetState extends State<EndDrawerWidget> {
 
   void handleLogout() async {
     // TODO implement logout
-    // var myResult;
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // tbService
-    //     .logout(_uemail)
-    //     .then((result) => {
-    //           myResult = result,
-    //         })
-    //     .catchError((Object error) => {})
-    //     .whenComplete(() => {
-    //           if (myResult['res_code'] == 1)
-    //             {
-    //               prefs.clear(),
-    //               setState(() => {_uid = -1, _uemail = "", _uphotoUrl = ""}),
-    //               Navigator.popAndPushNamed(context, '/'),
-    //             }
-    //           else
-    //             {
-    //               // TODO implement some sort of error handling
-    //             }
-    //         });
+    var myResult;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    appService
+        .logout(_uemail)
+        .then((result) {
+          myResult = result;
+        })
+        .catchError((Object error) {})
+        .whenComplete(() {
+          if (myResult['res_code'] == 1) {
+            prefs.remove('id');
+            prefs.remove('fullname');
+            prefs.remove('email');
+            prefs.remove('username');
+            prefs.remove('role');
+            prefs.remove('cellphone');
+            prefs.remove('photoUrl');
+            prefs.remove('zipNo');
+            prefs.remove('jibunAddr');
+            prefs.remove('roadAddr');
+            prefs.remove('detailJuso');
+            prefs.remove('loggedIn');
+            setState(() {
+              _uid = -1;
+              _uemail = "";
+              _uphotoUrl = "";
+              _ufullname = "";
+            });
+            Navigator.popAndPushNamed(context, '/');
+          } else {
+            // TODO implement some sort of error handling
+          }
+        });
   }
 }
