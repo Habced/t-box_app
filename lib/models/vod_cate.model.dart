@@ -20,6 +20,16 @@ class PrimaryCate {
   });
 }
 
+class PcShort {
+  final int id;
+  final String title;
+
+  PcShort({
+    this.id,
+    this.title,
+  });
+}
+
 class SecondaryCate {
   final int id;
   final int primaryCateId;
@@ -54,6 +64,15 @@ class PcScV {
   List<SecondaryCateVods> sc;
 
   PcScV({
+    this.pc,
+  });
+}
+
+class PcLatestVods {
+  final PcShort pc;
+  List<VodMinimal> vodList;
+
+  PcLatestVods({
     this.pc,
   });
 }

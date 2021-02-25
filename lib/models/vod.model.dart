@@ -68,3 +68,15 @@ class VodShort {
     this.timestamp,
   });
 }
+
+class VodMinimal {
+  final int id;
+  final String title;
+  final String thumbnail;
+
+  VodMinimal({
+    this.id,
+    this.title,
+    this.thumbnail,
+  });
+}

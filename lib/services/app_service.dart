@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:tboxapp/models/banner.model.dart';
 import 'package:tboxapp/models/faq.model.dart';
 import 'package:tboxapp/models/inquiry.model.dart';
 import 'package:tboxapp/models/newsfeed.model.dart';
+import 'package:tboxapp/models/screen_data.model.dart';
 import 'package:tboxapp/models/store.model.dart';
 import 'package:tboxapp/models/user_points.model.dart';
 import 'package:tboxapp/models/vod.model.dart';
@@ -826,4 +828,79 @@ Future<UserPointsList> getPointsUsageByUser(userId) async {
 
   UserPointsList _upl = UserPointsList(userPoints: _ups, totalPoints: extractedData['total_points']);
   return _upl;
+}
+
+Future<FrontPageData> getFrontPageData() async {
+  final response = await http.get('$url/get_front_page_data/', headers: myHeader);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to get Front Page Data');
+  }
+
+  final extractedData = json.decode(utf8.decode(response.bodyBytes));
+
+  var loadedFrontPageData = extractedData['results'];
+  FrontPageData fpd = FrontPageData();
+
+  for (var i in loadedFrontPageData['banners']) {
+    fpd.banners.add(Banner(id: i['banner_id'], img: i['img']));
+  }
+  for (var i in loadedFrontPageData['latest_vods']) {
+    fpd.lastestVods.add(VodMinimal(id: i['vod_id'], title: i['title'], thumbnail: i['thumbnail']));
+  }
+  for (var i in loadedFrontPageData['cate_vods']) {
+    var plc = PcLatestVods(pc: PcShort(id: i['pc_id'], title: i['title']));
+    for (var j in i['latest_vods']) {
+      plc.vodList.add(VodMinimal(id: j['vod_id'], title: j['title'], thumbnail: j['thumbnail']));
+    }
+    fpd.pcLatestVods.add(plc);
+  }
+  return fpd;
+}
+
+Future<dynamic> addTrackingData(userId, dataCate, dataStr, dataInt) async {
+  var body = jsonEncode({
+    'user_id': userId,
+    'data_category': dataCate,
+    'data_str': dataStr,
+    'data_int': dataInt,
+  });
+  final response = await http.post('$url/add_tracking_data/', headers: myHeader, body: body);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to add Tracking Data');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<dynamic> getTrackingDataForUser(userId, dataCate) async {
+  final Map<String, String> queryParam = {};
+  if (dataCate != null) {
+    queryParam['data_category'] = dataCate;
+  }
+
+  var response;
+  if (dataCate == null) {
+    response = await http.get('$url/get_tracking_data/', headers: myHeader);
+  } else {
+    var uri = new Uri.http(uriAuthority, uriTbfAppUnencodedPath + 'get_tracking_data/', queryParam);
+    response = await http.get(uri);
+  }
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to get Tracking Data For User');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
+}
+
+Future<dynamic> getTrackingDataForUserShort(userId) async {
+  var response = await http.get('$url/get_tracking_data/', headers: myHeader);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to get Tracking Data For User Short');
+  }
+
+  return json.decode(utf8.decode(response.bodyBytes));
 }
