@@ -55,6 +55,7 @@ class VodCateListScreenState extends State<VodCateListScreen> with SingleTickerP
       appBar: buildFullAppBar(context),
       // endDrawer: EndDrawerWidget(),
       body: _buildBody(context),
+      backgroundColor: Colors.black,
     );
   }
 
@@ -263,9 +264,19 @@ class VodCateListScreenState extends State<VodCateListScreen> with SingleTickerP
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(child: Image.network(vodData.thumbnail)),
+            Image.network(vodData.thumbnail, fit: BoxFit.fitHeight, height: 160, width: 110),
             SizedBox(height: 3),
-            Text(vodData.title, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            Flexible(
+              child: Container(
+                child: Text(
+                  vodData.title,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                  maxLines: 1,
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
           ],
         ),
       ),
