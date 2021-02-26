@@ -3,6 +3,7 @@ import 'package:flutter_html/style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tboxapp/components/marquee.dart';
 import 'package:tboxapp/models/vod.model.dart';
 // import 'package:tboxapp/shared/global_vars.dart';
 import 'package:tboxapp/services/app_service.dart' as appService;
@@ -125,7 +126,13 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(snapshot.data.title, style: TextStyle(fontSize: FontSize.xLarge.size)),
+                          MarqueeWidget(
+                            direction: Axis.horizontal,
+                            child: Text(
+                              snapshot.data.title,
+                              style: TextStyle(fontSize: FontSize.xLarge.size),
+                            ),
+                          ),
                           SizedBox(height: 5),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -161,7 +168,10 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
                   ),
                 ),
               ),
-              Text(snapshot.data.title),
+              Text(
+                snapshot.data.title,
+                style: TextStyle(fontSize: FontSize.xLarge.size),
+              ),
               Text(snapshot.data.contents),
               Text('something then vid list'),
             ],
