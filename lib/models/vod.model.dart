@@ -57,6 +57,7 @@ class VodShort {
   final String scTitle;
   final String timestamp;
   bool isFavorite;
+  bool isLoading;
 
   VodShort({
     this.id,

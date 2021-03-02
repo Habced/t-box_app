@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_html/style.dart';
 import 'package:tboxapp/components/end_drawer.dart';
+import 'package:tboxapp/models/screen_data.model.dart';
 import 'package:tboxapp/models/vod.model.dart';
 import 'package:tboxapp/shared/global_vars.dart';
 import 'package:tboxapp/components/top_app_bar.dart';
@@ -26,15 +27,18 @@ class HomeScreenState extends State<HomeScreen> {
 
   Future<dynamic> futureBannerList;
   bool isBannersLoading = true;
+  Future<FrontPageData> fpd;
 
   final List<String> imgList = [];
 
   @override
   void initState() {
     super.initState();
+    print('a');
     _getTotalUnread();
-    _getBanners();
-    _getLatestVods();
+    fpd = _getFpd();
+    print('c');
+    print(fpd);
     // TODO check if user is logged in and if userrole was updated
   }
 
@@ -46,55 +50,9 @@ class HomeScreenState extends State<HomeScreen> {
     // setState(() {});
   }
 
-  _getBanners() async {
-    var response = await appService.getAllBanner();
-    if (response['res_code'] == 0) {
-      return;
-    }
-    for (var img in response['results']) {
-      setState(() {
-        imgList.add('https://i1.tbox.media/' + img['img']);
-      });
-    }
-  }
-
-  _getLatestVods() async {
-    // TODO Uncomment when API is complete
-    // var response = await tbService.getAllVod(6);
-    // var results = response['results'];
-    // for( var v in results ) {
-    //   latestVods.add(
-    //     Vod(
-    //       id: v['id'],
-    //       title: v['title'],
-    //       contents: v['contents'],
-    //       vod: v['vod'],
-    //       mrbg: v['mrbg'],
-    //       thumbnail: v['thumbnail'],
-    //       primaryCate: v['primaryCate'],
-    //       secondaryCate: v['secondaryCate'],
-    //       gangsaName: v['gangsaName'],
-    //       viewableTo: v['viewableTo'],
-    //     )
-    //   );
-    // }
-    // TODO Remove when API is complete
-    latestVods = [
-      /*
-      Vod(
-          id: 1,
-          title: 'a',
-          contents: 'asdf',
-          vod: 'a link',
-          mrbg: 'a link',
-          thumbnail: 'https://i1.tbox.media/vodthumbnail/2020/06/19/e5abd59e90144e5bbc2c20e8a3a71427.jpg',
-          primaryCate: 1,
-          secondaryCate: 1,
-          gangsaName: 'asdf',
-          viewableTo: [1, 2, 3]),*/
-    ];
-    // print(latestVods.toString());
-    isRecentVodsLoading = false;
+  Future<FrontPageData> _getFpd() async {
+    print('b');
+    return await appService.getFrontPageData();
   }
 
   @override
@@ -153,6 +111,7 @@ class HomeScreenState extends State<HomeScreen> {
           }
         },
       ),
+      backgroundColor: Colors.black,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -210,113 +169,201 @@ class HomeScreenState extends State<HomeScreen> {
     //   }).toList(),
     // );
 
-    var myCarousel2 = CarouselSlider(
-      options: CarouselOptions(
-        // height: 200,
-        aspectRatio: 16 / 9,
-        viewportFraction: 0.8,
-        // viewportFraction: 1,
-        initialPage: 0,
-        enableInfiniteScroll: true,
-        reverse: false,
-        autoPlay: true,
-        autoPlayInterval: Duration(seconds: 3),
-        autoPlayAnimationDuration: Duration(milliseconds: 800),
-        autoPlayCurve: Curves.fastOutSlowIn,
-        enlargeCenterPage: false,
-        // onPageChanged: callbackFunction,
-        scrollDirection: Axis.horizontal,
-      ),
-      items: imgList
-          .map(
-            (i) => Container(
-              child: Container(
-                margin: EdgeInsets.all(5.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                  // child: Image.asset(i, fit: BoxFit.fitHeight, width: 1000.0),
-                  child: Image.network(i, fit: BoxFit.fitHeight, width: 1000.0),
-                ),
+    // var recentVods = SingleChildScrollView(
+    //   scrollDirection: Axis.horizontal,
+    //   child: Row(children: _buildRecentVids()),
+    // );
+
+    return FutureBuilder<FrontPageData>(
+      future: fpd,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Container(
+            constraints: BoxConstraints.expand(),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("${snapshot.error}"),
+                  RaisedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VodCateListScreen(
+                            selPcId: -1,
+                            selScId: -1,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text('VodCateListScreen'),
+                  ),
+                ],
               ),
             ),
-          )
-          .toList(),
-    );
+          );
+          // return Text("${snapshot.error}");
+        }
+        if (!snapshot.hasData) {
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [CircularProgressIndicator(), SizedBox(height: 10), Text("Loading...")],
+            ),
+          );
+        }
 
-    var recentVods = SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: _buildRecentVids(),
-      ),
-    );
+        var myCarousel2 = CarouselSlider(
+          options: CarouselOptions(
+            // height: 200,
+            aspectRatio: 16 / 9,
+            viewportFraction: 0.8,
+            // viewportFraction: 1,
+            initialPage: 0,
+            enableInfiniteScroll: true,
+            reverse: false,
+            autoPlay: true,
+            autoPlayInterval: Duration(seconds: 3),
+            autoPlayAnimationDuration: Duration(milliseconds: 800),
+            autoPlayCurve: Curves.fastOutSlowIn,
+            enlargeCenterPage: false,
+            // onPageChanged: callbackFunction,
+            scrollDirection: Axis.horizontal,
+          ),
+          items: snapshot.data.banners.map((i) {
+            return Container(
+              margin: EdgeInsets.all(5.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                // child: Image.asset(i, fit: BoxFit.fitHeight, width: 1000.0),
+                child: Image.network(i.img, fit: BoxFit.fitHeight, width: 1000.0),
+              ),
+            );
+          }).toList(),
+        );
+        return Container(
+          // decoration: BoxDecoration(
+          //   image: DecorationImage(
+          //     image: AssetImage('assets/images/bg_logo_white.jpg'),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
+          constraints: BoxConstraints.expand(),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // mySignalPicker,
+                // myCarousel1,
+                myCarousel2,
+                SizedBox(height: 10),
+                Text("최신영상"),
+                SizedBox(height: 10),
+                // isRecentVodsLoading ? CircularProgressIndicator() : recentVods,
+                SizedBox(height: 10),
+                // Text("현재 시청중인 페이지"),
+                // SizedBox(height: 10),
 
-    return Container(
-      // decoration: BoxDecoration(
-      //   image: DecorationImage(
-      //     image: AssetImage('assets/images/bg_logo_white.jpg'),
-      //     fit: BoxFit.cover,
-      //   ),
-      // ),
-      color: Colors.black,
-      constraints: BoxConstraints.expand(),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // mySignalPicker,
-            // myCarousel1,
-            myCarousel2,
-            SizedBox(height: 10),
-            // _buildCategory("T-BOX", [] /* TODO */),
-            // _buildCategory("T-Cycling", [] /* TODO */),
-            // _buildCategory("T-CYCLING"),
-            Text("최신영상"),
-            SizedBox(height: 10),
-            isRecentVodsLoading ? CircularProgressIndicator() : recentVods,
-            SizedBox(height: 10),
-            Text("현재 시청중인 페이지"),
-            SizedBox(height: 10),
-            RaisedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/coach');
-              },
-              child: Text('Go to Coach', style: TextStyle(color: Colors.white)),
+                // RaisedButton(
+                //   onPressed: () {
+                //     Navigator.pushNamed(context, '/coach');
+                //   },
+                //   child: Text('Go to Coach', style: TextStyle(color: Colors.white)),
+                // ),
+                // RaisedButton(
+                //   onPressed: () {
+                //     // Navigator.pushNamed(context, '/vod_selected');
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => DataPointsScreen(),
+                //       ),
+                //     );
+                //   },
+                //   child: Text('point list'),
+                // ),
+                // RaisedButton(
+                //   onPressed: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => VodCateListScreen(
+                //           selPcId: -1,
+                //           selScId: -1,
+                //         ),
+                //       ),
+                //     );
+                //   },
+                //   child: Text('VodCateListScreen'),
+                // ),
+              ],
             ),
-            RaisedButton(
-              onPressed: () {
-                // Navigator.pushNamed(context, '/vod_selected');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DataPointsScreen(),
-                  ),
-                );
-              },
-              child: Text('point list'),
-            ),
-            RaisedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => VodCateListScreen(
-                      selPcId: -1,
-                      selScId: -1,
-                    ),
-                  ),
-                );
-              },
-              child: Text('VodCateListScreen'),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
   List<Widget> _buildRecentVids() {
     List<Widget> vods = [];
     for (var vod in latestVods) {
+      var vodThumbnail = Container(
+        margin: EdgeInsets.fromLTRB(5, 0, 5, 40),
+        padding: EdgeInsets.all(1),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [MyPrimaryYellowColor, Colors.white],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Container(
+          padding: EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: Colors.black,
+            image: DecorationImage(
+              image: NetworkImage(vod.thumbnail),
+              fit: BoxFit.cover,
+            ),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Container(),
+        ),
+      );
+
+      var vodGradient = Positioned(
+        bottom: 10,
+        child: Container(
+          width: 110,
+          height: 110,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.transparent, Colors.black],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+            shape: BoxShape.circle,
+          ),
+        ),
+      );
+
+      var vodBottomFill = Positioned.fill(
+        bottom: 30,
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Text(
+            vod.title,
+            style: TextStyle(
+              fontSize: FontSize.large.size,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      );
+
       vods.add(
         GestureDetector(
           onTap: () {},
@@ -326,55 +373,9 @@ class HomeScreenState extends State<HomeScreen> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(5, 0, 5, 40),
-                  padding: EdgeInsets.all(1),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [MyPrimaryYellowColor, Colors.white],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      image: DecorationImage(
-                        image: NetworkImage(vod.thumbnail),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Container(),
-                  ),
-                ),
-                Positioned(
-                  bottom: 10,
-                  child: Container(
-                    width: 110,
-                    height: 110,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.transparent, Colors.black],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-                Positioned.fill(
-                  bottom: 30,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Text(
-                      vod.title,
-                      style: TextStyle(fontSize: FontSize.large.size, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  ),
-                )
+                vodThumbnail,
+                vodGradient,
+                vodBottomFill,
               ],
             ),
           ),

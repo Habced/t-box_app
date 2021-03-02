@@ -637,7 +637,7 @@ Future<List<VodShort>> getPlayedVods(userId) async {
   List<VodShort> _vods = [];
 
   for (var i in loadedVodShort) {
-    _vods.add(VodShort(
+    var myVod = VodShort(
       id: i['id'],
       title: i['title'],
       contents: i['contents'],
@@ -645,7 +645,9 @@ Future<List<VodShort>> getPlayedVods(userId) async {
       pcTitle: i['primary_cate_title'],
       scTitle: i['secondary_cate_title'],
       timestamp: i['timestamp'],
-    ));
+    );
+    myVod.isFavorite = i['is_favorite'];
+    _vods.add(myVod);
   }
   print(_vods);
   return _vods;

@@ -89,103 +89,103 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
     return FutureBuilder<Vod>(
       future: futureVod,
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data.isFavorite) {
-            favIconColor = Colors.yellow;
-          } else {
-            favIconColor = Colors.grey;
-          }
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * .35,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(snapshot.data.thumbnail),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * .12,
-                    decoration: BoxDecoration(
-                      // color: Colors.black26,
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.black38, Colors.black87], // red to yellow
-                        tileMode: TileMode.repeated, // repeats the gradient over the canvas
-                      ),
-                    ),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          MarqueeWidget(
-                            direction: Axis.horizontal,
-                            child: Text(
-                              snapshot.data.title,
-                              style: TextStyle(fontSize: FontSize.xLarge.size),
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              FlatButton(
-                                child: Column(
-                                  children: <Widget>[Icon(Icons.play_circle_outline), Text("재생")],
-                                ),
-                                onPressed: () => _handleVodPlay(snapshot.data),
-                              ),
-                              SizedBox(width: 10),
-                              FlatButton(
-                                child: Column(
-                                  children: <Widget>[Icon(Icons.share), Text("공유")],
-                                ),
-                                onPressed: () => _handleVodShare(snapshot.data),
-                              ),
-                              SizedBox(width: 10),
-                              FlatButton(
-                                child: Column(
-                                  children: <Widget>[
-                                    Icon(Icons.stars, color: favIconColor),
-                                    Text("즐겨찾기"),
-                                  ],
-                                ),
-                                onPressed: () => _handleVodFav(snapshot.data),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Text(
-                snapshot.data.title,
-                style: TextStyle(fontSize: FontSize.xLarge.size),
-              ),
-              Text(snapshot.data.contents),
-              Text('something then vid list'),
-            ],
-          );
-        } else if (snapshot.hasError) {
+        if (snapshot.hasError) {
           return SizedBox.expand(child: Center(child: Text("${snapshot.error}")));
         }
-
-        return Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [CircularProgressIndicator(), SizedBox(height: 10), Text("Loading...")],
-          ),
+        if (!snapshot.hasData) {
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [CircularProgressIndicator(), SizedBox(height: 10), Text("Loading...")],
+            ),
+          );
+        }
+        if (snapshot.data.isFavorite) {
+          favIconColor = Colors.yellow;
+        } else {
+          favIconColor = Colors.grey;
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * .35,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(snapshot.data.thumbnail),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * .12,
+                  decoration: BoxDecoration(
+                    // color: Colors.black26,
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.black38, Colors.black87], // red to yellow
+                      tileMode: TileMode.repeated, // repeats the gradient over the canvas
+                    ),
+                  ),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        MarqueeWidget(
+                          direction: Axis.horizontal,
+                          child: Text(
+                            snapshot.data.title,
+                            style: TextStyle(fontSize: FontSize.xLarge.size),
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            FlatButton(
+                              child: Column(
+                                children: <Widget>[Icon(Icons.play_circle_outline), Text("재생")],
+                              ),
+                              onPressed: () => _handleVodPlay(snapshot.data),
+                            ),
+                            SizedBox(width: 10),
+                            FlatButton(
+                              child: Column(
+                                children: <Widget>[Icon(Icons.share), Text("공유")],
+                              ),
+                              onPressed: () => _handleVodShare(snapshot.data),
+                            ),
+                            SizedBox(width: 10),
+                            FlatButton(
+                              child: Column(
+                                children: <Widget>[
+                                  Icon(Icons.stars, color: favIconColor),
+                                  Text("즐겨찾기"),
+                                ],
+                              ),
+                              onPressed: () => _handleVodFav(snapshot.data),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Text(
+              snapshot.data.title,
+              style: TextStyle(fontSize: FontSize.xLarge.size),
+            ),
+            Text(snapshot.data.contents),
+            Text('something then vid list'),
+          ],
         );
       },
     );
