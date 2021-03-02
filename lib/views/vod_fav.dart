@@ -140,7 +140,8 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                               ? CircularProgressIndicator()
                               : FlatButton(
                                   child: Icon(Icons.stars, color: iconColor),
-                                  onPressed: _handleVodFav(snapshot.data[i])
+                                  onPressed: _handleVodFav(snapshot.data[i]),
+                                )
                         ],
                       );
                       return MapEntry(
