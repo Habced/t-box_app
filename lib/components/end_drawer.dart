@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tboxapp/services/app_service.dart' as appService;
+import 'package:url_launcher/url_launcher.dart';
 
 class EndDrawerWidget extends StatefulWidget {
   @override
@@ -36,8 +37,13 @@ class EndDrawerWidgetState extends State<EndDrawerWidget> {
   @override
   Widget build(BuildContext context) {
     var membershipBtn = GestureDetector(
-      onTap: () {
-        Navigator.popAndPushNamed(context, '/TODO');
+      onTap: () async {
+        const url = 'https://www.tboxfit.com/kr/membership';
+        if (await canLaunch(url)) {
+          await launch(url);
+        } else {
+          throw 'Could not launch $url';
+        }
       },
       child: Column(
         children: [
