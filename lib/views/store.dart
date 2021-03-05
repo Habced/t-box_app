@@ -47,6 +47,7 @@ class StoreScreenState extends State<StoreScreen> {
             }
           }),
       // bottomNavigationBar: buildBottomNavigationBar(context, 3),
+      backgroundColor: Colors.black,
     );
   }
 
@@ -63,84 +64,60 @@ class StoreScreenState extends State<StoreScreen> {
 
     double bodyWidth = 700;
     return Align(
-        alignment: Alignment.topCenter,
-        child: Container(
-            color: Colors.black,
-            constraints: BoxConstraints(maxWidth: bodyWidth),
-            child: SingleChildScrollView(
-                child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "스토어",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Container(width: 130, child: filterDropdown),
-                            ],
-                          ),
-                          Divider(
-                            color: Colors.white,
-                            thickness: 2,
-                          ),
-                          FutureBuilder<List<StoreItem>>(
-                            future: futureStoreItems,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                storeItems = snapshot.data;
-                                // filteredStoreItems = snapshot.data;
-                                if (_filterValue == -1) {
-                                  filteredStoreItems = storeItems;
-                                } else {
-                                  filteredStoreItems = [];
-                                  for (var i = 0; i < storeItems.length; i++) {
-                                    if (storeItems[i].cateId == _filterValue) {
-                                      filteredStoreItems.add(storeItems[i]);
-                                    }
-                                  }
-                                }
-                                return Column(
-                                    children:
-                                        _getRows(context, filteredStoreItems)
-                                    // children: [
-                                    //   for( var storeItem in snapshot.data) _buildStoreItem(storeItem)
-                                    // ]
-                                    );
-                              } else if (snapshot.hasError) {
-                                return Text("${snapshot.error}");
-                              }
+      alignment: Alignment.topCenter,
+      child: Container(
+        constraints: BoxConstraints(maxWidth: bodyWidth),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "스토어",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Container(width: 130, child: filterDropdown),
+                  ],
+                ),
+                Divider(color: Colors.white, thickness: 2),
+                FutureBuilder<List<StoreItem>>(
+                  future: futureStoreItems,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    }
+                    if (!snapshot.hasData) {
+                      return Expanded(child: Center(child: CircularProgressIndicator()));
+                    }
 
-                              return Expanded(
-                                  child: Center(
-                                      child: CircularProgressIndicator()));
-                            },
-                          ),
-                        ])))));
-    // return Center(
-    //   child: FutureBuilder<List<StoreItem>>(
-    //     future: futureStoreItems,
-    //     builder: (context, snapshot) {
-    //       if (snapshot.hasData) {
-    //         return Column(
-    //           children: [
-    //             for( var storeItem in snapshot.data) _buildStoreItem(storeItem)
-    //           ]
-    //         );
-    //       } else if (snapshot.hasError) {
-    //         return Text("${snapshot.error}");
-    //       }
-
-    //       return CircularProgressIndicator();
-    //     },
-    //   ),
-    // );
+                    storeItems = snapshot.data;
+                    // filteredStoreItems = snapshot.data;
+                    if (_filterValue == -1) {
+                      filteredStoreItems = storeItems;
+                    } else {
+                      filteredStoreItems = [];
+                      for (var i = 0; i < storeItems.length; i++) {
+                        if (storeItems[i].cateId == _filterValue) {
+                          filteredStoreItems.add(storeItems[i]);
+                        }
+                      }
+                    }
+                    return Column(children: _getRows(context, filteredStoreItems));
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   List<Widget> _getRows(context, storeItems) {
@@ -166,25 +143,21 @@ class StoreScreenState extends State<StoreScreen> {
   Widget _buildStoreItem(context, StoreItem storeItem) {
     if (!storeCateIds.contains(storeItem.cateId)) {
       storeCateIds.add(storeItem.cateId);
-      myStoreCates.add(DropdownMenuItem(
-          child: Text(storeItem.cate), value: storeItem.cateId));
+      myStoreCates.add(DropdownMenuItem(child: Text(storeItem.cate), value: storeItem.cateId));
     }
     return Expanded(
         flex: 1,
         child: GestureDetector(
           onTap: () async {
-            if (storeItem.naverStoreLink != '' &&
-                storeItem.naverStoreLink != 'soldout') {
+            if (storeItem.naverStoreLink != '' && storeItem.naverStoreLink != 'soldout') {
               if (await canLaunch(storeItem.naverStoreLink)) {
                 await launch(storeItem.naverStoreLink);
               }
-            } else if (storeItem.interparkStoreLink != '' &&
-                storeItem.naverStoreLink != 'soldout') {
+            } else if (storeItem.interparkStoreLink != '' && storeItem.naverStoreLink != 'soldout') {
               if (await canLaunch(storeItem.interparkStoreLink)) {
                 await launch(storeItem.interparkStoreLink);
               }
-            } else if (storeItem.naverStoreLink == 'soldout' ||
-                storeItem.interparkStoreLink == 'soldout') {
+            } else if (storeItem.naverStoreLink == 'soldout' || storeItem.interparkStoreLink == 'soldout') {
               FlutterToast.showToast(msg: "Sold Out");
             } else {
               FlutterToast.showToast(msg: "Error with link");
@@ -193,9 +166,7 @@ class StoreScreenState extends State<StoreScreen> {
           child: Stack(
             alignment: Alignment.topCenter,
             children: [
-              Container(
-                  child: Image.network(
-                      'https://i1.tbox.media/' + storeItem.mainImg)),
+              Container(child: Image.network('https://i1.tbox.media/' + storeItem.mainImg)),
               Column(
                 children: [
                   Text(storeItem.name,

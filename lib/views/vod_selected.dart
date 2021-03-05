@@ -21,6 +21,7 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
   GlobalKey<ScaffoldState> _globalKey = GlobalKey();
 
   int _uid;
+  int _urole;
 
   Future<Vod> futureVod;
   // Vod futureVod;
@@ -30,42 +31,14 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
   void initState() {
     super.initState();
     futureVod = getFutureVod();
-    /*
-    futureVod = Vod(
-      id: 1,
-      title: "wawawawawawawawawawawa",
-      contents: 'sfsfsfsfsfsfsf\nsfsfsfsfsf\/sfsfsfsfsfsfsf',
-      vod: 'so',
-      mrbg: 'so',
-      thumbnail: 'https://i1.tbox.media/vodthumbnail/2020/06/19/e5abd59e90144e5bbc2c20e8a3a71427.jpg',
-      pcTitle: 'pctitle',
-      scTitle: 'sctitle',
-      levelId: 1,
-      viewableTo: [1, 2, 3],
-      usingPoints: true,
-      earnablePoints: 1,
-      earnableTimes: 1,
-      sensingType: 1,
-      sensingStartMin: 1,
-      sensingStartSec: 1,
-      sensingEndMin: 2,
-      sensingEndSec: 2,
-      pointGoal: 1,
-      pointSuccess: 1,
-      isFavorite: false,
-    );
-*/
     favIconColor = Colors.grey;
-    // if (futureVod.isFavorite) {
-    //   favIconColor = Colors.yellow;
-    // } else {
-    //   favIconColor = Colors.grey;
-    // }
+    appService.addVodClick(widget.vodId);
   }
 
   Future<Vod> getFutureVod() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _uid = prefs.getInt('id') ?? -1;
+    _urole = prefs.getInt('role') ?? -1;
     if (_uid != -1) {
       return appService.getVodForUser(widget.vodId, _uid);
     } else {
@@ -183,7 +156,9 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
               snapshot.data.title,
               style: TextStyle(fontSize: FontSize.xLarge.size),
             ),
+            SizedBox(height: 10),
             Text(snapshot.data.contents),
+            SizedBox(height: 20),
             Text('something then vid list'),
           ],
         );
@@ -192,6 +167,14 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
   }
 
   _handleVodPlay(Vod snapshotData) {
+    if (_uid == -1) {
+      FlutterToast.showToast(msg: '로그인 is required.');
+      return;
+    }
+    if (!snapshotData.viewableTo.contains(_urole)) {
+      FlutterToast.showToast(msg: '권한 없습니다.');
+      return;
+    }
     Navigator.push(
       context,
       MaterialPageRoute(

@@ -39,7 +39,32 @@ class VodPlayScreenState extends State<VodPlayScreen> {
     _uRole = prefs.getInt('role') ?? -1;
     if (_uRole == -1 || !widget.myVod.viewableTo.contains(_uRole)) {
       // TODO show alert and pop
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Bluetooth'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('You do not have permssion to view this video'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Close'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
+
+    appService.addVodPlay(widget.myVod.id, widget.uid);
   }
 
   Future<void> initializePlayer() async {

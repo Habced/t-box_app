@@ -832,6 +832,18 @@ Future<UserPointsList> getPointsUsageByUser(userId) async {
   return _upl;
 }
 
+Future<int> getTotalPointForUser(userId) async {
+  final response = await http.get('$url/get_total_point_for_user/$userId/', headers: myHeader);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to get Total Point For User');
+  }
+
+  final extractedData = json.decode(utf8.decode(response.bodyBytes));
+
+  return extractedData['total_points'];
+}
+
 Future<FrontPageData> getFrontPageData() async {
   final response = await http.get('$url/get_front_page_data/', headers: myHeader);
 

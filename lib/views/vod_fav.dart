@@ -202,19 +202,24 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Image.network(vod.thumbnail, fit: BoxFit.fitHeight, height: 160, width: 110),
-                          Column(
-                            children: [
-                              Container(
-                                width: 150,
-                                child: Center(
-                                  child: Text(vod.title, overflow: TextOverflow.ellipsis),
+                          Container(
+                            height: 160,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  width: 150,
+                                  child: Center(
+                                    child: Text(vod.title, overflow: TextOverflow.ellipsis),
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                DateFormat('yy.MM.dd').format(DateTime.parse(vod.timestamp)),
-                                style: TextStyle(color: Colors.grey[350]),
-                              ),
-                            ],
+                                Text(
+                                  DateFormat('yy.MM.dd').format(DateTime.parse(vod.timestamp)),
+                                  style: TextStyle(color: Colors.grey[350]),
+                                ),
+                              ],
+                            ),
                           ),
                           FlatButton(
                             child: Column(

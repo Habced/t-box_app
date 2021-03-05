@@ -15,23 +15,35 @@ class EndDrawerWidgetState extends State<EndDrawerWidget> {
   String _uemail;
   String _uphotoUrl;
   String _ufullname;
+  int _urole;
+  String roleName;
+  List<String> userRoles = ['Error', 'Admin', 'None', 'Member', 'Business'];
+  Future<int> totalPoints;
+  bool isPointsLoading;
 
-  Future<Null> getSharedPrefs() async {
+  Future<Null> getSharedPrefsAndData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _uid = prefs.getInt('id') ?? -1;
       _uemail = prefs.getString('email') ?? "";
       _uphotoUrl = prefs.getString('photoUrl') ?? "";
       _ufullname = prefs.getString('fullname') ?? "";
+      _urole = prefs.getInt('role') ?? 0;
     });
     debugPrint(prefs.getInt('id').toString());
+    totalPoints = getTotalPoint();
   }
 
   @override
   void initState() {
     super.initState();
     _uid = -1;
-    getSharedPrefs();
+    isPointsLoading = true;
+    getSharedPrefsAndData();
+  }
+
+  Future<int> getTotalPoint() async {
+    return await appService.getTotalPointForUser(_uid);
   }
 
   @override
@@ -226,7 +238,7 @@ class EndDrawerWidgetState extends State<EndDrawerWidget> {
                     SizedBox(width: 10),
                     // TODO implment getting role name
                     // TODO remove temp place holder
-                    Text("XXXXXX", style: TextStyle(color: Color(0xFFB4B4B4)))
+                    Text(userRoles[_urole], style: TextStyle(color: Color(0xFFB4B4B4)))
                   ],
                 ),
                 SizedBox(height: 5),
@@ -244,7 +256,21 @@ class EndDrawerWidgetState extends State<EndDrawerWidget> {
                     SizedBox(width: 10),
                     // TODO implment getting role name
                     // TODO remove temp place holder
-                    Text("XX,XXX pt", style: TextStyle(color: Color(0xFFB4B4B4)))
+                    FutureBuilder<int>(
+                      future: totalPoints,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text('ERROR pt', style: TextStyle(color: Color(0xFFB4B4B4)));
+                        }
+                        if (!snapshot.hasData) {
+                          return Text('... pt', style: TextStyle(color: Color(0xFFB4B4B4)));
+                        }
+                        return Text(
+                          '${snapshot.data.toString} pt',
+                          style: TextStyle(color: Color(0xFFB4B4B4)),
+                        );
+                      },
+                    ),
                   ],
                 )
               ],
