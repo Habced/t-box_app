@@ -8,6 +8,7 @@ import 'package:tboxapp/components/top_app_bar.dart';
 import 'package:tboxapp/models/vod.model.dart';
 import 'package:tboxapp/shared/global_vars.dart';
 import 'package:tboxapp/services/app_service.dart' as appService;
+import 'package:tboxapp/views/vod_selected.dart';
 
 class VodFavScreen extends StatefulWidget {
   @override
@@ -136,12 +137,18 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                               ],
                             ),
                           ),
-                          vod.isLoading
-                              ? CircularProgressIndicator()
-                              : FlatButton(
-                                  child: Icon(Icons.stars, color: iconColor),
-                                  onPressed: () => _handleVodFav(snapshot.data[i]),
-                                )
+                          Container(
+                            alignment: Alignment.center,
+                            height: 30,
+                            width: 30,
+                            child: vod.isLoading
+                                ? CircularProgressIndicator()
+                                : FlatButton(
+                                    padding: EdgeInsets.all(0),
+                                    child: Icon(Icons.stars, color: iconColor),
+                                    onPressed: () => _handleVodFav(snapshot.data[i]),
+                                  ),
+                          ),
                         ],
                       );
                       return MapEntry(
@@ -150,9 +157,7 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                           padding: EdgeInsets.all(10),
                           child: InkWell(
                             child: vodRow,
-                            onTap: () {
-                              print('clicked on vod: ' + vod.title);
-                            },
+                            onTap: () => _handleVodClick(vod),
                           ),
                         ),
                       );
@@ -205,11 +210,11 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                           Container(
                             height: 160,
                             child: Column(
-                              mainAxisSize: MainAxisSize.max,
+                              mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Container(
-                                  width: 150,
+                                  width: 110,
                                   child: Center(
                                     child: Text(vod.title, overflow: TextOverflow.ellipsis),
                                   ),
@@ -221,23 +226,38 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                               ],
                             ),
                           ),
-                          FlatButton(
-                            child: Column(
-                              children: <Widget>[Icon(Icons.share), Text("공유")],
+                          Container(
+                            width: 70,
+                            child: FlatButton(
+                              child: Column(
+                                children: <Widget>[Icon(Icons.share), Text("공유")],
+                              ),
+                              onPressed: () => _handleVodShare(vod),
                             ),
-                            onPressed: () => _handleVodShare(vod),
                           ),
-                          vod.isLoading
-                              ? CircularProgressIndicator()
-                              : FlatButton(
-                                  child: Icon(Icons.stars, color: iconColor),
-                                  onPressed: () => _handleVodFav(snapshot.data[i]),
-                                ),
+                          Container(
+                            alignment: Alignment.center,
+                            height: 30,
+                            width: 30,
+                            child: vod.isLoading
+                                ? CircularProgressIndicator()
+                                : FlatButton(
+                                    padding: EdgeInsets.all(0),
+                                    child: Icon(Icons.stars, color: iconColor),
+                                    onPressed: () => _handleVodFav(snapshot.data[i]),
+                                  ),
+                          ),
                         ],
                       );
                       return MapEntry(
                         i,
-                        Padding(padding: EdgeInsets.all(10), child: InkWell(child: vodRow)),
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                          child: InkWell(
+                            child: vodRow,
+                            onTap: () => _handleVodClick(vod),
+                          ),
+                        ),
                       );
                     })
                     .values
@@ -304,5 +324,14 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
       });
     }
     return;
+  }
+
+  _handleVodClick(VodShort snapshotData) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => VodSelectedScreen(vodId: snapshotData.id),
+      ),
+    );
   }
 }
