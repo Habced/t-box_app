@@ -32,18 +32,18 @@ class VodPlayScreenState extends State<VodPlayScreen> {
   void initState() {
     super.initState();
     _checkPermissions();
+    initializePlayer();
   }
 
   _checkPermissions() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _uRole = prefs.getInt('role') ?? -1;
     if (_uRole == -1 || !widget.myVod.viewableTo.contains(_uRole)) {
-      // TODO show alert and pop
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Bluetooth'),
+            title: Text('Permission Error'),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -121,6 +121,30 @@ class VodPlayScreenState extends State<VodPlayScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[Chewie(controller: _chewieController)],
         ),
+      );
+    } else if (_chewieController != null && _chewieController.videoPlayerController.value.hasError) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Failed to load the video'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Close'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
       );
     } else {
       return SizedBox.expand(
