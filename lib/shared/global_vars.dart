@@ -108,6 +108,8 @@ String crankData = "0";
 double distance = 0;
 String distanceString = "0.00";
 String caloriesBurned = "0.0";
+double speed = 0;
+String speedString = "0.0";
 
 Peripheral cscDevice;
 Characteristic crankCharacteristic;
@@ -161,9 +163,16 @@ void calculateCrankMesaurement(Peripheral device, int cr, int lcet) {
     // double crankCadence = (crankRevolutions - gvars.myLastCrankRevolutions) * 60 / timeDifference; // [revolutions/minute]
     myCurrentCrankCadence = (cr - myLastCrankRevolutions) * 60 ~/ timeDifference;
     crankData = myCurrentCrankCadence.toString();
-    distance = (cr * 3).toDouble() / 1000;
-    distanceString = ((cr * 3).toDouble() / 1000).toString().substring(0, 3);
-    // print("distance: " + distance);
+    distance = (cr * 2).toDouble() / 1000;
+    distanceString = ((cr * 2).toDouble() / 1000).toString().substring(0, 3);
+
+    // speed is current crank cadence * 3 = speed in meters per minute.
+    // current crank cadence * 3 * 60 / 1000 = speed in km per hour
+    speed = (myCurrentCrankCadence * 3) * 60 / 1000;
+    speedString = speed.toString().substring(0, 3);
+    // print(myCurrentCrankCadence.toString());
+    // print('cr: ' + cr.toString());
+    // print("distance: " + distance.toString());
     // print("xx: " + ((crankRevolutions * 2).toDouble() / 1000).toString());
     // print("myCurrentCrankCadence: " + myCurrentCrankCadence.toString() );
   }
