@@ -37,15 +37,16 @@ class StoreScreenState extends State<StoreScreen> {
       appBar: buildFullAppBar(context),
       endDrawer: EndDrawerWidget(),
       body: WillPopScope(
-          child: _buildBody(),
-          onWillPop: () {
-            if (_globalKey.currentState.isDrawerOpen) {
-              Navigator.pop(context);
-              return Future.value(false);
-            } else {
-              return Future.value(true);
-            }
-          }),
+        child: _buildBody(),
+        onWillPop: () {
+          if (_globalKey.currentState.isDrawerOpen) {
+            Navigator.pop(context);
+            return Future.value(false);
+          } else {
+            return Future.value(true);
+          }
+        },
+      ),
       // bottomNavigationBar: buildBottomNavigationBar(context, 3),
       backgroundColor: Colors.black,
     );
@@ -76,13 +77,7 @@ class StoreScreenState extends State<StoreScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "스토어",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    Text("스토어", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     Container(width: 130, child: filterDropdown),
                   ],
                 ),
@@ -123,19 +118,19 @@ class StoreScreenState extends State<StoreScreen> {
   List<Widget> _getRows(context, storeItems) {
     List<Widget> list = new List<Widget>();
     for (int i = 0; i < storeItems.length; i += 2) {
-      list.add(Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildStoreItem(context, storeItems[i]),
-          SizedBox(width: 1),
-          i + 1 < storeItems.length
-              ? _buildStoreItem(context, storeItems[i + 1])
-              : Expanded(flex: 1, child: Container())
-        ],
-      ));
       list.add(
-        SizedBox(height: 2),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildStoreItem(context, storeItems[i]),
+            SizedBox(width: 1),
+            i + 1 < storeItems.length
+                ? _buildStoreItem(context, storeItems[i + 1])
+                : Expanded(flex: 1, child: Container())
+          ],
+        ),
       );
+      list.add(SizedBox(height: 2));
     }
     return list;
   }
@@ -146,47 +141,41 @@ class StoreScreenState extends State<StoreScreen> {
       myStoreCates.add(DropdownMenuItem(child: Text(storeItem.cate), value: storeItem.cateId));
     }
     return Expanded(
-        flex: 1,
-        child: GestureDetector(
-          onTap: () async {
-            if (storeItem.naverStoreLink != '' && storeItem.naverStoreLink != 'soldout') {
-              if (await canLaunch(storeItem.naverStoreLink)) {
-                await launch(storeItem.naverStoreLink);
-              }
-            } else if (storeItem.interparkStoreLink != '' && storeItem.naverStoreLink != 'soldout') {
-              if (await canLaunch(storeItem.interparkStoreLink)) {
-                await launch(storeItem.interparkStoreLink);
-              }
-            } else if (storeItem.naverStoreLink == 'soldout' || storeItem.interparkStoreLink == 'soldout') {
-              FlutterToast.showToast(msg: "Sold Out");
-            } else {
-              FlutterToast.showToast(msg: "Error with link");
+      flex: 1,
+      child: GestureDetector(
+        onTap: () async {
+          if (storeItem.naverStoreLink != '' && storeItem.naverStoreLink != 'soldout') {
+            if (await canLaunch(storeItem.naverStoreLink)) {
+              await launch(storeItem.naverStoreLink);
             }
-          },
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              Container(child: Image.network('https://i1.tbox.media/' + storeItem.mainImg)),
-              Column(
-                children: [
-                  Text(storeItem.name,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      )),
-                  SizedBox(
-                    height: 3,
-                  ),
-                  Text(storeItem.price.toString() + ' 원',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      )),
-                ],
-              )
-            ],
-          ),
-        ));
+          } else if (storeItem.interparkStoreLink != '' && storeItem.naverStoreLink != 'soldout') {
+            if (await canLaunch(storeItem.interparkStoreLink)) {
+              await launch(storeItem.interparkStoreLink);
+            }
+          } else if (storeItem.naverStoreLink == 'soldout' || storeItem.interparkStoreLink == 'soldout') {
+            FlutterToast.showToast(msg: "Sold Out");
+          } else {
+            FlutterToast.showToast(msg: "Error with link");
+          }
+        },
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(child: Image.network('https://i1.tbox.media/' + storeItem.mainImg)),
+            Column(
+              children: [
+                Text(storeItem.name, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                SizedBox(height: 3),
+                Text(
+                  storeItem.price.toString() + ' 원',
+                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
 
     //  Column(
     //   crossAxisAlignment: CrossAxisAlignment.start,

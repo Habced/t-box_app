@@ -853,19 +853,37 @@ Future<FrontPageData> getFrontPageData() async {
 
   final extractedData = json.decode(utf8.decode(response.bodyBytes));
 
-  var loadedFrontPageData = extractedData['results'];
   FrontPageData fpd = FrontPageData();
+  fpd.banners = [];
+  fpd.latestVods = [];
+  fpd.pcLatestVods = [];
 
-  for (var i in loadedFrontPageData['banners']) {
+  for (var i in extractedData['banners']) {
     fpd.banners.add(Banner(id: i['banner_id'], img: i['img']));
   }
-  for (var i in loadedFrontPageData['latest_vods']) {
-    fpd.lastestVods.add(VodMinimal(id: i['vod_id'], title: i['title'], thumbnail: i['thumbnail']));
+  for (var i in extractedData['latest_vods']) {
+    fpd.latestVods.add(
+      VodMinimal(
+        id: i['vod_id'],
+        title: i['title'],
+        thumbnail: 'https://i1.tbox.media/' + i['thumbnail'],
+      ),
+    );
   }
-  for (var i in loadedFrontPageData['cate_vods']) {
-    var plc = PcLatestVods(pc: PcShort(id: i['pc_id'], title: i['title']));
+  for (var i in extractedData['cate_vods']) {
+    var plc = PcLatestVods(
+      pc: PcShort(
+        id: i['primary_cate']['pc_id'],
+        title: i['primary_cate']['title'],
+      ),
+    );
+    plc.vodList = [];
     for (var j in i['latest_vods']) {
-      plc.vodList.add(VodMinimal(id: j['vod_id'], title: j['title'], thumbnail: j['thumbnail']));
+      plc.vodList.add(VodMinimal(
+        id: j['vod_id'],
+        title: j['title'],
+        thumbnail: 'https://i1.tbox.media/' + j['thumbnail'],
+      ));
     }
     fpd.pcLatestVods.add(plc);
   }

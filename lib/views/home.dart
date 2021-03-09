@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_html/style.dart';
 import 'package:tboxapp/components/end_drawer.dart';
+import 'package:tboxapp/components/marquee.dart';
 import 'package:tboxapp/models/screen_data.model.dart';
 import 'package:tboxapp/models/vod.model.dart';
 import 'package:tboxapp/shared/global_vars.dart';
@@ -34,11 +35,8 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    print('a');
     _getTotalUnread();
     fpd = _getFpd();
-    print('c');
-    print(fpd);
     // TODO check if user is logged in and if userrole was updated
   }
 
@@ -51,7 +49,6 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<FrontPageData> _getFpd() async {
-    print('b');
     return await appService.getFrontPageData();
   }
 
@@ -169,11 +166,6 @@ class HomeScreenState extends State<HomeScreen> {
     //   }).toList(),
     // );
 
-    // var recentVods = SingleChildScrollView(
-    //   scrollDirection: Axis.horizontal,
-    //   child: Row(children: _buildRecentVids()),
-    // );
-
     return FutureBuilder<FrontPageData>(
       future: fpd,
       builder: (context, snapshot) {
@@ -242,6 +234,19 @@ class HomeScreenState extends State<HomeScreen> {
             );
           }).toList(),
         );
+
+        var recentVods = SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(children: _buildRecentVids(snapshot.data.latestVods)),
+        );
+
+        var pcLatestVods = Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            for (var pc in snapshot.data.pcLatestVods) _buildPcLatestVids(pc),
+          ],
+        );
+
         return Container(
           // decoration: BoxDecoration(
           //   image: DecorationImage(
@@ -260,43 +265,12 @@ class HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: 10),
                 Text("최신영상"),
                 SizedBox(height: 10),
+                recentVods,
                 // isRecentVodsLoading ? CircularProgressIndicator() : recentVods,
                 SizedBox(height: 10),
+                pcLatestVods
                 // Text("현재 시청중인 페이지"),
                 // SizedBox(height: 10),
-
-                // RaisedButton(
-                //   onPressed: () {
-                //     Navigator.pushNamed(context, '/coach');
-                //   },
-                //   child: Text('Go to Coach', style: TextStyle(color: Colors.white)),
-                // ),
-                // RaisedButton(
-                //   onPressed: () {
-                //     // Navigator.pushNamed(context, '/vod_selected');
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //         builder: (context) => DataPointsScreen(),
-                //       ),
-                //     );
-                //   },
-                //   child: Text('point list'),
-                // ),
-                // RaisedButton(
-                //   onPressed: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //         builder: (context) => VodCateListScreen(
-                //           selPcId: -1,
-                //           selScId: -1,
-                //         ),
-                //       ),
-                //     );
-                //   },
-                //   child: Text('VodCateListScreen'),
-                // ),
               ],
             ),
           ),
@@ -305,7 +279,7 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  List<Widget> _buildRecentVids() {
+  List<Widget> _buildRecentVids(latestVods) {
     List<Widget> vods = [];
     for (var vod in latestVods) {
       var vodThumbnail = Container(
@@ -355,6 +329,8 @@ class HomeScreenState extends State<HomeScreen> {
           alignment: Alignment.bottomCenter,
           child: Text(
             vod.title,
+            overflow: TextOverflow.fade,
+            maxLines: 1,
             style: TextStyle(
               fontSize: FontSize.large.size,
               fontWeight: FontWeight.bold,
@@ -383,6 +359,51 @@ class HomeScreenState extends State<HomeScreen> {
       );
     }
     return vods;
+  }
+
+  Column _buildPcLatestVids(pclv) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [Text(pclv.pc.title), _buildPcLatestVodsRow(pclv.vodList), SizedBox(height: 10)],
+    );
+  }
+
+  SingleChildScrollView _buildPcLatestVodsRow(latestVods) {
+    List<Widget> vods = [];
+    for (var vod in latestVods) {
+      vods.add(
+        InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VodSelectedScreen(vodId: vod.id),
+              ),
+            );
+          },
+          child: Container(
+            margin: EdgeInsets.all(5),
+            height: 160,
+            width: 110,
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: Colors.black,
+              image: DecorationImage(
+                image: NetworkImage(vod.thumbnail),
+                fit: BoxFit.fitHeight,
+              ),
+              // borderRadius: BorderRadius.circular(5),
+            ),
+            child: Container(),
+          ),
+        ),
+      );
+    }
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(children: vods),
+    );
   }
 
   void _openEndDrawer() {
