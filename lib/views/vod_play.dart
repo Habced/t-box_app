@@ -69,6 +69,7 @@ class VodPlayScreenState extends State<VodPlayScreen> {
   Future<void> initializePlayer() async {
     var myMatCtrls;
     // myMatCtrls = MyMaterialControls();
+    myMatCtrls = CyclingMatCtrl();
     // if (widget.myVod.pcType == 0) {
     //   // None
     //   myMatCtrls = MaterialControls(myDataWidget: null);
