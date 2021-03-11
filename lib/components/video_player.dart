@@ -535,6 +535,7 @@ class CadenceDataRightState extends State<CadenceDataRight> with SingleTickerPro
 }
 
 class CadenceDataTop extends StatefulWidget {
+  const CadenceDataTop({Key key}) : super(key: key);
   @override
   CadenceDataTopState createState() => CadenceDataTopState();
 }

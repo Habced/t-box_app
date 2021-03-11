@@ -684,10 +684,24 @@ class _CyclingMatCtrlState extends State<CyclingMatCtrl> {
     super.dispose();
   }
 
-  void _dispose() {}
+  void _dispose() {
+    controller.removeListener(_updateState);
+    _hideTimer?.cancel();
+    _initTimer?.cancel();
+    _showAfterExpandCollapseTimer?.cancel();
+  }
 
   @override
   void didChangeDependencies() {
+    final _oldController = chewieController;
+    chewieController = ChewieController.of(context);
+    controller = chewieController.videoPlayerController;
+
+    if (_oldController != chewieController) {
+      _dispose();
+      _initialize();
+    }
+
     super.didChangeDependencies();
   }
 
@@ -1052,7 +1066,26 @@ class _TboxMatCtrlState extends State<TboxMatCtrl> {
     super.dispose();
   }
 
-  void _dispose() {}
+  void _dispose() {
+    controller.removeListener(_updateState);
+    _hideTimer?.cancel();
+    _initTimer?.cancel();
+    _showAfterExpandCollapseTimer?.cancel();
+  }
+
+  @override
+  void didChangeDependencies() {
+    final _oldController = chewieController;
+    chewieController = ChewieController.of(context);
+    controller = chewieController.videoPlayerController;
+
+    if (_oldController != chewieController) {
+      _dispose();
+      _initialize();
+    }
+
+    super.didChangeDependencies();
+  }
 
   AnimatedOpacity _buildBottomBar(BuildContext context) {
     final iconColor = Theme.of(context).textTheme.button.color;

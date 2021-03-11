@@ -69,17 +69,19 @@ class VodPlayScreenState extends State<VodPlayScreen> {
   Future<void> initializePlayer() async {
     var myMatCtrls;
     // myMatCtrls = MyMaterialControls();
-    myMatCtrls = CyclingMatCtrl();
-    // if (widget.myVod.pcType == 0) {
-    //   // None
-    //   myMatCtrls = MaterialControls(myDataWidget: null);
-    // } else if (widget.myVod.pcType == 1) {
-    //   // T-Cycling
-    //   myMatCtrls = MaterialControls(key: _matCadenceKey, myDataWidget: CadenceDataRight());
-    // } else if (widget.myVod.pcType == 2) {
-    //   // T-Box
-    //   myMatCtrls = MaterialControls(key: _matTboxKey, myDataWidget: TBoxDataRight());
-    // }
+    if (widget.myVod.pcType == 0) {
+      // None
+      // myMatCtrls = MaterialControls(myDataWidget: null);
+      myMatCtrls = MyMaterialControls();
+    } else if (widget.myVod.pcType == 1) {
+      // T-Cycling
+      // myMatCtrls = MaterialControls(key: _matCadenceKey, myDataWidget: CadenceDataRight());
+      myMatCtrls = CyclingMatCtrl();
+    } else if (widget.myVod.pcType == 2) {
+      // T-Box
+      // myMatCtrls = MaterialControls(key: _matTboxKey, myDataWidget: TBoxDataRight());
+      myMatCtrls = TboxMatCtrl();
+    }
 
     _videoPlayerController = VideoPlayerController.network(widget.myVod.vod);
     await _videoPlayerController.initialize();
@@ -118,11 +120,12 @@ class VodPlayScreenState extends State<VodPlayScreen> {
     // ignore: null_aware_in_logical_operator
     if (_chewieController != null && _chewieController.videoPlayerController.value?.initialized) {
       return SizedBox.expand(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[Chewie(controller: _chewieController)],
-        ),
+        child: Center(child: Chewie(controller: _chewieController)),
+        // Column(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   crossAxisAlignment: CrossAxisAlignment.center,
+        //   children: <Widget>[Chewie(controller: _chewieController)],
+        // ),
       );
     } else if (_chewieController != null && _chewieController.videoPlayerController.value.hasError) {
       showDialog(
