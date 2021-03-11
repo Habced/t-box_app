@@ -3,7 +3,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tboxapp/components/marquee.dart';
 import 'package:tboxapp/components/top_app_bar.dart';
 import 'package:tboxapp/models/vod.model.dart';
 import 'package:tboxapp/shared/global_vars.dart';
@@ -52,7 +51,7 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
               ),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text('Close'),
                 onPressed: () {
                   Navigator.pop(context);
@@ -143,8 +142,7 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                             width: 30,
                             child: vod.isLoading
                                 ? CircularProgressIndicator()
-                                : FlatButton(
-                                    padding: EdgeInsets.all(0),
+                                : TextButton(
                                     child: Icon(Icons.stars, color: iconColor),
                                     onPressed: () => _handleVodFav(snapshot.data[i]),
                                   ),
@@ -228,7 +226,7 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                           ),
                           Container(
                             width: 70,
-                            child: FlatButton(
+                            child: TextButton(
                               child: Column(
                                 children: <Widget>[Icon(Icons.share), Text("공유")],
                               ),
@@ -241,8 +239,7 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                             width: 30,
                             child: vod.isLoading
                                 ? CircularProgressIndicator()
-                                : FlatButton(
-                                    padding: EdgeInsets.all(0),
+                                : TextButton(
                                     child: Icon(Icons.stars, color: iconColor),
                                     onPressed: () => _handleVodFav(snapshot.data[i]),
                                   ),

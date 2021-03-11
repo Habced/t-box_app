@@ -4,17 +4,17 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-class MaterialControls extends StatefulWidget {
-  final Widget myDataWidget;
-  const MaterialControls({Key key, @required this.myDataWidget}) : super(key: key);
+class MyMaterialControls extends StatefulWidget {
+  // final Widget myDataWidget;
+  // const MaterialControls({Key key, @required this.myDataWidget}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _MaterialControlsState();
+    return _MyMaterialControlsState();
   }
 }
 
-class _MaterialControlsState extends State<MaterialControls> {
+class _MyMaterialControlsState extends State<MyMaterialControls> {
   VideoPlayerValue _latestValue;
   double _latestVolume;
   bool _hideStuff = true;
@@ -77,7 +77,8 @@ class _MaterialControlsState extends State<MaterialControls> {
                   alignment: Alignment.centerRight,
                   child: Container(
                       // child: chewieController.isFullScreen ? CadenceDataRight() : Container(),
-                      child: widget.myDataWidget),
+                      // child: widget.myDataWidget,
+                      ),
                 ),
               )
             ],
@@ -461,6 +462,7 @@ class _VideoProgressBarState extends State<MaterialVideoProgressBar> {
         ),
       ),
       onHorizontalDragStart: (DragStartDetails details) {
+        // ignore: null_aware_in_logical_operator
         if (!controller.value.initialized) {
           return;
         }
@@ -595,3 +597,49 @@ String formatDuration(Duration position) {
 
   return formattedTime;
 }
+
+// class CyclingMatCtrl extends MaterialControls {
+//   @override
+//   State<StatefulWidget> createState() {
+//     return _CyclingMatCtrlState();
+//   }
+// }
+
+// class _CyclingMatCtrlState extends State<CyclingMatCtrl> {
+//   @override
+//   Widget build(BuildContext context) {
+//     // TODO: implement build
+//     throw UnimplementedError();
+//   }
+
+//   @override
+//   void dispose() {
+//     _dispose();
+//     super.dispose();
+//   }
+
+//   void _dispose() {}
+// }
+
+// class TboxMatCtrl extends MaterialControls {
+//   @override
+//   State<StatefulWidget> createState() {
+//     return _TboxMatCtrlState();
+//   }
+// }
+
+// class _TboxMatCtrlState extends State<TboxMatCtrl> {
+//   @override
+//   Widget build(BuildContext context) {
+//     // TODO: implement build
+//     throw UnimplementedError();
+//   }
+
+//   @override
+//   void dispose() {
+//     _dispose();
+//     super.dispose();
+//   }
+
+//   void _dispose() {}
+// }

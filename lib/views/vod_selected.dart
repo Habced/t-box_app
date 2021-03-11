@@ -121,25 +121,37 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            FlatButton(
+                            TextButton(
                               child: Column(
-                                children: <Widget>[Icon(Icons.play_circle_outline), Text("재생")],
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.play_circle_outline,
+                                    color: Colors.white,
+                                  ),
+                                  Text("재생", style: TextStyle(color: Colors.white)),
+                                ],
                               ),
                               onPressed: () => _handleVodPlay(snapshot.data),
                             ),
                             SizedBox(width: 10),
-                            FlatButton(
+                            OutlinedButton(
                               child: Column(
-                                children: <Widget>[Icon(Icons.share), Text("공유")],
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.share,
+                                    color: Colors.white,
+                                  ),
+                                  Text("공유", style: TextStyle(color: Colors.white)),
+                                ],
                               ),
                               onPressed: () => _handleVodShare(snapshot.data),
                             ),
                             SizedBox(width: 10),
-                            FlatButton(
+                            TextButton(
                               child: Column(
                                 children: <Widget>[
                                   Icon(Icons.stars, color: favIconColor),
-                                  Text("즐겨찾기"),
+                                  Text("즐겨찾기", style: TextStyle(color: Colors.white)),
                                 ],
                               ),
                               onPressed: () => _handleVodFav(snapshot.data),

@@ -900,7 +900,7 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
       },
     );
 
-    var saveSettingDialogCancel = FlatButton(
+    var saveSettingDialogCancel = TextButton(
       child: Text("취소", style: TextStyle(color: gvars.MyPrimaryYellowColor)),
       onPressed: () {
         // setState((){
@@ -910,7 +910,7 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
       },
     );
 
-    var saveSettingDialogConfirm = FlatButton(
+    var saveSettingDialogConfirm = TextButton(
       child: Text("확인", style: TextStyle(color: gvars.MyPrimaryYellowColor)),
       onPressed: () {
         // setState(() {
@@ -940,36 +940,38 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
       onTap: () {
         showDialog(
           context: context,
-          child: Dialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-            child: Padding(
-              padding: EdgeInsets.all(15),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Text("세팅 저장"),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  TextField(
-                    decoration: InputDecoration(hintText: "리스트 이름"),
-                    controller: toSaveTextController,
-                  ),
-                  SizedBox(
-                    height: 40,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      saveSettingDialogCancel,
-                      saveSettingDialogConfirm,
-                    ],
-                  )
-                ],
+          builder: (BuildContext context) {
+            return Dialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+              child: Padding(
+                padding: EdgeInsets.all(15),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Text("세팅 저장"),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    TextField(
+                      decoration: InputDecoration(hintText: "리스트 이름"),
+                      controller: toSaveTextController,
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        saveSettingDialogCancel,
+                        saveSettingDialogConfirm,
+                      ],
+                    )
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
@@ -1144,9 +1146,10 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
                       child: _buildYellowButton("STOP", Icons.stop, () => _adjustStopPressed()),
                     ),
                     SizedBox(width: 10),
-                    FlatButton(
-                      shape: CircleBorder(),
-                      color: gvars.MyPrimaryYellowColor,
+                    OutlinedButton(
+                      // TODO set UI again
+                      // shape: CircleBorder(),
+                      // color: gvars.MyPrimaryYellowColor,
                       onPressed: () {
                         _playSignal();
                       },

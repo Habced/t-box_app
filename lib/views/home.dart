@@ -261,7 +261,7 @@ class HomeScreenState extends State<HomeScreen> {
               children: [
                 // mySignalPicker,
                 // myCarousel1,
-                myCarousel2,
+                // myCarousel2,
                 SizedBox(height: 10),
                 Text("최신영상"),
                 SizedBox(height: 10),
@@ -342,20 +342,32 @@ class HomeScreenState extends State<HomeScreen> {
 
       vods.add(
         GestureDetector(
-          onTap: () {},
-          child: SizedBox(
-            height: 200,
-            width: 110,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                vodThumbnail,
-                vodGradient,
-                vodBottomFill,
-              ],
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VodSelectedScreen(vodId: vod.id),
+                ),
+              );
+            },
+            child: SizedBox(
+              height: 120,
+              width: 160,
+              child: vodThumbnail,
+            )
+            // child: SizedBox(
+            //   height: 125,
+            //   width: 160,
+            //   child: Stack(
+            //     fit: StackFit.expand,
+            //     children: [
+            //       vodThumbnail,
+            //       vodGradient,
+            //       vodBottomFill,
+            //     ],
+            //   ),
+            // ),
             ),
-          ),
-        ),
       );
     }
     return vods;
@@ -365,7 +377,15 @@ class HomeScreenState extends State<HomeScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [Text(pclv.pc.title), _buildPcLatestVodsRow(pclv.vodList), SizedBox(height: 10)],
+      children: [
+        Text(pclv.pc.title),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(children: _buildRecentVids(pclv.vodList)),
+        ),
+        SizedBox(height: 10)
+      ],
+      // children: [Text(pclv.pc.title), _buildPcLatestVodsRow(pclv.vodList), SizedBox(height: 10)],
     );
   }
 
@@ -384,8 +404,8 @@ class HomeScreenState extends State<HomeScreen> {
           },
           child: Container(
             margin: EdgeInsets.all(5),
-            height: 160,
-            width: 110,
+            height: 90,
+            width: 160,
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
               color: Colors.black,

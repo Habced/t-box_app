@@ -23,6 +23,7 @@ final TextStyle overlayTextFontSmall = const TextStyle(
 );
 
 class TBoxDataRight extends StatefulWidget {
+  const TBoxDataRight({Key key}) : super(key: key);
   @override
   TBoxDataRightState createState() => TBoxDataRightState();
 }
@@ -294,9 +295,20 @@ class TBoxDataRightState extends State<TBoxDataRight> with SingleTickerProviderS
     writing = false;
     print('writing was set false');
   }
+
+  startCollectingData() {
+    print("Started collecting data");
+  }
+
+  getData() {
+    print("called get data");
+    // TODO properly get current tbox data
+    return 1;
+  }
 }
 
 class CadenceDataRight extends StatefulWidget {
+  const CadenceDataRight({Key key}) : super(key: key);
   @override
   CadenceDataRightState createState() => CadenceDataRightState();
 }
@@ -509,6 +521,16 @@ class CadenceDataRightState extends State<CadenceDataRight> with SingleTickerPro
     _everyHalfSecond.cancel();
     _animationController.dispose();
     super.dispose();
+  }
+
+  startCollectingData() {
+    print("Started collecting data");
+  }
+
+  getData() {
+    print("called get data");
+    // TODO properly get current tcycling data
+    return 1;
   }
 }
 

@@ -1,8 +1,5 @@
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/style.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tboxapp/components/video_mat_controls.dart';
 import 'package:tboxapp/components/video_player.dart';
@@ -22,6 +19,8 @@ class VodPlayScreen extends StatefulWidget {
 
 class VodPlayScreenState extends State<VodPlayScreen> {
   GlobalKey<ScaffoldState> _globalKey = GlobalKey();
+  GlobalKey<CadenceDataRightState> _matCadenceKey = GlobalKey();
+  GlobalKey<TBoxDataRightState> _matTboxKey = GlobalKey();
 
   int _uRole;
 
@@ -52,7 +51,7 @@ class VodPlayScreenState extends State<VodPlayScreen> {
               ),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text('Close'),
                 onPressed: () {
                   Navigator.pop(context);
@@ -69,16 +68,17 @@ class VodPlayScreenState extends State<VodPlayScreen> {
 
   Future<void> initializePlayer() async {
     var myMatCtrls;
-    if (widget.myVod.pcType == 0) {
-      // None
-      myMatCtrls = MaterialControls(myDataWidget: null);
-    } else if (widget.myVod.pcType == 1) {
-      // T-Cycling
-      myMatCtrls = MaterialControls(myDataWidget: CadenceDataRight());
-    } else if (widget.myVod.pcType == 2) {
-      // T-Box
-      myMatCtrls = MaterialControls(myDataWidget: TBoxDataRight());
-    }
+    // myMatCtrls = MyMaterialControls();
+    // if (widget.myVod.pcType == 0) {
+    //   // None
+    //   myMatCtrls = MaterialControls(myDataWidget: null);
+    // } else if (widget.myVod.pcType == 1) {
+    //   // T-Cycling
+    //   myMatCtrls = MaterialControls(key: _matCadenceKey, myDataWidget: CadenceDataRight());
+    // } else if (widget.myVod.pcType == 2) {
+    //   // T-Box
+    //   myMatCtrls = MaterialControls(key: _matTboxKey, myDataWidget: TBoxDataRight());
+    // }
 
     _videoPlayerController = VideoPlayerController.network(widget.myVod.vod);
     await _videoPlayerController.initialize();
@@ -114,7 +114,8 @@ class VodPlayScreenState extends State<VodPlayScreen> {
   }
 
   Widget _buildBody() {
-    if (_chewieController != null && _chewieController.videoPlayerController.value.initialized) {
+    // ignore: null_aware_in_logical_operator
+    if (_chewieController != null && _chewieController.videoPlayerController.value?.initialized) {
       return SizedBox.expand(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -136,7 +137,7 @@ class VodPlayScreenState extends State<VodPlayScreen> {
               ),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text('Close'),
                 onPressed: () {
                   Navigator.pop(context);
@@ -159,12 +160,22 @@ class VodPlayScreenState extends State<VodPlayScreen> {
         ),
       );
     }
+    return Container();
   }
 
   @override
   void dispose() {
+    _saveDataThenDispose();
+    super.dispose();
+  }
+
+  void _saveDataThenDispose() async {
+    // TODO call API and save the data before disposeing
+    // add tracking data for time watched
+    // add tracking data for distance or touch
+    // if success, add point gained through vod
+
     _videoPlayerController?.dispose();
     _chewieController?.dispose();
-    super.dispose();
   }
 }
