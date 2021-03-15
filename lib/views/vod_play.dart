@@ -119,14 +119,31 @@ class VodPlayScreenState extends State<VodPlayScreen> {
   Widget _buildBody() {
     // ignore: null_aware_in_logical_operator
     if (_chewieController != null && _chewieController.videoPlayerController.value?.initialized) {
-      return SizedBox.expand(
-        child: Center(child: Chewie(controller: _chewieController)),
-        // Column(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   crossAxisAlignment: CrossAxisAlignment.center,
-        //   children: <Widget>[Chewie(controller: _chewieController)],
-        // ),
+      return Center(
+        child: Wrap(direction: Axis.horizontal, children: [
+          TextButton(
+            onPressed: () {
+              print('dodododoodododo');
+            },
+            child: Text(
+              'ffffffffffffffffffff',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          Chewie(controller: _chewieController),
+        ]),
       );
+      // return SizedBox.expand(
+      //   child: Column(
+      //     mainAxisSize: MainAxisSize.min,
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     crossAxisAlignment: CrossAxisAlignment.center,
+      //     children: <Widget>[
+      //       Chewie(controller: _chewieController),
+      //       TextButton(onPressed: () {}, child: Text("aaaaaa"))
+      //     ],
+      //   ),
+      // );
     } else if (_chewieController != null && _chewieController.videoPlayerController.value.hasError) {
       showDialog(
         context: context,

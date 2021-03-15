@@ -98,6 +98,7 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
                   ),
                 );
               }
+              print(snapshot.data);
 
               return Column(
                 children: snapshot.data

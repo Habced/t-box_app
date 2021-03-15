@@ -180,7 +180,7 @@ Future<dynamic> getAllNewsFeed() async {
   }
 
   final extractedData = json.decode(utf8.decode(response.bodyBytes));
-  List loadedNf = extractedData['results'];
+  List loadedNf = extractedData['latest_vod'];
 
   var myNfList = NewsfeedList(
     newsfeed: List<Newsfeed>(),
@@ -625,6 +625,7 @@ Future<dynamic> addVodPlay(vodId, userId) async {
 }
 
 Future<List<VodShort>> getPlayedVods(userId) async {
+  print('$url/get_played_vods/$userId/');
   final response = await http.get('$url/get_played_vods/$userId/', headers: myHeader);
 
   if (response.statusCode != 200) {
@@ -682,6 +683,7 @@ Future<dynamic> removeVodFromFavorites(vodId, userId) async {
 }
 
 Future<List<VodShort>> getVodInFavorites(userId) async {
+  print('$url/get_vod_in_favorites/$userId/');
   final response = await http.get('$url/get_vod_in_favorites/$userId/', headers: myHeader);
 
   if (response.statusCode != 200) {
@@ -690,6 +692,7 @@ Future<List<VodShort>> getVodInFavorites(userId) async {
 
   final extractedData = json.decode(utf8.decode(response.bodyBytes));
 
+  print(extractedData);
   List loadedVodShort = extractedData['results'];
   List<VodShort> _vods = [];
 
@@ -854,13 +857,107 @@ Future<FrontPageData> getFrontPageData() async {
   final extractedData = json.decode(utf8.decode(response.bodyBytes));
 
   FrontPageData fpd = FrontPageData();
-  fpd.banners = [];
+  // fpd.banners = [];
   fpd.latestVods = [];
   fpd.pcLatestVods = [];
 
-  for (var i in extractedData['banners']) {
-    fpd.banners.add(Banner(id: i['banner_id'], img: i['img']));
+  // for (var i in extractedData['banners']) {
+  //   fpd.banners.add(Banner(id: i['banner_id'], img: i['img']));
+  // }
+  fpd.latestVod = Vod(
+    id: extractedData['latest_vod']['id'],
+    title: extractedData['latest_vod']['title'],
+    contents: extractedData['latest_vod']['contents'],
+    vod: extractedData['latest_vod']['vod'],
+    mrbg: extractedData['latest_vod']['mrbg'],
+    thumbnail: extractedData['latest_vod']['thumbnail'],
+    pcType: extractedData['latest_vod']['tbfapp_pc_type'],
+    pcTitle: extractedData['latest_vod']['primary_cate_title'],
+    scTitle: extractedData['latest_vod']['secondary_cate_title'],
+    levelId: extractedData['latest_vod']['level_id'],
+    viewableTo: json.decode(extractedData['latest_vod']['viewable_to']),
+    usingPoints: extractedData['latest_vod']['using_points'],
+    earnablePoints: extractedData['latest_vod']['earnable_points'],
+    earnableTimes: extractedData['latest_vod']['earnable_times'],
+    sensingType: extractedData['latest_vod']['sensing_type'],
+    sensingStartMin: extractedData['latest_vod']['sensing_start_min'],
+    sensingStartSec: extractedData['latest_vod']['sensing_start_sec'],
+    sensingEndMin: extractedData['latest_vod']['sensing_end_min'],
+    sensingEndSec: extractedData['latest_vod']['sensing_end_sec'],
+    pointGoal: extractedData['latest_vod']['point_goal'],
+    pointSuccess: extractedData['latest_vod']['point_success'],
+    // isFavorite: extractedData['latest_vod']['is_favorite'],
+  );
+  for (var i in extractedData['latest_vods']) {
+    fpd.latestVods.add(
+      VodMinimal(
+        id: i['vod_id'],
+        title: i['title'],
+        thumbnail: 'https://i1.tbox.media/' + i['thumbnail'],
+      ),
+    );
   }
+  for (var i in extractedData['cate_vods']) {
+    var plc = PcLatestVods(
+      pc: PcShort(
+        id: i['primary_cate']['pc_id'],
+        title: i['primary_cate']['title'],
+      ),
+    );
+    plc.vodList = [];
+    for (var j in i['latest_vods']) {
+      plc.vodList.add(VodMinimal(
+        id: j['vod_id'],
+        title: j['title'],
+        thumbnail: 'https://i1.tbox.media/' + j['thumbnail'],
+      ));
+    }
+    fpd.pcLatestVods.add(plc);
+  }
+  return fpd;
+}
+
+Future<FrontPageData> getFrontPageDataForUser(userId) async {
+  final response = await http.get('$url/get_front_page_data/$userId/', headers: myHeader);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to get Front Page Data');
+  }
+
+  final extractedData = json.decode(utf8.decode(response.bodyBytes));
+
+  FrontPageData fpd = FrontPageData();
+  // fpd.banners = [];
+  fpd.latestVods = [];
+  fpd.pcLatestVods = [];
+
+  // for (var i in extractedData['banners']) {
+  //   fpd.banners.add(Banner(id: i['banner_id'], img: i['img']));
+  // }
+  fpd.latestVod = Vod(
+    id: extractedData['latest_vod']['id'],
+    title: extractedData['latest_vod']['title'],
+    contents: extractedData['latest_vod']['contents'],
+    vod: extractedData['latest_vod']['vod'],
+    mrbg: extractedData['latest_vod']['mrbg'],
+    thumbnail: extractedData['latest_vod']['thumbnail'],
+    pcType: extractedData['latest_vod']['tbfapp_pc_type'],
+    pcTitle: extractedData['latest_vod']['primary_cate_title'],
+    scTitle: extractedData['latest_vod']['secondary_cate_title'],
+    levelId: extractedData['latest_vod']['level_id'],
+    viewableTo: json.decode(extractedData['latest_vod']['viewable_to']),
+    usingPoints: extractedData['latest_vod']['using_points'],
+    earnablePoints: extractedData['latest_vod']['earnable_points'],
+    earnableTimes: extractedData['latest_vod']['earnable_times'],
+    sensingType: extractedData['latest_vod']['sensing_type'],
+    sensingStartMin: extractedData['latest_vod']['sensing_start_min'],
+    sensingStartSec: extractedData['latest_vod']['sensing_start_sec'],
+    sensingEndMin: extractedData['latest_vod']['sensing_end_min'],
+    sensingEndSec: extractedData['latest_vod']['sensing_end_sec'],
+    pointGoal: extractedData['latest_vod']['point_goal'],
+    pointSuccess: extractedData['latest_vod']['point_success'],
+    isFavorite: extractedData['latest_vod']['is_favorite'],
+  );
   for (var i in extractedData['latest_vods']) {
     fpd.latestVods.add(
       VodMinimal(

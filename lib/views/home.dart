@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_html/style.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:share/share.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tboxapp/components/end_drawer.dart';
 import 'package:tboxapp/components/marquee.dart';
 import 'package:tboxapp/models/screen_data.model.dart';
@@ -12,6 +15,7 @@ import 'package:tboxapp/views/ble_devices.dart';
 import 'package:tboxapp/services/app_service.dart' as appService;
 import 'package:tboxapp/views/data_points.dart';
 import 'package:tboxapp/views/vod_cate_list.dart';
+import 'package:tboxapp/views/vod_play.dart';
 import 'package:tboxapp/views/vod_selected.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,6 +26,9 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   GlobalKey<ScaffoldState> _globalKey = GlobalKey();
 
+  int _uid;
+  int _urole;
+
   String unreadNewsfeeds;
   List<Vod> latestVods;
   bool isRecentVodsLoading = true;
@@ -30,14 +37,25 @@ class HomeScreenState extends State<HomeScreen> {
   bool isBannersLoading = true;
   Future<FrontPageData> fpd;
 
+  Vod displayedVod;
+  var favIconColor;
+
   final List<String> imgList = [];
 
   @override
   void initState() {
     super.initState();
+    _checkPrefs();
     _getTotalUnread();
     fpd = _getFpd();
+    favIconColor = Colors.grey;
     // TODO check if user is logged in and if userrole was updated
+  }
+
+  _checkPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _uid = prefs.getInt('id') ?? -1;
+    _urole = prefs.getInt('role') ?? -1;
   }
 
   _getTotalUnread() async {
@@ -206,33 +224,123 @@ class HomeScreenState extends State<HomeScreen> {
           );
         }
 
-        var myCarousel2 = CarouselSlider(
-          options: CarouselOptions(
-            // height: 200,
-            aspectRatio: 16 / 9,
-            viewportFraction: 0.8,
-            // viewportFraction: 1,
-            initialPage: 0,
-            enableInfiniteScroll: true,
-            reverse: false,
-            autoPlay: true,
-            autoPlayInterval: Duration(seconds: 3),
-            autoPlayAnimationDuration: Duration(milliseconds: 800),
-            autoPlayCurve: Curves.fastOutSlowIn,
-            enlargeCenterPage: false,
-            // onPageChanged: callbackFunction,
-            scrollDirection: Axis.horizontal,
+        // var myCarousel2 = CarouselSlider(
+        //   options: CarouselOptions(
+        //     // height: 200,
+        //     aspectRatio: 16 / 9,
+        //     viewportFraction: 0.8,
+        //     // viewportFraction: 1,
+        //     initialPage: 0,
+        //     enableInfiniteScroll: true,
+        //     reverse: false,
+        //     autoPlay: true,
+        //     autoPlayInterval: Duration(seconds: 3),
+        //     autoPlayAnimationDuration: Duration(milliseconds: 800),
+        //     autoPlayCurve: Curves.fastOutSlowIn,
+        //     enlargeCenterPage: false,
+        //     // onPageChanged: callbackFunction,
+        //     scrollDirection: Axis.horizontal,
+        //   ),
+        //   items: snapshot.data.banners.map((i) {
+        //     return Container(
+        //       margin: EdgeInsets.all(5.0),
+        //       child: ClipRRect(
+        //         borderRadius: BorderRadius.all(Radius.circular(15.0)),
+        //         // child: Image.asset(i, fit: BoxFit.fitHeight, width: 1000.0),
+        //         child: Image.network(i.img, fit: BoxFit.fitHeight, width: 1000.0),
+        //       ),
+        //     );
+        //   }).toList(),
+        // );
+
+        displayedVod = snapshot.data.latestVod;
+        if (_uid != -1 && displayedVod.isFavorite) {
+          favIconColor = Colors.yellow;
+        } else {
+          favIconColor = Colors.grey;
+        }
+        var selectedVod = Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * .35,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(displayedVod.thumbnail),
+              fit: BoxFit.cover,
+            ),
           ),
-          items: snapshot.data.banners.map((i) {
-            return Container(
-              margin: EdgeInsets.all(5.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                // child: Image.asset(i, fit: BoxFit.fitHeight, width: 1000.0),
-                child: Image.network(i.img, fit: BoxFit.fitHeight, width: 1000.0),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * .12,
+              decoration: BoxDecoration(
+                // color: Colors.black26,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.black38, Colors.black87], // red to yellow
+                  tileMode: TileMode.repeated, // repeats the gradient over the canvas
+                ),
               ),
-            );
-          }).toList(),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    MarqueeWidget(
+                      direction: Axis.horizontal,
+                      child: Text(
+                        // snapshot.data.title,
+                        displayedVod.title,
+                        style: TextStyle(fontSize: FontSize.xLarge.size),
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          child: Column(
+                            children: <Widget>[
+                              Icon(
+                                Icons.play_circle_outline,
+                                color: Colors.white,
+                              ),
+                              Text("재생", style: TextStyle(color: Colors.white)),
+                            ],
+                          ),
+                          onPressed: () => _handleVodPlay(snapshot.data.latestVod),
+                        ),
+                        SizedBox(width: 10),
+                        OutlinedButton(
+                          child: Column(
+                            children: <Widget>[
+                              Icon(
+                                Icons.share,
+                                color: Colors.white,
+                              ),
+                              Text("공유", style: TextStyle(color: Colors.white)),
+                            ],
+                          ),
+                          onPressed: () => _handleVodShare(displayedVod),
+                        ),
+                        SizedBox(width: 10),
+                        TextButton(
+                          child: Column(
+                            children: <Widget>[
+                              Icon(Icons.stars, color: favIconColor),
+                              Text("즐겨찾기", style: TextStyle(color: Colors.white)),
+                            ],
+                          ),
+                          onPressed: () => _handleVodFav(displayedVod),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
         );
 
         var recentVods = SingleChildScrollView(
@@ -262,6 +370,7 @@ class HomeScreenState extends State<HomeScreen> {
                 // mySignalPicker,
                 // myCarousel1,
                 // myCarousel2,
+                selectedVod,
                 SizedBox(height: 10),
                 Text("최신영상"),
                 SizedBox(height: 10),
@@ -428,5 +537,57 @@ class HomeScreenState extends State<HomeScreen> {
 
   void _openEndDrawer() {
     _globalKey.currentState.openEndDrawer();
+  }
+
+  _handleVodPlay(Vod snapshotData) {
+    // if (_uid == -1) {
+    //   FlutterToast.showToast(msg: '로그인 is required.');
+    //   return;
+    // }
+    // if (!snapshotData.viewableTo.contains(_urole)) {
+    //   FlutterToast.showToast(msg: '권한 없습니다.');
+    //   return;
+    // }
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => VodPlayScreen(
+    //       uid: _uid,
+    //       myVod: snapshotData,
+    //     ),
+    //   ),
+    // );
+  }
+
+  _handleVodShare(Vod snapshotData) {
+    print('공유 clicked');
+    // TODO properly implement share
+    Share.share('ughh', subject: 'ugh');
+  }
+
+  _handleVodFav(Vod snapshotData) async {
+    print('즐겨찾기 clicked');
+    if (_uid == -1) {
+      FlutterToast.showToast(msg: 'You must be logged in to use this function');
+    } else {
+      print(snapshotData.isFavorite);
+      if (snapshotData.isFavorite) {
+        var results = await appService.removeVodFromFavorites(snapshotData.id, _uid);
+        print(results.toString());
+        FlutterToast.showToast(msg: 'Removed from favorites');
+        setState(() {
+          favIconColor = Colors.grey;
+        });
+        snapshotData.isFavorite = false;
+      } else {
+        var results = await appService.addVodToFavorites(snapshotData.id, _uid);
+        print(results.toString());
+        FlutterToast.showToast(msg: 'Added to favorites');
+        setState(() {
+          favIconColor = Colors.yellow;
+        });
+        snapshotData.isFavorite = true;
+      }
+    }
   }
 }
