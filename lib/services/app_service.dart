@@ -864,6 +864,7 @@ Future<FrontPageData> getFrontPageData() async {
   // for (var i in extractedData['banners']) {
   //   fpd.banners.add(Banner(id: i['banner_id'], img: i['img']));
   // }
+
   fpd.latestVod = Vod(
     id: extractedData['latest_vod']['id'],
     title: extractedData['latest_vod']['title'],
@@ -918,10 +919,10 @@ Future<FrontPageData> getFrontPageData() async {
 }
 
 Future<FrontPageData> getFrontPageDataForUser(userId) async {
-  final response = await http.get('$url/get_front_page_data/$userId/', headers: myHeader);
+  final response = await http.get('$url/get_front_page_data_for_user/$userId/', headers: myHeader);
 
   if (response.statusCode != 200) {
-    throw Exception('Failed to get Front Page Data');
+    throw Exception('Failed to get Front Page Data For User');
   }
 
   final extractedData = json.decode(utf8.decode(response.bodyBytes));
@@ -934,6 +935,7 @@ Future<FrontPageData> getFrontPageDataForUser(userId) async {
   // for (var i in extractedData['banners']) {
   //   fpd.banners.add(Banner(id: i['banner_id'], img: i['img']));
   // }
+
   fpd.latestVod = Vod(
     id: extractedData['latest_vod']['id'],
     title: extractedData['latest_vod']['title'],

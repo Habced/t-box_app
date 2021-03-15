@@ -45,18 +45,18 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _checkPrefs();
+    // _checkPrefs();
     _getTotalUnread();
     fpd = _getFpd();
     favIconColor = Colors.grey;
     // TODO check if user is logged in and if userrole was updated
   }
 
-  _checkPrefs() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _uid = prefs.getInt('id') ?? -1;
-    _urole = prefs.getInt('role') ?? -1;
-  }
+  // _checkPrefs() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   _uid = prefs.getInt('id') ?? -1;
+  //   _urole = prefs.getInt('role') ?? -1;
+  // }
 
   _getTotalUnread() async {
     // SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -67,7 +67,14 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<FrontPageData> _getFpd() async {
-    return await appService.getFrontPageData();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _uid = prefs.getInt('id') ?? -1;
+    _urole = prefs.getInt('role') ?? -1;
+    if (_uid == -1) {
+      return await appService.getFrontPageData();
+    } else {
+      return await appService.getFrontPageDataForUser(_uid);
+    }
   }
 
   @override
@@ -254,7 +261,9 @@ class HomeScreenState extends State<HomeScreen> {
         // );
 
         displayedVod = snapshot.data.latestVod;
-        if (_uid != -1 && displayedVod.isFavorite) {
+        print('abracadabra');
+        print(displayedVod.toString());
+        if (_uid != -1 && displayedVod != null && displayedVod.isFavorite != null && displayedVod.isFavorite) {
           favIconColor = Colors.yellow;
         } else {
           favIconColor = Colors.grey;
