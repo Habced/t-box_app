@@ -117,35 +117,27 @@ class UpdateAddressScreenState extends State<UpdateAddressScreen> {
                       flex: 1,
                       child: FlatButton(
                           color: MyPrimaryYellowColor,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                           onPressed: () {
                             _findJusos(context);
                           },
-                          child: Text("주소 검색",
-                              style: TextStyle(color: Colors.black))),
+                          child: Text("주소 검색", style: TextStyle(color: Colors.black))),
                     ),
                   ],
                 ),
                 SizedBox(height: 15),
                 jusoField,
-                _isJusoNotValid
-                    ? Text("주소를 입력해 주세요.", style: TextStyle(color: Colors.red))
-                    : Container(),
+                _isJusoNotValid ? Text("주소를 입력해 주세요.", style: TextStyle(color: Colors.red)) : Container(),
                 SizedBox(height: 15),
                 detailJusoField,
-                _isDetailJusoNotFilled
-                    ? Text("상세 주소를 입력해 주세요.",
-                        style: TextStyle(color: Colors.red))
-                    : Container(),
+                _isDetailJusoNotFilled ? Text("상세 주소를 입력해 주세요.", style: TextStyle(color: Colors.red)) : Container(),
                 SizedBox(height: 30),
                 SizedBox(
                   height: 40,
                   width: double.infinity,
                   child: FlatButton(
                       color: MyPrimaryYellowColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       onPressed: () {
                         _handleUpdateAddress();
                       },
@@ -167,8 +159,7 @@ class UpdateAddressScreenState extends State<UpdateAddressScreen> {
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(5.0, 5.0, 20.0, 5.0),
           hintText: "지번 밎 도로명 주소",
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
     );
 
     showModalBottomSheet(
@@ -178,8 +169,7 @@ class UpdateAddressScreenState extends State<UpdateAddressScreen> {
           return StatefulBuilder(
             builder: (bc, state) {
               return Container(
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(14)),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(14)),
                 padding: EdgeInsets.all(20),
                 height: MediaQuery.of(context).size.height * .7,
                 child: Column(
@@ -213,16 +203,12 @@ class UpdateAddressScreenState extends State<UpdateAddressScreen> {
                           flex: 1,
                           child: FlatButton(
                               color: MyPrimaryYellowColor,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                               onPressed: () {
-                                FocusScope.of(context)
-                                    .requestFocus(new FocusNode());
-                                futureJuso =
-                                    jusoService.getJusos(_searchJusoText.text);
+                                FocusScope.of(context).requestFocus(new FocusNode());
+                                futureJuso = jusoService.getJusos(_searchJusoText.text);
                               },
-                              child: Text("주소 검색",
-                                  style: TextStyle(color: Colors.black))),
+                              child: Text("주소 검색", style: TextStyle(color: Colors.black))),
                         ),
                       ],
                     ),
@@ -246,9 +232,8 @@ class UpdateAddressScreenState extends State<UpdateAddressScreen> {
                               ),
                             );
                           } else if (snapshot.hasError) {
-                            FlutterToast.showToast(
-                              msg:
-                                  "An error occured while retrieving addresses",
+                            Fluttertoast.showToast(
+                              msg: "An error occured while retrieving addresses",
                               toastLength: Toast.LENGTH_LONG,
                             );
                           }
@@ -276,19 +261,16 @@ class UpdateAddressScreenState extends State<UpdateAddressScreen> {
                       children: [
                         FlatButton(
                             color: MyPrimaryYellowColor,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                             onPressed: () {
                               setState(() => {
                                     _toSaveJuso = _selectedJuso,
                                     _zipNoController.text = _toSaveJuso.zipNo,
-                                    _jusoController.text =
-                                        _toSaveJuso.jibunAddr,
+                                    _jusoController.text = _toSaveJuso.jibunAddr,
                                     Navigator.pop(context),
                                   });
                             },
-                            child: Text("저장",
-                                style: TextStyle(color: Colors.black))),
+                            child: Text("저장", style: TextStyle(color: Colors.black))),
                       ],
                     )
                   ],
@@ -299,8 +281,7 @@ class UpdateAddressScreenState extends State<UpdateAddressScreen> {
         });
   }
 
-  Future<Null> updateSelectedJuso(
-      StateSetter updateState, newSelectedJuso) async {
+  Future<Null> updateSelectedJuso(StateSetter updateState, newSelectedJuso) async {
     updateState(() {
       _selectedJuso = newSelectedJuso;
     });
@@ -332,8 +313,7 @@ class UpdateAddressScreenState extends State<UpdateAddressScreen> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       JusoCoor myJc = await jusoService.getJusoCoor(_toSaveJuso);
       appService
-          .updateUserAddress(
-              prefs.getInt('id'), _toSaveJuso, myJc, _detailJusoController.text)
+          .updateUserAddress(prefs.getInt('id'), _toSaveJuso, myJc, _detailJusoController.text)
           .then((result) => {
                 myResult = result,
                 if (myResult['res_code'] == 1)
@@ -342,7 +322,7 @@ class UpdateAddressScreenState extends State<UpdateAddressScreen> {
                     prefs.setString('jibunAddr', _toSaveJuso.jibunAddr),
                     prefs.setString('roadAddr', _toSaveJuso.roadAddr),
                     prefs.setString('detailJuso', _detailJusoController.text),
-                    FlutterToast.showToast(
+                    Fluttertoast.showToast(
                       msg: "Successfully saved the new address",
                       toastLength: Toast.LENGTH_LONG,
                     ),
@@ -351,7 +331,7 @@ class UpdateAddressScreenState extends State<UpdateAddressScreen> {
                 else if (myResult['res_code'] == 0)
                   {
                     debugPrint(myResult['res_msg'].toString()),
-                    FlutterToast.showToast(
+                    Fluttertoast.showToast(
                       msg: "An error occured while trying to save address.",
                       toastLength: Toast.LENGTH_LONG,
                     ),
@@ -359,7 +339,7 @@ class UpdateAddressScreenState extends State<UpdateAddressScreen> {
               })
           .catchError((Object error) => {
                 debugPrint(error.toString()),
-                FlutterToast.showToast(
+                Fluttertoast.showToast(
                   msg: "An error occured while trying to update Address",
                   toastLength: Toast.LENGTH_LONG,
                 ),

@@ -37,8 +37,7 @@ class FindPwScreenState extends State<FindPwScreen> {
         Container(
           width: 400,
           padding: EdgeInsets.symmetric(vertical: 22),
-          decoration:
-              DottedDecoration(color: MyPrimaryYellowColor, dash: <int>[4, 2]),
+          decoration: DottedDecoration(color: MyPrimaryYellowColor, dash: <int>[4, 2]),
           child: Center(
             child: Text("비밀번호 찾기", style: TextStyle(fontSize: 24)),
           ),
@@ -89,9 +88,7 @@ class FindPwScreenState extends State<FindPwScreen> {
           _handleSendEmail();
         },
         child: Text("이메일 전송",
-            textAlign: TextAlign.center,
-            style: myStyle.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)),
+            textAlign: TextAlign.center, style: myStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
     final navBar = Row(
@@ -159,8 +156,7 @@ class FindPwScreenState extends State<FindPwScreen> {
   _handleSendEmail() {
     var myResult;
     appService
-        .sendResetPasswordEmail(
-            _idController.text, _nameController.text, _emailController.text)
+        .sendResetPasswordEmail(_idController.text, _nameController.text, _emailController.text)
         .then(
           (result) => {
             myResult = result,
@@ -170,7 +166,7 @@ class FindPwScreenState extends State<FindPwScreen> {
         .catchError(
           (Object error) => {
             debugPrint(error.toString()),
-            FlutterToast.showToast(
+            Fluttertoast.showToast(
               msg: myResult['res_msg'],
               toastLength: Toast.LENGTH_LONG,
             ),
@@ -180,21 +176,21 @@ class FindPwScreenState extends State<FindPwScreen> {
           () => {
             if (myResult['res_code'] == 1)
               {
-                FlutterToast.showToast(
+                Fluttertoast.showToast(
                   msg: "이메일이 전송되었습니다",
                   toastLength: Toast.LENGTH_LONG,
                 ),
               }
             else if (myResult['res_code'] == 2)
               {
-                FlutterToast.showToast(
+                Fluttertoast.showToast(
                   msg: "입력하신 내용을 다시 한 번 확인해 주세요.",
                   toastLength: Toast.LENGTH_LONG,
                 ),
               }
             else
               {
-                FlutterToast.showToast(
+                Fluttertoast.showToast(
                   msg: "입력하신 내용을 다시 한 번 확인해 주세요.",
                   toastLength: Toast.LENGTH_LONG,
                 ),

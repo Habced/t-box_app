@@ -37,8 +37,7 @@ class FindIdScreenState extends State<FindIdScreen> {
         Container(
           width: 400,
           padding: EdgeInsets.symmetric(vertical: 22),
-          decoration:
-              DottedDecoration(color: MyPrimaryYellowColor, dash: <int>[4, 2]),
+          decoration: DottedDecoration(color: MyPrimaryYellowColor, dash: <int>[4, 2]),
           child: Center(
             child: Text("아이디 찾기", style: TextStyle(fontSize: 24)),
           ),
@@ -163,7 +162,7 @@ class FindIdScreenState extends State<FindIdScreen> {
         .catchError(
           (Object error) => {
             debugPrint(error.toString()),
-            FlutterToast.showToast(
+            Fluttertoast.showToast(
               msg: "An error occured while trying to send email",
               toastLength: Toast.LENGTH_LONG,
             ),
@@ -173,14 +172,14 @@ class FindIdScreenState extends State<FindIdScreen> {
           () => {
             if (myResult['res_code'] == 1)
               {
-                FlutterToast.showToast(
+                Fluttertoast.showToast(
                   msg: "회원님의 아이디가 이메일로 전송 되었습니다.",
                   toastLength: Toast.LENGTH_LONG,
                 ),
               }
             else
               {
-                FlutterToast.showToast(
+                Fluttertoast.showToast(
                   msg: "이름과 이메일을 확인해주세요.",
                   toastLength: Toast.LENGTH_LONG,
                 ),

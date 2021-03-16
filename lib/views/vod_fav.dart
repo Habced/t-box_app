@@ -308,14 +308,14 @@ class VodFavScreenState extends State<VodFavScreen> with SingleTickerProviderSta
     });
     if (snapshotData.isFavorite) {
       var results = await appService.removeVodFromFavorites(snapshotData.id, _uid);
-      FlutterToast.showToast(msg: 'Removed from favorites');
+      Fluttertoast.showToast(msg: 'Removed from favorites');
       setState(() {
         snapshotData.isFavorite = false;
         snapshotData.isLoading = false;
       });
     } else {
       var results = await appService.addVodToFavorites(snapshotData.id, _uid);
-      FlutterToast.showToast(msg: 'Added to favorites');
+      Fluttertoast.showToast(msg: 'Added to favorites');
       setState(() {
         snapshotData.isFavorite = true;
         snapshotData.isLoading = false;

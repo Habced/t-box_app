@@ -64,7 +64,7 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
                     setState(() {
                       isC1Connected = true;
                     });
-                    FlutterToast.showToast(msg: 'C1 Sensor has been connected');
+                    Fluttertoast.showToast(msg: 'C1 Sensor has been connected');
                   }
                 }
                 // if (isC1Connected) {
@@ -121,7 +121,7 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
                     setState(() {
                       isTboxConnected = true;
                     });
-                    FlutterToast.showToast(msg: 'T-Box has been connected');
+                    Fluttertoast.showToast(msg: 'T-Box has been connected');
                   }
                 }
                 // if (isTboxConnected) {
@@ -166,7 +166,7 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
                     onPressed: () async {
                       // tboxDevice.readCharacteristic(serviceUuid, characteristicUuid)
                       await tboxWriteChar.write(Uint8List.fromList([packetHeader, 0x02, 0x02, 0x01, 0x01]), true);
-                      FlutterToast.showToast(msg: "Signal Sent");
+                      Fluttertoast.showToast(msg: "Signal Sent");
                       /*
                         await tboxReadChar.setNotifyValue(true);
                         */
@@ -274,7 +274,7 @@ class BleDevicesScreenState extends State<BleDevicesScreen> {
     }
 
     bool isFound = false;
-    FlutterToast.showToast(msg: "Scanning for $scanItem");
+    Fluttertoast.showToast(msg: "Scanning for $scanItem");
     scanSubscription = await bleManager
         .startPeripheralScan(
       uuids: scanItem == tboxName

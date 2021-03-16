@@ -78,7 +78,7 @@ class DataPointsScreenState extends State<DataPointsScreen> {
       future: futureUserPointsList,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          FlutterToast.showToast(
+          Fluttertoast.showToast(
             msg: "Could not retrieve data.",
             toastLength: Toast.LENGTH_LONG,
           );

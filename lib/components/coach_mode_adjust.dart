@@ -211,7 +211,7 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
       }
       // sendMessage([gvars.packetHeader, 0x02, 0x02, 0x01, 0x01]);
     } else {
-      FlutterToast.showToast(msg: "Please connect T-Box");
+      Fluttertoast.showToast(msg: "Please connect T-Box");
     }
   }
 
@@ -924,7 +924,7 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
           // _addCoachSaved();
           Navigator.pop(context);
         } else {
-          FlutterToast.showToast(msg: "Name cannot be empty");
+          Fluttertoast.showToast(msg: "Name cannot be empty");
         }
       },
     );
@@ -1298,7 +1298,7 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
       // T-Box Status & Battery Status
       if (value[2] == 129) {
         // value[3] is the amount of batter left
-        FlutterToast.showToast(msg: "Battery Left: " + value[3]);
+        Fluttertoast.showToast(msg: "Battery Left: " + value[3]);
       } else if (value[2] == 160) {
         if (value[3] == 0) {
           //Front right
@@ -1451,7 +1451,7 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
         await gvars.tboxWriteChar.write(Uint8List.fromList(writeCommands[0]), true);
         // tboxWriteChar.write(writeCommands[0]);
       } catch (error) {
-        FlutterToast.showToast(msg: "Error with BLE write");
+        Fluttertoast.showToast(msg: "Error with BLE write");
         print("Ble write message failed: " + writeCommands[0].toString());
         writing = false;
       }
@@ -1589,17 +1589,17 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
      */
 
     // if(!(restTimeMin == 0 && restTimeSec == 0) && setCount == 1 ){
-    //   FlutterToast.showToast( msg: "Both" );
+    //   Fluttertoast.showToast( msg: "Both" );
     //   return;
     // }
 
     if (setTimeMin == 0 && setTimeSec == 0 && touchCount == 0) {
-      FlutterToast.showToast(msg: "Either 운동시간 or 터치횠수 needs to be set.");
+      Fluttertoast.showToast(msg: "Either 운동시간 or 터치횠수 needs to be set.");
       return;
     }
 
     if (touchCount == 0 && lightMotionIdx != 0) {
-      FlutterToast.showToast(msg: "터치횠수 and 조명모드 cannot both be set.");
+      Fluttertoast.showToast(msg: "터치횠수 and 조명모드 cannot both be set.");
       return;
     }
 
@@ -1628,7 +1628,7 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
       myStopwatch.start();
     } else {
       timeMode = 'error';
-      FlutterToast.showToast(msg: "unhandled setting combination");
+      Fluttertoast.showToast(msg: "unhandled setting combination");
       return;
     }
 
@@ -1688,7 +1688,7 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
       myStopwatch.stop();
     } else {
       // countdown
-      FlutterToast.showToast(msg: "unhandled pause");
+      Fluttertoast.showToast(msg: "unhandled pause");
     }
   }
 
@@ -1710,7 +1710,7 @@ class CoachModeAdjustState extends State<CoachModeAdjust> with TickerProviderSta
       myStopwatch.reset();
     } else {
       // countdown
-      FlutterToast.showToast(msg: "unhandled pause");
+      Fluttertoast.showToast(msg: "unhandled pause");
     }
   }
 

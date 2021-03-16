@@ -180,11 +180,11 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
 
   _handleVodPlay(Vod snapshotData) {
     if (_uid == -1) {
-      FlutterToast.showToast(msg: '로그인 is required.');
+      Fluttertoast.showToast(msg: '로그인 is required.');
       return;
     }
     if (!snapshotData.viewableTo.contains(_urole)) {
-      FlutterToast.showToast(msg: '권한 없습니다.');
+      Fluttertoast.showToast(msg: '권한 없습니다.');
       return;
     }
     Navigator.push(
@@ -207,13 +207,13 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
   _handleVodFav(Vod snapshotData) async {
     print('즐겨찾기 clicked');
     if (_uid == -1) {
-      FlutterToast.showToast(msg: 'You must be logged in to use this function');
+      Fluttertoast.showToast(msg: 'You must be logged in to use this function');
     } else {
       print(snapshotData.isFavorite);
       if (snapshotData.isFavorite) {
         var results = await appService.removeVodFromFavorites(widget.vodId, _uid);
         print(results.toString());
-        FlutterToast.showToast(msg: 'Removed from favorites');
+        Fluttertoast.showToast(msg: 'Removed from favorites');
         setState(() {
           favIconColor = Colors.grey;
         });
@@ -221,7 +221,7 @@ class VodSelectedScreenState extends State<VodSelectedScreen> {
       } else {
         var results = await appService.addVodToFavorites(widget.vodId, _uid);
         print(results.toString());
-        FlutterToast.showToast(msg: 'Added to favorites');
+        Fluttertoast.showToast(msg: 'Added to favorites');
         setState(() {
           favIconColor = Colors.yellow;
         });

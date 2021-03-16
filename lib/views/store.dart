@@ -153,9 +153,9 @@ class StoreScreenState extends State<StoreScreen> {
               await launch(storeItem.interparkStoreLink);
             }
           } else if (storeItem.naverStoreLink == 'soldout' || storeItem.interparkStoreLink == 'soldout') {
-            FlutterToast.showToast(msg: "Sold Out");
+            Fluttertoast.showToast(msg: "Sold Out");
           } else {
-            FlutterToast.showToast(msg: "Error with link");
+            Fluttertoast.showToast(msg: "Error with link");
           }
         },
         child: Stack(
@@ -225,9 +225,9 @@ class StoreScreenState extends State<StoreScreen> {
     //           }
     //         } else if (storeItem.naverStoreLink == 'soldout' ||
     //             storeItem.interparkStoreLink == 'soldout') {
-    //           FlutterToast.showToast(msg: "Sold Out");
+    //           Fluttertoast.showToast(msg: "Sold Out");
     //         } else {
-    //           FlutterToast.showToast(msg: "Error with link");
+    //           Fluttertoast.showToast(msg: "Error with link");
     //         }
     //       },
     //     )

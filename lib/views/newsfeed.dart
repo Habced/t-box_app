@@ -58,7 +58,7 @@ class NewsfeedScreenState extends State<NewsfeedScreen> {
                   if (snapshot.hasData) {
                     return Column(children: [for (var newsfeed in snapshot.data.newsfeed) _buildNewsfeed(newsfeed)]);
                   } else if (snapshot.hasError) {
-                    FlutterToast.showToast(
+                    Fluttertoast.showToast(
                       msg: "Could not retrieve data.",
                       toastLength: Toast.LENGTH_LONG,
                     );

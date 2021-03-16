@@ -66,7 +66,7 @@ class FaqScreenState extends State<FaqScreen> {
                   if (snapshot.hasData) {
                     return Column(children: [for (var faq in snapshot.data.faq) _buildFaq(faq)]);
                   } else if (snapshot.hasError) {
-                    FlutterToast.showToast(
+                    Fluttertoast.showToast(
                       msg: "Could not retrieve data.",
                       toastLength: Toast.LENGTH_LONG,
                     );

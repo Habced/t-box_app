@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:tboxapp/components/video_player.dart';
 import 'package:video_player/video_player.dart';
 
+// For Value Changed
+// https://stackoverflow.com/questions/54694169/returning-data-from-a-stateful-widget-in-flutter
+
 class MyMaterialControls extends StatefulWidget {
   // final Widget myDataWidget;
   // const MaterialControls({Key key, @required this.myDataWidget}) : super(key: key);
-  const MyMaterialControls({Key key}) : super(key: key);
+  const MyMaterialControls({Key key, this.onDataChanged}) : super(key: key);
+  final ValueChanged<String> onDataChanged;
 
   @override
   State<StatefulWidget> createState() {
@@ -597,7 +601,8 @@ String formatDuration(Duration position) {
 }
 
 class CyclingMatCtrl extends MyMaterialControls {
-  const CyclingMatCtrl({Key key}) : super(key: key);
+  const CyclingMatCtrl({Key key, this.onDataChanged}) : super(key: key);
+  final ValueChanged<String> onDataChanged;
   @override
   State<StatefulWidget> createState() {
     return _CyclingMatCtrlState();
@@ -665,7 +670,11 @@ class _CyclingMatCtrlState extends State<CyclingMatCtrl> {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Container(
-                    child: CadenceDataRight(),
+                    child: CadenceDataRight(
+                      onDataChanged: (newData) {
+                        widget.onDataChanged(newData);
+                      },
+                    ),
                     // child: chewieController.isFullScreen ? CadenceDataRight() : Container(),
                     // child: widget.myDataWidget,
                   ),
@@ -979,7 +988,9 @@ class _CyclingMatCtrlState extends State<CyclingMatCtrl> {
 }
 
 class TboxMatCtrl extends MyMaterialControls {
-  const TboxMatCtrl({Key key}) : super(key: key);
+  const TboxMatCtrl({Key key, this.onDataChanged}) : super(key: key);
+  final ValueChanged<String> onDataChanged;
+
   @override
   State<StatefulWidget> createState() {
     return _TboxMatCtrlState();
@@ -1047,7 +1058,11 @@ class _TboxMatCtrlState extends State<TboxMatCtrl> {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Container(
-                    child: TBoxDataRight(),
+                    child: TBoxDataRight(
+                      onDataChanged: (newData) {
+                        widget.onDataChanged(newData);
+                      },
+                    ),
                     // child: chewieController.isFullScreen ? CadenceDataRight() : Container(),
                     // child: widget.myDataWidget,
                   ),

@@ -86,17 +86,17 @@ class QnaScreenState extends State<QnaScreen> with SingleTickerProviderStateMixi
               onPressed: () async {
                 // debugPrint("pressed");
                 if (_uid == -1) {
-                  FlutterToast.showToast(
+                  Fluttertoast.showToast(
                     msg: "Please log in to add an inquiry.",
                     toastLength: Toast.LENGTH_SHORT,
                   );
                 } else if (_inquiryTitleController.text == "") {
-                  FlutterToast.showToast(
+                  Fluttertoast.showToast(
                     msg: "Title cannot be empty.",
                     toastLength: Toast.LENGTH_SHORT,
                   );
                 } else if (_inquiryController.text == "") {
-                  FlutterToast.showToast(
+                  Fluttertoast.showToast(
                     msg: "Inquiry cannot be empty.",
                     toastLength: Toast.LENGTH_SHORT,
                   );

@@ -67,7 +67,7 @@ class VodPlayScreenState extends State<VodPlayScreen> {
   }
 
   Future<void> initializePlayer() async {
-    var myMatCtrls;
+    MyMaterialControls myMatCtrls;
     // myMatCtrls = MyMaterialControls();
     if (widget.myVod.pcType == 0) {
       // None
@@ -76,11 +76,11 @@ class VodPlayScreenState extends State<VodPlayScreen> {
     } else if (widget.myVod.pcType == 1) {
       // T-Cycling
       // myMatCtrls = MaterialControls(key: _matCadenceKey, myDataWidget: CadenceDataRight());
-      myMatCtrls = CyclingMatCtrl();
+      myMatCtrls = CyclingMatCtrl(onDataChanged: _handleDataChanged);
     } else if (widget.myVod.pcType == 2) {
       // T-Box
       // myMatCtrls = MaterialControls(key: _matTboxKey, myDataWidget: TBoxDataRight());
-      myMatCtrls = TboxMatCtrl();
+      myMatCtrls = TboxMatCtrl(onDataChanged: _handleDataChanged);
     }
 
     _videoPlayerController = VideoPlayerController.network(widget.myVod.vod);
@@ -198,5 +198,9 @@ class VodPlayScreenState extends State<VodPlayScreen> {
 
     _videoPlayerController?.dispose();
     _chewieController?.dispose();
+  }
+
+  _handleDataChanged(String incomingData) {
+    print(incomingData);
   }
 }

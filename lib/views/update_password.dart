@@ -101,33 +101,23 @@ class UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
                 ),
                 SizedBox(height: 15),
                 oldPasswordField,
-                _isOldPasswordNotFilledOut
-                    ? Text("비밀번호를 입력해 주세요.",
-                        style: TextStyle(color: Colors.red))
-                    : Container(),
-                _isOldPasswordIncorrect
-                    ? Text("비밀번호를 확인해 주세요.",
-                        style: TextStyle(color: Colors.red))
-                    : Container(),
+                _isOldPasswordNotFilledOut ? Text("비밀번호를 입력해 주세요.", style: TextStyle(color: Colors.red)) : Container(),
+                _isOldPasswordIncorrect ? Text("비밀번호를 확인해 주세요.", style: TextStyle(color: Colors.red)) : Container(),
                 SizedBox(height: 15),
                 newPasswordField,
                 _isNewPasswordNotFilledOut
-                    ? Text("새 비밀번호를 입력해 주세요.",
-                        style: TextStyle(color: Colors.red))
+                    ? Text("새 비밀번호를 입력해 주세요.", style: TextStyle(color: Colors.red))
                     : Container(),
                 _isNewPasswordNotValid
-                    ? Text("비밀번호는 여섯자리 이상이어야 합니다.",
-                        style: TextStyle(color: Colors.red))
+                    ? Text("비밀번호는 여섯자리 이상이어야 합니다.", style: TextStyle(color: Colors.red))
                     : Container(),
                 SizedBox(height: 15),
                 newPasswordCheckField,
                 _isNewPasswordCheckNotFilledOut
-                    ? Text("새 비밀번호를 다시한번 입력해 주세요.",
-                        style: TextStyle(color: Colors.red))
+                    ? Text("새 비밀번호를 다시한번 입력해 주세요.", style: TextStyle(color: Colors.red))
                     : Container(),
                 _isNewPasswordCheckNotMatch
-                    ? Text("새 비밀번호가 일치하지 않습니다.",
-                        style: TextStyle(color: Colors.red))
+                    ? Text("새 비밀번호가 일치하지 않습니다.", style: TextStyle(color: Colors.red))
                     : Container(),
                 SizedBox(height: 25),
                 SizedBox(height: 25),
@@ -136,8 +126,7 @@ class UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
                   width: double.infinity,
                   child: FlatButton(
                       color: MyPrimaryYellowColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       onPressed: () {
                         _handlePasswordUpdate();
                       },
@@ -180,8 +169,7 @@ class UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
       _isNewPasswordCheckNotFilledOut = true;
       _isNewPasswordCheckNotMatch = false;
       _hasError = true;
-    } else if (_newPasswordCheckController.text !=
-        _newPasswordController.text) {
+    } else if (_newPasswordCheckController.text != _newPasswordController.text) {
       _isNewPasswordCheckNotFilledOut = false;
       _isNewPasswordCheckNotMatch = true;
       _hasError = true;
@@ -194,13 +182,12 @@ class UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
     if (!_hasError) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       appService
-          .updatePassword(prefs.getInt('id'), _oldPasswordController.text,
-              _newPasswordController.text)
+          .updatePassword(prefs.getInt('id'), _oldPasswordController.text, _newPasswordController.text)
           .then((result) => {
                 myResult = result,
                 if (myResult['res_code'] == 1)
                   {
-                    FlutterToast.showToast(
+                    Fluttertoast.showToast(
                       msg: "Successfully updated the password",
                       toastLength: Toast.LENGTH_LONG,
                     ),
@@ -211,16 +198,15 @@ class UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
                     debugPrint(myResult['res_msg'].toString()),
                     _isOldPasswordIncorrect = true,
                     setState(() {}),
-                    FlutterToast.showToast(
-                      msg:
-                          "An error occured while trying to update the password",
+                    Fluttertoast.showToast(
+                      msg: "An error occured while trying to update the password",
                       toastLength: Toast.LENGTH_LONG,
                     ),
                   }
               })
           .catchError((Object error) => {
                 debugPrint(error.toString()),
-                FlutterToast.showToast(
+                Fluttertoast.showToast(
                   msg: "An error occured while trying to update password",
                   toastLength: Toast.LENGTH_LONG,
                 ),

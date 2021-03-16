@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -133,7 +135,7 @@ class HomeScreenState extends State<HomeScreen> {
           }
         },
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: Color.fromARGB(0x00, 0x21, 0x29, 0x35),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -261,8 +263,6 @@ class HomeScreenState extends State<HomeScreen> {
         // );
 
         displayedVod = snapshot.data.latestVod;
-        print('abracadabra');
-        print(displayedVod.toString());
         if (_uid != -1 && displayedVod != null && displayedVod.isFavorite != null && displayedVod.isFavorite) {
           favIconColor = Colors.yellow;
         } else {
@@ -381,7 +381,17 @@ class HomeScreenState extends State<HomeScreen> {
                 // myCarousel2,
                 selectedVod,
                 SizedBox(height: 10),
-                Text("최신영상"),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(7, 3, 3, 8),
+                  child: Text(
+                    "새로 올라온 콘텐츠",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
                 SizedBox(height: 10),
                 recentVods,
                 // isRecentVodsLoading ? CircularProgressIndicator() : recentVods,
@@ -496,7 +506,34 @@ class HomeScreenState extends State<HomeScreen> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(pclv.pc.title),
+        ClipRect(
+          child: Stack(
+            children: [
+              Positioned(
+                top: 2.0,
+                left: 2.0,
+                child: Text(
+                  pclv.pc.title,
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                ),
+              ),
+              BackdropFilter(
+                filter: ui.ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+                child: Text(
+                  pclv.pc.title,
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(children: _buildRecentVids(pclv.vodList)),
@@ -550,11 +587,11 @@ class HomeScreenState extends State<HomeScreen> {
 
   _handleVodPlay(Vod snapshotData) {
     // if (_uid == -1) {
-    //   FlutterToast.showToast(msg: '로그인 is required.');
+    //   Fluttertoast.showToast(msg: '로그인 is required.');
     //   return;
     // }
     // if (!snapshotData.viewableTo.contains(_urole)) {
-    //   FlutterToast.showToast(msg: '권한 없습니다.');
+    //   Fluttertoast.showToast(msg: '권한 없습니다.');
     //   return;
     // }
     // Navigator.push(
@@ -577,13 +614,13 @@ class HomeScreenState extends State<HomeScreen> {
   _handleVodFav(Vod snapshotData) async {
     print('즐겨찾기 clicked');
     if (_uid == -1) {
-      FlutterToast.showToast(msg: 'You must be logged in to use this function');
+      Fluttertoast.showToast(msg: 'You must be logged in to use this function');
     } else {
       print(snapshotData.isFavorite);
       if (snapshotData.isFavorite) {
         var results = await appService.removeVodFromFavorites(snapshotData.id, _uid);
         print(results.toString());
-        FlutterToast.showToast(msg: 'Removed from favorites');
+        Fluttertoast.showToast(msg: 'Removed from favorites');
         setState(() {
           favIconColor = Colors.grey;
         });
@@ -591,7 +628,7 @@ class HomeScreenState extends State<HomeScreen> {
       } else {
         var results = await appService.addVodToFavorites(snapshotData.id, _uid);
         print(results.toString());
-        FlutterToast.showToast(msg: 'Added to favorites');
+        Fluttertoast.showToast(msg: 'Added to favorites');
         setState(() {
           favIconColor = Colors.yellow;
         });

@@ -96,7 +96,7 @@ class CoachModeSelectState extends State<CoachModeSelect> {
         });
       }
     } else {
-      FlutterToast.showToast(msg: "Please connect T-Box");
+      Fluttertoast.showToast(msg: "Please connect T-Box");
     }
   }
 
@@ -648,7 +648,7 @@ class CoachModeSelectState extends State<CoachModeSelect> {
       // T-Box Status & Battery Status
       if (value[2] == 129) {
         // value[3] is the amount of batter left
-        FlutterToast.showToast(msg: "Battery Left: " + value[3]);
+        Fluttertoast.showToast(msg: "Battery Left: " + value[3]);
       } else if (value[2] == 160) {
         if (value[3] == 0) {
           //Front right
@@ -695,7 +695,7 @@ class CoachModeSelectState extends State<CoachModeSelect> {
         await gvars.tboxWriteChar.write(Uint8List.fromList(writeCommands[0]), true);
         // tboxWriteChar.write(writeCommands[0]);
       } catch (error) {
-        FlutterToast.showToast(msg: "Error with BLE write");
+        Fluttertoast.showToast(msg: "Error with BLE write");
         print("Ble write message failed: " + writeCommands[0].toString());
         writing = false;
       }

@@ -92,8 +92,7 @@ class SignupScreenState extends State<SignupScreen> {
         Container(
           width: 400,
           padding: EdgeInsets.symmetric(vertical: 22),
-          decoration:
-              DottedDecoration(color: MyPrimaryYellowColor, dash: <int>[4, 2]),
+          decoration: DottedDecoration(color: MyPrimaryYellowColor, dash: <int>[4, 2]),
           child: Center(
             child: Text("회원가입", style: TextStyle(fontSize: 24)),
           ),
@@ -222,38 +221,36 @@ class SignupScreenState extends State<SignupScreen> {
         Expanded(
           flex: 11,
           child: RichText(
-              text: TextSpan(
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                  children: <TextSpan>[
-                TextSpan(text: '본인은 T-BOX MEDIA 서비스 약관, 개인정보 보호 정책 및 회원 약관 '),
-                TextSpan(
-                    text: '사이트이용약관',
-                    style: TextStyle(color: MyPrimaryYellowColor),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        // TODO Implement navigate to TOS page
-                        debugPrint("사이트이용약관 was tapped");
-                      }),
-                TextSpan(text: ', '),
-                TextSpan(
-                    text: '개인정보처리방침',
-                    style: TextStyle(color: MyPrimaryYellowColor),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        // TODO Implement navigate to TOS page
-                        debugPrint("개인정보처리방침 was tapped");
-                      }),
-                TextSpan(text: ', '),
-                TextSpan(
-                    text: '멤버십약관',
-                    style: TextStyle(color: MyPrimaryYellowColor),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        // TODO Implement navigate to TOS page
-                        debugPrint("멤버십약관 was tapped");
-                      }),
-                TextSpan(text: ' 을 읽고 동의 함을 확인합니다.'),
-              ])),
+              text: TextSpan(style: TextStyle(fontWeight: FontWeight.bold), children: <TextSpan>[
+            TextSpan(text: '본인은 T-BOX MEDIA 서비스 약관, 개인정보 보호 정책 및 회원 약관 '),
+            TextSpan(
+                text: '사이트이용약관',
+                style: TextStyle(color: MyPrimaryYellowColor),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    // TODO Implement navigate to TOS page
+                    debugPrint("사이트이용약관 was tapped");
+                  }),
+            TextSpan(text: ', '),
+            TextSpan(
+                text: '개인정보처리방침',
+                style: TextStyle(color: MyPrimaryYellowColor),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    // TODO Implement navigate to TOS page
+                    debugPrint("개인정보처리방침 was tapped");
+                  }),
+            TextSpan(text: ', '),
+            TextSpan(
+                text: '멤버십약관',
+                style: TextStyle(color: MyPrimaryYellowColor),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    // TODO Implement navigate to TOS page
+                    debugPrint("멤버십약관 was tapped");
+                  }),
+            TextSpan(text: ' 을 읽고 동의 함을 확인합니다.'),
+          ])),
         )
       ],
     );
@@ -268,9 +265,7 @@ class SignupScreenState extends State<SignupScreen> {
           _handleSignup();
         },
         child: Text("회원가입",
-            textAlign: TextAlign.center,
-            style: myStyle.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)),
+            textAlign: TextAlign.center, style: myStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
     return SizedBox.expand(
@@ -293,19 +288,12 @@ class SignupScreenState extends State<SignupScreen> {
                       explanationField,
                       SizedBox(height: 25),
                       nameField,
-                      _isNameNotFilledOut
-                          ? Text("이름을 입력해 주세요.",
-                              style: TextStyle(color: Colors.red))
-                          : Container(),
+                      _isNameNotFilledOut ? Text("이름을 입력해 주세요.", style: TextStyle(color: Colors.red)) : Container(),
                       SizedBox(height: 25.0),
                       emailField,
-                      _isEmailNotFilledOut
-                          ? Text("이메일을 입력해 주세요.",
-                              style: TextStyle(color: Colors.red))
-                          : Container(),
+                      _isEmailNotFilledOut ? Text("이메일을 입력해 주세요.", style: TextStyle(color: Colors.red)) : Container(),
                       (_isEmailNotFilledOut == false && _isEmailNotEmail)
-                          ? Text("유효한 이메일을 입력해 주세요.",
-                              style: TextStyle(color: Colors.red))
+                          ? Text("유효한 이메일을 입력해 주세요.", style: TextStyle(color: Colors.red))
                           : Container(),
                       SizedBox(height: 25.0),
                       Row(
@@ -320,46 +308,27 @@ class SignupScreenState extends State<SignupScreen> {
                           )
                         ],
                       ),
-                      _isIdNotFilledOut
-                          ? Text("아이디를 입력해 주세요.",
-                              style: TextStyle(color: Colors.red))
-                          : Container(),
-                      _isIdNotValid
-                          ? Text("아이디가 너무 짧습니다.",
-                              style: TextStyle(color: Colors.red))
-                          : Container(),
-                      _isNeedingIdCheck
-                          ? Text("아이디 중복 확인 해주세요.",
-                              style: TextStyle(color: Colors.red))
-                          : Container(),
+                      _isIdNotFilledOut ? Text("아이디를 입력해 주세요.", style: TextStyle(color: Colors.red)) : Container(),
+                      _isIdNotValid ? Text("아이디가 너무 짧습니다.", style: TextStyle(color: Colors.red)) : Container(),
+                      _isNeedingIdCheck ? Text("아이디 중복 확인 해주세요.", style: TextStyle(color: Colors.red)) : Container(),
                       _isNeedingNewId
-                          ? Text("이미 사용중인 아이디 입니다. 다른 아이디를 입력해 주세요.",
-                              style: TextStyle(color: Colors.red))
+                          ? Text("이미 사용중인 아이디 입니다. 다른 아이디를 입력해 주세요.", style: TextStyle(color: Colors.red))
                           : Container(),
-                      _isIdAvailable
-                          ? Text("사용 가능한 아이디 입니다.",
-                              style: TextStyle(color: Colors.green))
-                          : Container(),
+                      _isIdAvailable ? Text("사용 가능한 아이디 입니다.", style: TextStyle(color: Colors.green)) : Container(),
                       SizedBox(height: 25.0),
                       passwordField,
                       _isPasswordNotFilledOut
-                          ? Text("비밀번호를 입력해 주세요.",
-                              style: TextStyle(color: Colors.red))
+                          ? Text("비밀번호를 입력해 주세요.", style: TextStyle(color: Colors.red))
                           : Container(),
                       _isPasswordNotValid
-                          ? Text("비밀번호는 여섯자리 이상이어야 합니다.",
-                              style: TextStyle(color: Colors.red))
+                          ? Text("비밀번호는 여섯자리 이상이어야 합니다.", style: TextStyle(color: Colors.red))
                           : Container(),
                       SizedBox(height: 25.0),
                       passwordConfirmField,
                       _isPasswordCheckNotFilledOut
-                          ? Text("비밀번호를 다시한번 입력해 주세요.",
-                              style: TextStyle(color: Colors.red))
+                          ? Text("비밀번호를 다시한번 입력해 주세요.", style: TextStyle(color: Colors.red))
                           : Container(),
-                      _isPasswordNotMatch
-                          ? Text("비밀번호가 일치하지 않습니다.",
-                              style: TextStyle(color: Colors.red))
-                          : Container(),
+                      _isPasswordNotMatch ? Text("비밀번호가 일치하지 않습니다.", style: TextStyle(color: Colors.red)) : Container(),
                       SizedBox(height: 25.0),
                       Row(
                         children: [
@@ -386,19 +355,14 @@ class SignupScreenState extends State<SignupScreen> {
                         ],
                       ),
                       _isCellphoneNotFilled
-                          ? Text("휴대폰 번호를 입력해 주세요.",
-                              style: TextStyle(color: Colors.red))
+                          ? Text("휴대폰 번호를 입력해 주세요.", style: TextStyle(color: Colors.red))
                           : Container(),
                       _isCellphoneNotValid
-                          ? Text("휴대폰 번호의 형식이 잘못되었습니다.",
-                              style: TextStyle(color: Colors.red))
+                          ? Text("휴대폰 번호의 형식이 잘못되었습니다.", style: TextStyle(color: Colors.red))
                           : Container(),
                       SizedBox(height: 25.0),
                       agreeTosCheckbox,
-                      _isNeedingTosCheck
-                          ? Text("약관에 동의해야 합니다.",
-                              style: TextStyle(color: Colors.red))
-                          : Container(),
+                      _isNeedingTosCheck ? Text("약관에 동의해야 합니다.", style: TextStyle(color: Colors.red)) : Container(),
                       SizedBox(height: 25.0),
                       signupButton,
                       SizedBox(
@@ -487,8 +451,7 @@ class SignupScreenState extends State<SignupScreen> {
       _isEmailNotFilledOut = true;
       _isEmailNotEmail = false;
       hasError = true;
-    } else if (!(RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+    } else if (!(RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(_emailController.text))) {
       _isEmailNotFilledOut = false;
       _isEmailNotEmail = true;
@@ -576,20 +539,14 @@ class SignupScreenState extends State<SignupScreen> {
     var myResult;
     if (!hasError) {
       appService
-          .signup(
-              _nameController.text,
-              _emailController.text,
-              _idController.text,
-              _passwordController.text,
-              _cellphoneOneController.text +
-                  _cellphoneTwoController.text +
-                  _cellphoneThreeController.text)
+          .signup(_nameController.text, _emailController.text, _idController.text, _passwordController.text,
+              _cellphoneOneController.text + _cellphoneTwoController.text + _cellphoneThreeController.text)
           .then((result) => {
                 myResult = result,
               })
           .catchError((Object error) => {
                 debugPrint(error.toString()),
-                FlutterToast.showToast(
+                Fluttertoast.showToast(
                   msg: "An error occured while trying to signup",
                   toastLength: Toast.LENGTH_LONG,
                 ),
@@ -602,15 +559,13 @@ class SignupScreenState extends State<SignupScreen> {
                       _nameController.text,
                       _emailController.text,
                       _idController.text,
-                      _cellphoneOneController.text +
-                          _cellphoneTwoController.text +
-                          _cellphoneThreeController.text,
+                      _cellphoneOneController.text + _cellphoneTwoController.text + _cellphoneThreeController.text,
                     ),
                     Navigator.of(context).popUntil((route) => route.isFirst),
                   }
                 else if (myResult['res_code'] == 2)
                   {
-                    FlutterToast.showToast(
+                    Fluttertoast.showToast(
                       msg: "사용중인 이메일 입니다.",
                       toastLength: Toast.LENGTH_LONG,
                     ),
@@ -618,7 +573,7 @@ class SignupScreenState extends State<SignupScreen> {
                 else
                   {
                     debugPrint(myResult['res_msg'].toString()),
-                    FlutterToast.showToast(
+                    Fluttertoast.showToast(
                       msg: "An error occured while trying to signup",
                       toastLength: Toast.LENGTH_LONG,
                     ),

@@ -34,8 +34,7 @@ Future<bool> isLocationServiceEnabled() async {
   if (!_serviceEnabled) {
     _serviceEnabled = await gvars.location.requestService();
     if (!_serviceEnabled) {
-      FlutterToast.showToast(
-          msg: "Location services are required for BLE devices");
+      Fluttertoast.showToast(msg: "Location services are required for BLE devices");
       return false;
     }
   }
@@ -44,11 +43,10 @@ Future<bool> isLocationServiceEnabled() async {
 
 Future<bool> isLocationPermissionGranted() async {
   PermissionStatus _permissionGranted = await gvars.location.hasPermission();
-  if (_permissionGranted == PermissionStatus.denied ||
-      _permissionGranted == PermissionStatus.deniedForever) {
+  if (_permissionGranted == PermissionStatus.denied || _permissionGranted == PermissionStatus.deniedForever) {
     _permissionGranted = await gvars.location.requestPermission();
     if (_permissionGranted != PermissionStatus.granted) {
-      FlutterToast.showToast(msg: "Please allow app to access location data");
+      Fluttertoast.showToast(msg: "Please allow app to access location data");
       return false;
     }
   }

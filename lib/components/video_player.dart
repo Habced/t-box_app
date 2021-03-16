@@ -23,7 +23,9 @@ final TextStyle overlayTextFontSmall = const TextStyle(
 );
 
 class TBoxDataRight extends StatefulWidget {
-  const TBoxDataRight({Key key}) : super(key: key);
+  const TBoxDataRight({Key key, this.onDataChanged}) : super(key: key);
+  final ValueChanged<String> onDataChanged;
+
   @override
   TBoxDataRightState createState() => TBoxDataRightState();
 }
@@ -72,7 +74,7 @@ class TBoxDataRightState extends State<TBoxDataRight> with SingleTickerProviderS
       writing = false;
       isTboxConnected = true;
     } else {
-      FlutterToast.showToast(msg: "tbox not connected");
+      Fluttertoast.showToast(msg: "tbox not connected");
       isTboxConnected = false;
     }
   }
@@ -252,12 +254,13 @@ class TBoxDataRightState extends State<TBoxDataRight> with SingleTickerProviderS
       // T-Box Status & Battery Status
       if (value[2] == 129) {
         // value[3] is the amount of batter left
-        FlutterToast.showToast(msg: "Battery Left: " + value[3]);
+        Fluttertoast.showToast(msg: "Battery Left: " + value[3]);
       } else if (value[2] == 160) {
         setState(() {
           cal += 0.1;
           touchCount += 1;
         });
+        widget.onDataChanged('tbox,$touchCount,$cal');
         if (value[3] == 0) {
           //Front right
         } else if (value[3] == 1) {
@@ -286,7 +289,7 @@ class TBoxDataRightState extends State<TBoxDataRight> with SingleTickerProviderS
         // await gvars.tboxWriteChar.write(writeCommands[0]);
         await gvars.tboxWriteChar.write(writeCommands[0], true);
       } catch (error) {
-        FlutterToast.showToast(msg: "Error with BLE write");
+        Fluttertoast.showToast(msg: "Error with BLE write");
         print("Ble write message failed: " + writeCommands[0].toString());
         writing = false;
       }
@@ -299,16 +302,11 @@ class TBoxDataRightState extends State<TBoxDataRight> with SingleTickerProviderS
   startCollectingData() {
     print("Started collecting data");
   }
-
-  getData() {
-    print("called get data");
-    // TODO properly get current tbox data
-    return 1;
-  }
 }
 
 class CadenceDataRight extends StatefulWidget {
-  const CadenceDataRight({Key key}) : super(key: key);
+  const CadenceDataRight({Key key, this.onDataChanged}) : super(key: key);
+  final ValueChanged<String> onDataChanged;
   @override
   CadenceDataRightState createState() => CadenceDataRightState();
 }
@@ -345,6 +343,8 @@ class CadenceDataRightState extends State<CadenceDataRight> with SingleTickerPro
 
           rpmText = gvars.crankData;
           distanceText = (gvars.distance - startDistance).toString().substring(0, 3) + " km";
+
+          widget.onDataChanged('tcycling,$distanceText,$cal');
         }
       });
     });
