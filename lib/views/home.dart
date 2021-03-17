@@ -538,7 +538,7 @@ class HomeScreenState extends State<HomeScreen> {
           scrollDirection: Axis.horizontal,
           child: Row(children: _buildRecentVids(pclv.vodList)),
         ),
-        SizedBox(height: 10)
+        // SizedBox(height: 10)
       ],
       // children: [Text(pclv.pc.title), _buildPcLatestVodsRow(pclv.vodList), SizedBox(height: 10)],
     );

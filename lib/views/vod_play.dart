@@ -22,14 +22,17 @@ class VodPlayScreenState extends State<VodPlayScreen> {
   GlobalKey<CadenceDataRightState> _matCadenceKey = GlobalKey();
   GlobalKey<TBoxDataRightState> _matTboxKey = GlobalKey();
 
+  int _uid;
   int _uRole;
 
   VideoPlayerController _videoPlayerController;
   ChewieController _chewieController;
+  List<String> myIncomingData;
 
   @override
   void initState() {
     super.initState();
+    myIncomingData = [];
     _checkPermissions();
     initializePlayer();
   }
@@ -88,13 +91,13 @@ class VodPlayScreenState extends State<VodPlayScreen> {
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
       aspectRatio: 16 / 9,
-      autoPlay: false,
+      autoPlay: true,
       autoInitialize: true,
       looping: true,
       customControls: Stack(
         children: <Widget>[myMatCtrls],
       ),
-    );
+    )..enterFullScreen();
 
     setState(() {});
   }
@@ -121,15 +124,6 @@ class VodPlayScreenState extends State<VodPlayScreen> {
     if (_chewieController != null && _chewieController.videoPlayerController.value?.initialized) {
       return Center(
         child: Wrap(direction: Axis.horizontal, children: [
-          TextButton(
-            onPressed: () {
-              print('dodododoodododo');
-            },
-            child: Text(
-              'ffffffffffffffffffff',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
           Chewie(controller: _chewieController),
         ]),
       );
@@ -191,16 +185,65 @@ class VodPlayScreenState extends State<VodPlayScreen> {
   }
 
   void _saveDataThenDispose() async {
-    // TODO call API and save the data before disposeing
+    // TODO call API and save the data before disposing
     // add tracking data for time watched
     // add tracking data for distance or touch
     // if success, add point gained through vod
 
+    if (widget.myVod.pcType == 0) {
+      // None
+    } else if (widget.myVod.pcType == 1) {
+      //TCycling
+      if (myIncomingData[0] == "tcycling" && myIncomingData.length > 1) {
+        // Save tracking data
+        var myCate = 'vod,tycling,${widget.myVod.pcTitle},${widget.myVod.scTitle}';
+        appService.addTrackingData(widget.uid, myCate, 'calorie', 0);
+        appService.addTrackingData(widget.uid, myCate, 'time', 0);
+        appService.addTrackingData(widget.uid, myCate, 'distance', 0);
+      }
+    } else if (widget.myVod.pcType == 2) {
+      //TBox
+
+      if (myIncomingData[0] == "tbox" && myIncomingData.length > 1) {
+        // Save tracking data
+        var myCate = 'vod,tbox,${widget.myVod.pcTitle},${widget.myVod.scTitle}';
+        appService.addTrackingData(widget.uid, myCate, 'calorie', 0);
+        appService.addTrackingData(widget.uid, myCate, 'time', 0);
+        appService.addTrackingData(widget.uid, myCate, 'touch', 0);
+      }
+    } else {
+      // Error
+    }
+
+    print('i');
     _videoPlayerController?.dispose();
     _chewieController?.dispose();
   }
 
   _handleDataChanged(String incomingData) {
-    print(incomingData);
+    List<String> tempData = incomingData.split(",");
+
+    if (tempData.length == 0) {
+      return;
+    }
+
+    // Double check it's the right type of data
+    if (widget.myVod.pcType == 0) {
+      // None
+      // There should be no data coming in if it was none
+    } else if (widget.myVod.pcType == 1) {
+      //TCycling
+      if (tempData[0] == "tcycling") {
+        myIncomingData = tempData;
+      }
+    } else if (widget.myVod.pcType == 2) {
+      //TBox
+      if (tempData[0] == "tbox") {
+        myIncomingData = tempData;
+      }
+    } else {
+      // Error
+      // Incorrectly formatted data came in.
+    }
   }
 }
