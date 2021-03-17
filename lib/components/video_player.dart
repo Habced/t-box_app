@@ -47,6 +47,8 @@ class TBoxDataRightState extends State<TBoxDataRight> with SingleTickerProviderS
   List<List<int>> writeCommands;
   bool writing;
 
+  Stopwatch myStopwatch;
+
   // Send
   final int sidDeviceStatus = 0x00; // 0.toByte() ( Reply 128 / 0.80 )
   final int sidBatteryStatus = 0x01; // 1.toByte() ( Reply 129 / 0.81 )
@@ -77,136 +79,151 @@ class TBoxDataRightState extends State<TBoxDataRight> with SingleTickerProviderS
       Fluttertoast.showToast(msg: "tbox not connected");
       isTboxConnected = false;
     }
+    myStopwatch = Stopwatch()..start();
   }
 
   @override
   Widget build(BuildContext context) {
-    var icon = SlideTransition(
-      position: offset,
-      child: Container(
-        width: 120,
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: FlatButton(
-            padding: EdgeInsets.all(0.0),
-            child: isOpen
-                ? Image.asset('assets/images/side_data_close_icon.png', fit: BoxFit.scaleDown)
-                : Image.asset('assets/images/side_data_open_icon.png', fit: BoxFit.scaleDown),
-            onPressed: () {
-              switch (_animationController.status) {
-                case AnimationStatus.completed:
-                  _animationController.reverse();
-                  setState(() {
-                    isOpen = false;
-                  });
-                  break;
-                case AnimationStatus.dismissed:
-                  _animationController.forward();
-                  setState(() {
-                    isOpen = true;
-                  });
-                  break;
-                default:
-              }
-            },
-          ),
+    var myBoxDecor = BoxDecoration(
+      color: gvars.MyPrimaryYellowColor,
+      border: Border.all(width: 1, color: Colors.white),
+      borderRadius: BorderRadius.circular(5),
+    );
+
+    var ts14 = TextStyle(fontSize: 14, color: Colors.black);
+    var ts18 = TextStyle(fontSize: 18, color: Colors.black);
+    var ts24 = TextStyle(fontSize: 24, color: Colors.black, fontWeight: FontWeight.bold);
+
+    var dataOn = Container(
+      height: 30,
+      width: 140,
+      decoration: myBoxDecor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Text('DATA', style: ts18), SizedBox(width: 5), Text('ON', style: ts24)],
+      ),
+    );
+
+    var dataOff = Container(
+      height: 30,
+      width: 140,
+      decoration: myBoxDecor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Text('DATA', style: ts18), SizedBox(width: 5), Text('OFF', style: ts24)],
+      ),
+    );
+
+    var dataToggle = Container(
+      width: 140,
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: OutlinedButton(
+          child: isOpen ? dataOn : dataOff,
+          onPressed: () {
+            switch (_animationController.status) {
+              case AnimationStatus.completed:
+                _animationController.reverse();
+                setState(() {
+                  isOpen = false;
+                });
+                break;
+              case AnimationStatus.dismissed:
+                _animationController.forward();
+                setState(() {
+                  isOpen = true;
+                });
+                break;
+              default:
+            }
+          },
         ),
       ),
     );
 
-    var rpmData = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        SizedBox(
-          width: 110,
-          child: Row(
+    var dataTime = Container(
+      height: 40,
+      width: 140,
+      decoration: myBoxDecor,
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            height: 30,
+            child: Image.asset('assets/images/icon_time.png'),
+          ),
+          SizedBox(width: 5),
+          Text(formatDuration(myStopwatch.elapsed), style: ts24)
+        ],
+      ),
+    );
+    var dataCal = Container(
+      height: 40,
+      width: 140,
+      decoration: myBoxDecor,
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            height: 30,
+            child: Image.asset('assets/images/icon_cal.png'),
+          ),
+          SizedBox(width: 5),
+          Row(
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Image(
-                width: 25,
-                height: 25,
-                color: Colors.yellow,
-                image: AssetImage('assets/images/rpm_icon.png'),
-              ),
-              Text("Touch Count", textAlign: TextAlign.left, style: overlayCateFont),
+            children: [
+              Text((cal / 1.4).floor().toString(), style: ts24),
+              Text('칼로리', style: ts14),
             ],
           ),
-        ),
-        SizedBox(
-          width: 110,
-          child: Container(
-            child: Text(touchCount.toString(), textAlign: TextAlign.right, style: overlayTextFont),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
-
-    var calData = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        SizedBox(
-          width: 110,
-          child: Row(
+    var dataTouch = Container(
+      height: 40,
+      width: 140,
+      decoration: myBoxDecor,
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            height: 30,
+            child: Image.asset('assets/images/icon_touch.png'),
+          ),
+          Row(
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Image(
-                width: 25,
-                height: 25,
-                color: Colors.yellow,
-                image: AssetImage('assets/images/kcal_icon.png'),
-              ),
-              Text("KCAL", textAlign: TextAlign.left, style: overlayCateFont),
+            children: [
+              Text(touchCount.toString(), style: ts24),
+              Text('터치', style: ts14),
             ],
           ),
-        ),
-        SizedBox(
-          width: 110,
-          child: Container(
-            child: Text((cal / 1.4).floor().toString(), textAlign: TextAlign.right, style: overlayTextFont),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
-
-    var data = FadeTransition(
+    var dataColumn = FadeTransition(
       opacity: _animationController,
       child: SlideTransition(
         position: offset,
-        child: Row(
+        child: Column(
           children: <Widget>[
-            Container(color: Colors.yellow, alignment: Alignment.topLeft, width: 2, height: 200),
-            Container(
-              width: 130,
-              height: 200,
-              color: Color.fromRGBO(0, 0, 0, 0.7),
-              child: Row(
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          SizedBox(height: 10),
-                          rpmData,
-                          calData,
-                          SizedBox(height: 10),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            dataTime,
+            SizedBox(height: 10),
+            dataCal,
+            SizedBox(height: 10),
+            dataTouch,
           ],
         ),
       ),
     );
-
-    return Row(
-      children: <Widget>[icon, Align(alignment: Alignment.centerRight, child: data)],
+    return Column(
+      children: [
+        dataToggle,
+        SizedBox(height: 30),
+        dataColumn,
+      ],
     );
   }
 
@@ -289,7 +306,7 @@ class TBoxDataRightState extends State<TBoxDataRight> with SingleTickerProviderS
         // await gvars.tboxWriteChar.write(writeCommands[0]);
         await gvars.tboxWriteChar.write(writeCommands[0], true);
       } catch (error) {
-        Fluttertoast.showToast(msg: "Error with BLE write");
+        Fluttertoast.showToast(msg: "Error with BLE write. T-Box could be disconnected.");
         print("Ble write message failed: " + writeCommands[0].toString());
         writing = false;
       }
@@ -322,9 +339,12 @@ class CadenceDataRightState extends State<CadenceDataRight> with SingleTickerPro
   String distanceText = "";
   String calText = "";
   double cal;
+  String speedText = "0.0";
   int latestCrankEventTime;
 
   bool isOpen = false;
+
+  Stopwatch myStopwatch;
 
   @override
   void initState() {
@@ -343,8 +363,8 @@ class CadenceDataRightState extends State<CadenceDataRight> with SingleTickerPro
 
           rpmText = gvars.crankData;
           distanceText = (gvars.distance - startDistance).toString().substring(0, 3) + " km";
-
-          widget.onDataChanged('tcycling,$distanceText,$cal');
+          widget.onDataChanged('tcycling,$cal,${gvars.distance - startDistance}, , , ');
+          speedText = gvars.speedString;
         }
       });
     });
@@ -355,164 +375,172 @@ class CadenceDataRightState extends State<CadenceDataRight> with SingleTickerPro
     );
     final curve = CurvedAnimation(curve: Curves.decelerate, parent: _animationController);
     offset = Tween<Offset>(begin: Offset(0.99, 0.0), end: Offset.zero).animate(curve);
+
+    myStopwatch = Stopwatch()..start();
   }
 
   @override
   Widget build(BuildContext context) {
-    var icon = SlideTransition(
-      position: offset,
-      child: Container(
-        width: 120,
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: FlatButton(
-            padding: EdgeInsets.all(0.0),
-            child: isOpen
-                ? Image.asset('assets/images/side_data_close_icon.png', fit: BoxFit.scaleDown)
-                : Image.asset('assets/images/side_data_open_icon.png', fit: BoxFit.scaleDown),
-            onPressed: () {
-              switch (_animationController.status) {
-                case AnimationStatus.completed:
-                  _animationController.reverse();
-                  setState(() {
-                    isOpen = false;
-                  });
-                  break;
-                case AnimationStatus.dismissed:
-                  _animationController.forward();
-                  setState(() {
-                    isOpen = true;
-                  });
-                  break;
-                default:
-              }
-            },
-          ),
+    var myBoxDecor = BoxDecoration(
+      color: gvars.MyPrimaryYellowColor,
+      border: Border.all(width: 1, color: Colors.white),
+      borderRadius: BorderRadius.circular(5),
+    );
+
+    var ts14 = TextStyle(fontSize: 14, color: Colors.black);
+    var ts18 = TextStyle(fontSize: 18, color: Colors.black);
+    var ts24 = TextStyle(fontSize: 24, color: Colors.black, fontWeight: FontWeight.bold);
+    var dataOn = Container(
+      height: 30,
+      width: 140,
+      decoration: myBoxDecor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Text('DATA', style: ts18), SizedBox(width: 5), Text('ON', style: ts24)],
+      ),
+    );
+
+    var dataOff = Container(
+      height: 30,
+      width: 140,
+      decoration: myBoxDecor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Text('DATA', style: ts18), SizedBox(width: 5), Text('OFF', style: ts24)],
+      ),
+    );
+
+    var dataToggle = Container(
+      width: 140,
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: OutlinedButton(
+          child: isOpen ? dataOn : dataOff,
+          onPressed: () {
+            switch (_animationController.status) {
+              case AnimationStatus.completed:
+                _animationController.reverse();
+                setState(() {
+                  isOpen = false;
+                });
+                break;
+              case AnimationStatus.dismissed:
+                _animationController.forward();
+                setState(() {
+                  isOpen = true;
+                });
+                break;
+              default:
+            }
+          },
         ),
       ),
     );
 
-    var rpmData = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        SizedBox(
-          width: 110,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Image(
-                width: 25,
-                height: 25,
-                color: Colors.yellow,
-                image: AssetImage('assets/images/rpm_icon.png'),
-              ),
-              Text("RPM", textAlign: TextAlign.left, style: overlayCateFont),
+    var dataTime = Container(
+      height: 40,
+      width: 140,
+      decoration: myBoxDecor,
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            height: 30,
+            child: Image.asset('assets/images/icon_time.png'),
+          ),
+          SizedBox(width: 5),
+          Text(formatDuration(myStopwatch.elapsed), style: ts24)
+        ],
+      ),
+    );
+    var dataCal = Container(
+      height: 40,
+      width: 140,
+      decoration: myBoxDecor,
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            height: 30,
+            child: Image.asset('assets/images/icon_cal.png'),
+          ),
+          SizedBox(width: 5),
+          Row(
+            children: [
+              Text((cal / 1.4).floor().toString(), style: ts24),
+              Text('칼로리', style: ts14),
             ],
           ),
-        ),
-        SizedBox(
-          width: 110,
-          child: Container(
-            child: Text(rpmText, textAlign: TextAlign.right, style: overlayTextFont),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
-
-    var distanceData = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        SizedBox(
-          width: 110,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Image(
-                width: 25,
-                height: 25,
-                color: Colors.yellow,
-                image: AssetImage('assets/images/dist_icon.png'),
-              ),
-              Text("DISTANCE", textAlign: TextAlign.left, style: overlayCateFont),
+    var dataDistance = Container(
+      height: 40,
+      width: 140,
+      decoration: myBoxDecor,
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            height: 30,
+            child: Image.asset('assets/images/icon_distance.png'),
+          ),
+          Row(
+            children: [
+              Text(gvars.distanceString, style: ts24),
+              Text('Km', style: ts14),
             ],
           ),
-        ),
-        SizedBox(
-          width: 110,
-          child: Container(
-            child: Text(distanceText, textAlign: TextAlign.right, style: overlayTextFont),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
-
-    var calData = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        SizedBox(
-          width: 110,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Image(
-                width: 25,
-                height: 25,
-                color: Colors.yellow,
-                image: AssetImage('assets/images/kcal_icon.png'),
-              ),
-              Text("KCAL", textAlign: TextAlign.left, style: overlayCateFont),
+    var dataSpeed = Container(
+      height: 40,
+      width: 140,
+      decoration: myBoxDecor,
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            height: 30,
+            child: Image.asset('assets/images/icon_speed.png'),
+          ),
+          Row(
+            children: [
+              Text(gvars.speedString, style: ts24),
+              Text('Km/h', style: ts14),
             ],
           ),
-        ),
-        SizedBox(
-          width: 110,
-          child: Container(
-            child: Text(calText, textAlign: TextAlign.right, style: overlayTextFont),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
-
-    var data = FadeTransition(
+    var dataColumn = FadeTransition(
       opacity: _animationController,
       child: SlideTransition(
         position: offset,
-        child: Row(
+        child: Column(
           children: <Widget>[
-            Container(color: Colors.yellow, alignment: Alignment.topLeft, width: 2, height: 200),
-            Container(
-              width: 130,
-              height: 200,
-              color: Color.fromRGBO(0, 0, 0, 0.7),
-              child: Row(
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          SizedBox(height: 10),
-                          rpmData,
-                          distanceData,
-                          calData,
-                          SizedBox(height: 10),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            dataTime,
+            SizedBox(height: 3),
+            dataCal,
+            SizedBox(height: 3),
+            dataDistance,
+            SizedBox(height: 3),
+            dataSpeed,
           ],
         ),
       ),
     );
-
-    return Row(
-      children: <Widget>[icon, Align(alignment: Alignment.centerRight, child: data)],
+    return Column(
+      children: [
+        dataToggle,
+        SizedBox(height: 10),
+        dataColumn,
+      ],
     );
   }
 
@@ -525,12 +553,6 @@ class CadenceDataRightState extends State<CadenceDataRight> with SingleTickerPro
 
   startCollectingData() {
     print("Started collecting data");
-  }
-
-  getData() {
-    print("called get data");
-    // TODO properly get current tcycling data
-    return 1;
   }
 }
 
@@ -783,4 +805,36 @@ class TopDataPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
   }
+}
+
+String formatDuration(Duration position) {
+  final ms = position.inMilliseconds;
+
+  int seconds = ms ~/ 1000;
+  final int hours = seconds ~/ 3600;
+  seconds = seconds % 3600;
+  var minutes = seconds ~/ 60;
+  seconds = seconds % 60;
+
+  final hoursString = hours >= 10
+      ? '$hours'
+      : hours == 0
+          ? '00'
+          : '0$hours';
+
+  final minutesString = minutes >= 10
+      ? '$minutes'
+      : minutes == 0
+          ? '00'
+          : '0$minutes';
+
+  final secondsString = seconds >= 10
+      ? '$seconds'
+      : seconds == 0
+          ? '00'
+          : '0$seconds';
+
+  final formattedTime = '${hoursString == '00' ? '' : hoursString + ':'}$minutesString:$secondsString';
+
+  return formattedTime;
 }

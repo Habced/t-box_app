@@ -163,13 +163,17 @@ void calculateCrankMesaurement(Peripheral device, int cr, int lcet) {
     // double crankCadence = (crankRevolutions - gvars.myLastCrankRevolutions) * 60 / timeDifference; // [revolutions/minute]
     myCurrentCrankCadence = (cr - myLastCrankRevolutions) * 60 ~/ timeDifference;
     crankData = myCurrentCrankCadence.toString();
-    distance = (cr * 2).toDouble() / 1000;
-    distanceString = ((cr * 2).toDouble() / 1000).toString().substring(0, 3);
+    distance = (cr * 6).toDouble() / 1000;
+    distanceString = ((cr * 6).toDouble() / 1000).toString().substring(0, 3);
 
     // speed is current crank cadence * 3 = speed in meters per minute.
     // current crank cadence * 3 * 60 / 1000 = speed in km per hour
-    speed = (myCurrentCrankCadence * 3) * 60 / 1000;
-    speedString = speed.toString().substring(0, 3);
+    speed = ((myCurrentCrankCadence * 6) * 60 / 1000);
+    if (speed.toString().length > 4) {
+      speedString = speed.toString().substring(0, 4);
+    } else {
+      speedString = speed.toString();
+    }
     // print(myCurrentCrankCadence.toString());
     // print('cr: ' + cr.toString());
     // print("distance: " + distance.toString());
